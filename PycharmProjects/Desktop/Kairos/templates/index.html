@@ -1,0 +1,1258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>KPG Marathon Generator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #f4f1ea;
+            --surface: #ffffff;
+            --surface-alt: #ece7dd;
+            --text: #111111;
+            --muted: #5f5a52;
+            --border: #d8d2c7;
+            --shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+
+            --primary: #111111;
+            --primary-hover: #222222;
+
+            --z2-bg: #dbeafe;
+            --z2-text: #1e3a8a;
+
+            --vo2-bg: #fee2e2;
+            --vo2-text: #991b1b;
+
+            --tempo-bg: #ffedd5;
+            --tempo-text: #9a3412;
+
+            --lr-bg: #dcfce7;
+            --lr-text: #166534;
+
+            --rest-bg: #e5e7eb;
+            --rest-text: #374151;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.5;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .container {
+            width: min(1180px, calc(100% - 40px));
+            margin: 0 auto;
+        }
+
+        .site-header {
+            position: sticky;
+            top: 0;
+            z-index: 20;
+            background: rgba(244, 241, 234, 0.92);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(17, 17, 17, 0.08);
+        }
+
+        .nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            min-height: 80px;
+            gap: 20px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+        }
+
+        .brand img {
+            width: 52px;
+            height: 52px;
+            object-fit: contain;
+            border-radius: 50%;
+            background: white;
+        }
+
+        .brand-text {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .brand-text span:first-child {
+            font-size: 1rem;
+            font-weight: 800;
+        }
+
+        .brand-text span:last-child {
+            font-size: 0.78rem;
+            color: var(--muted);
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 28px;
+            color: var(--muted);
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .nav-links a:hover {
+            color: var(--text);
+        }
+
+        .nav-cta {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 18px;
+            background: var(--primary);
+            color: white;
+            border-radius: 999px;
+            font-weight: 700;
+            transition: 0.2s ease;
+        }
+
+        .nav-cta:hover {
+            background: var(--primary-hover);
+            transform: translateY(-1px);
+        }
+
+        .hero {
+            padding: 72px 0 48px;
+        }
+
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 36px;
+            align-items: center;
+        }
+
+        .eyebrow {
+            display: inline-block;
+            margin-bottom: 18px;
+            padding: 8px 14px;
+            border: 1px solid var(--border);
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.55);
+            color: var(--muted);
+            font-size: 0.82rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .hero h1 {
+            margin: 0 0 18px;
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(3rem, 6vw, 5.5rem);
+            line-height: 0.95;
+            letter-spacing: -0.03em;
+        }
+
+        .hero p {
+            margin: 0 0 28px;
+            max-width: 620px;
+            color: var(--muted);
+            font-size: 1.08rem;
+        }
+
+        .hero-actions {
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+            margin-bottom: 28px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 14px 22px;
+            border-radius: 999px;
+            font-weight: 700;
+            transition: 0.2s ease;
+            border: 1px solid transparent;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            font-weight: 800;
+            letter-spacing: 0.02em;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-hover);
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border-color: var(--border);
+            color: var(--text);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.6);
+        }
+
+        .hero-points {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px;
+            margin-top: 8px;
+        }
+
+        .hero-point {
+            background: rgba(255, 255, 255, 0.55);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 16px;
+        }
+
+        .hero-point strong {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 1rem;
+        }
+
+        .hero-point span {
+            color: var(--muted);
+            font-size: 0.92rem;
+        }
+
+        .hero-card {
+            background: linear-gradient(180deg, #151515 0%, #222222 100%);
+            color: white;
+            border-radius: 28px;
+            padding: 28px;
+            box-shadow: var(--shadow);
+            min-height: 420px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-card::after {
+            content: "";
+            position: absolute;
+            inset: auto -80px -80px auto;
+            width: 240px;
+            height: 240px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.06);
+        }
+
+        .hero-card .mini-label {
+            color: rgba(255,255,255,0.7);
+            text-transform: uppercase;
+            font-size: 0.78rem;
+            letter-spacing: 0.08em;
+            font-weight: 700;
+        }
+
+        .hero-card h3 {
+            margin: 10px 0 12px;
+            font-size: 2rem;
+            line-height: 1;
+        }
+
+        .hero-card p {
+            color: rgba(255,255,255,0.75);
+            margin-bottom: 0;
+            font-size: 1rem;
+        }
+
+        .hero-metrics {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 14px;
+            margin-top: 28px;
+        }
+
+        .metric {
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 18px;
+            padding: 16px;
+        }
+
+        .metric-label {
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: rgba(255,255,255,0.65);
+            margin-bottom: 8px;
+        }
+
+        .metric-value {
+            font-size: 1.8rem;
+            font-weight: 800;
+        }
+
+        .section {
+            padding: 32px 0 70px;
+        }
+
+        .section-header {
+            margin-bottom: 26px;
+        }
+
+        .section-header h2 {
+            margin: 0 0 10px;
+            font-size: clamp(2rem, 4vw, 3rem);
+            letter-spacing: -0.03em;
+        }
+
+        .section-header p {
+            margin: 0;
+            max-width: 760px;
+            color: var(--muted);
+            font-size: 1rem;
+        }
+
+        .value-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+        }
+
+        .value-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 22px;
+            padding: 24px;
+            box-shadow: var(--shadow);
+        }
+
+        .value-card-number {
+            display: inline-flex;
+            width: 38px;
+            height: 38px;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: var(--surface-alt);
+            font-weight: 800;
+            margin-bottom: 18px;
+        }
+
+        .value-card h3 {
+            margin: 0 0 10px;
+            font-size: 1.2rem;
+        }
+
+        .value-card p {
+            margin: 0;
+            color: var(--muted);
+        }
+
+        .generator-shell {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 30px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        .generator-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 18px;
+            padding: 28px 28px 0;
+            flex-wrap: wrap;
+        }
+
+        .generator-top h3 {
+            margin: 0 0 8px;
+            font-size: 1.8rem;
+        }
+
+        .generator-top p {
+            margin: 0;
+            color: var(--muted);
+        }
+
+        .generator-badge {
+            padding: 10px 14px;
+            border-radius: 999px;
+            background: var(--surface-alt);
+            font-weight: 700;
+            color: var(--text);
+            white-space: nowrap;
+        }
+
+        form {
+            padding: 28px;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 18px;
+        }
+
+        .field-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .field-group label {
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+            font-weight: 700;
+        }
+
+        .field-group input,
+        .field-group select {
+            width: 100%;
+            padding: 14px 14px;
+            border-radius: 14px;
+            border: 1px solid var(--border);
+            background: #fcfbf8;
+            color: var(--text);
+            font-size: 0.98rem;
+            outline: none;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .field-group input:focus,
+        .field-group select:focus {
+            border-color: #999282;
+            box-shadow: 0 0 0 4px rgba(17, 17, 17, 0.06);
+        }
+
+        .full-span {
+            grid-column: 1 / -1;
+        }
+
+        .submit-wrap {
+            grid-column: 1 / -1;
+            display: flex;
+            justify-content: flex-start;
+            padding-top: 8px;
+        }
+
+        .submit-btn {
+            padding: 15px 26px;
+            border: none;
+            border-radius: 999px;
+            background: var(--primary);
+            color: white;
+            font-weight: 800;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: 0.2s ease;
+        }
+
+        .submit-btn:hover {
+            background: var(--primary-hover);
+            transform: translateY(-1px);
+        }
+
+        #results {
+            display: grid;
+            gap: 24px;
+            margin-top: 30px;
+        }
+
+        .results-header {
+            margin-bottom: 4px;
+        }
+
+        .results-header h2 {
+            margin: 0;
+            font-size: 2rem;
+            letter-spacing: -0.03em;
+        }
+
+        .week-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 24px;
+            box-shadow: var(--shadow);
+        }
+
+        .week-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 18px;
+        }
+
+        .week-title {
+            font-size: 1.35rem;
+            font-weight: 800;
+        }
+
+        .phase-badge {
+            padding: 8px 14px;
+            border-radius: 999px;
+            background: var(--surface-alt);
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .summary-row {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+
+        .summary-box {
+            background: #fcfbf8;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 14px;
+        }
+
+        .summary-label {
+            color: var(--muted);
+            font-size: 0.8rem;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            font-weight: 700;
+        }
+
+        .summary-value {
+            font-size: 1.2rem;
+            font-weight: 800;
+        }
+
+        .schedule-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 12px;
+            margin-top: 12px;
+        }
+
+        .day-card {
+            background: #fcfbf8;
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 14px;
+            min-height: 110px;
+        }
+
+        .day-name {
+            font-size: 0.85rem;
+            font-weight: 800;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            margin-bottom: 10px;
+        }
+
+        .workout {
+            display: inline-block;
+            padding: 8px 10px;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            line-height: 1.4;
+        }
+
+        .workout.lr {
+            background: var(--lr-bg);
+            color: var(--lr-text);
+        }
+
+        .workout.vo2 {
+            background: var(--vo2-bg);
+            color: var(--vo2-text);
+        }
+
+        .workout.tempo {
+            background: var(--tempo-bg);
+            color: var(--tempo-text);
+        }
+
+        .workout.z2 {
+            background: var(--z2-bg);
+            color: var(--z2-text);
+        }
+
+        .workout.rest {
+            background: var(--rest-bg);
+            color: var(--rest-text);
+        }
+
+        .warnings {
+            margin-top: 18px;
+            background: #fff1f2;
+            border: 1px solid #fecdd3;
+            border-radius: 16px;
+            padding: 14px 16px;
+            color: #9f1239;
+        }
+
+        .warnings strong {
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .warnings ul {
+            margin: 0;
+            padding-left: 18px;
+        }
+
+        .site-footer {
+            padding: 48px 0 60px;
+            margin-top: 50px;
+            border-top: 1px solid rgba(17, 17, 17, 0.08);
+        }
+
+        .footer-grid {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            align-items: flex-start;
+            flex-wrap: wrap;
+        }
+
+        .footer-brand {
+            max-width: 420px;
+        }
+
+        .footer-brand p {
+            color: var(--muted);
+            margin-top: 12px;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 40px;
+            flex-wrap: wrap;
+        }
+
+        .footer-links-column h4 {
+            margin: 0 0 10px;
+            font-size: 0.95rem;
+        }
+
+        .footer-links-column a {
+            display: block;
+            color: var(--muted);
+            margin-bottom: 8px;
+        }
+
+        .footer-links-column a:hover {
+            color: var(--text);
+        }
+        .section-lead {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .kairos-lead {
+            font-size: 1.4rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+
+        .generator-lead {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 1024px) {
+            .hero-grid,
+            .value-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .summary-row {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .schedule-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 720px) {
+            .nav {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 14px 0;
+            }
+
+            .nav-links {
+                gap: 16px;
+                flex-wrap: wrap;
+            }
+
+            .hero {
+                padding-top: 48px;
+            }
+
+            .hero-points,
+            form,
+            .schedule-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .summary-row {
+                grid-template-columns: 1fr;
+            }
+
+            .submit-wrap {
+                justify-content: stretch;
+            }
+
+            .submit-btn {
+                width: 100%;
+            }
+
+            .day-card {
+                min-height: auto;
+            }
+            .hero-subline {
+                margin: -6px 0 20px;
+                font-size: clamp(1.3rem, 3vw, 2rem);
+                font-weight: 700;
+                color: var(--muted);
+                letter-spacing: -0.03em;
+            }
+
+            .proof-strip {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 10px;
+                margin: 4px 0 24px;
+            }
+
+            .proof-strip span {
+                padding: 8px 12px;
+                border-radius: 999px;
+                background: rgba(255,255,255,0.65);
+                border: 1px solid var(--border);
+                font-size: 0.82rem;
+                font-weight: 700;
+                color: var(--text);
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="site-header">
+        <div class="container nav">
+            <a href="#" class="brand">
+                <img src="{{ url_for('static', filename='images/kpg-logo.png') }}" alt="KPG Logo">
+                <div class="brand-text">
+                    <span>Kairos Performance Group</span>
+                    <span>Marathon Generator</span>
+                </div>
+            </a>
+
+            <nav class="nav-links">
+                <a href="#about-kpg">Philosophy</a>
+                <a href="#founders">Founders</a>
+                <a href="#generator">Generator</a>
+            </nav>
+
+            <a href="#generator" class="nav-cta">Build Your Plan</a>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="container hero-grid">
+                <div>
+                    <div class="eyebrow">Built for athletes who don’t wait</div>
+
+                    <h1>
+                    This is the moment
+                    </h1>
+
+                    <p class="hero-subline">
+                    Start now. Train with intent.
+                    </p>
+
+                    <p>
+                    Most people wait for the right time.
+                    <br><br>
+                    There isn’t one.
+                    <br><br>
+                    Kairos is now — the moment you decide to act.
+                    <br>
+                    KPG gives you the structure to follow through.
+                    </p>
+
+                    <div class="hero-actions">
+                        <a href="#generator" class="btn btn-primary">Build Your Plan</a>
+                        <a href="#meaning" class="btn btn-secondary">See the System</a>
+                    </div>
+
+                    <div class="proof-strip">
+                        <span>No guesswork</span>
+                        <span>Real weekly structure</span>
+                        <span>Built for execution</span>
+                    </div>
+
+                    <div class="hero-points">
+                        <div class="hero-point">
+                            <strong>Start now</strong>
+                            <span>No waiting. No perfect timing.</span>
+                        </div>
+                        <div class="hero-point">
+                            <strong>Train with intent</strong>
+                            <span>Every session has a purpose.</span>
+                        </div>
+                        <div class="hero-point">
+                            <strong>Follow through</strong>
+                            <span>Structure that keeps you consistent.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="hero-card">
+                    <div>
+                        <div class="mini-label">KPG ENGINE</div>
+                        <h3>Training Built For You</h3>
+                        <p>
+                            A personalized system for performance training.
+                        </p>
+                    </div>
+
+                    <div class="hero-metrics">
+                        <div class="metric">
+                            <div class="metric-label">Training Phases</div>
+                            <div class="metric-value">5</div>
+                        </div>
+
+                        <div class="metric">
+                            <div class="metric-label">Built Around</div>
+                            <div class="metric-value">You</div>
+                        </div>
+
+                        <div class="metric">
+                            <div class="metric-label">Weekly Flow</div>
+                            <div class="metric-value">Mon–Sun</div>
+                        </div>
+
+                        <div class="metric">
+                            <div class="metric-label">Output</div>
+                            <div class="metric-value">Elite</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section" id="about-kpg">
+            <div class="container">
+
+                <div class="section-header" style="text-align:center; max-width:760px; margin:0 auto 26px;">
+                    <h2>The KPG Philosophy</h2>
+
+                    <p class="section-lead">
+                        Kairos is the moment you stop waiting.
+                    </p>
+
+                    <p>
+                        KPG was built for athletes who choose action now —
+                        and trust discipline to create what comes next.
+                    </p>
+                </div>
+
+                <div class="value-grid">
+
+                    <div class="value-card">
+                        <div class="value-card-number">01</div>
+                        <h3>Built for Performance</h3>
+                        <p>
+                            Aerobic development, quality work, and long-run progression aligned to make you faster, stronger, and more durable.
+                        </p>
+                    </div>
+
+                    <div class="value-card">
+                        <div class="value-card-number">02</div>
+                        <h3>Designed to Easily Follow</h3>
+                        <p>
+                            Smart weekly structure built around recovery, schedule flow, and consistency so the plan works in real life.
+                        </p>
+                    </div>
+
+                    <div class="value-card">
+                        <div class="value-card-number">03</div>
+                        <h3>The Moment is Now</h3>
+                        <p>
+                            Kairos is not some future opportunity. It begins the second you stop waiting and start moving.
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <section class="section" id="founders">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Built by hybrid athletes</h2>
+                    <p class="section-lead">
+                    We built the system we wanted to follow
+                    </p>
+
+                    <p>
+                    KPG was built by athletes who live the balance of strength,
+                    endurance, and disciplined weekly work.
+                    </p>
+                </div>
+
+                <div class="value-grid">
+                    <div class="value-card">
+                        <div class="value-card-number">01</div>
+                        <h3>Kevin Dougherty</h3>
+                        <p>
+                            Founder of KPG and VMI graduate. After rebuilding his foundation,
+                            Kevin went from no consistent running to completing his first official
+                            marathon in 14 weeks.
+                        </p>
+                        <p style="margin-top: 12px;">
+                            The next target: Boston qualification. 2:55:00.
+                        </p>
+                    </div>
+
+                    <div class="value-card">
+                        <div class="value-card-number">02</div>
+                        <h3>Bailey</h3>
+                        <p>
+                            Co-Founder, VMI graduate, and active-duty Navy officer.
+                            Years of balancing lifting, swimming, and running shaped the KPG view
+                            of what disciplined hybrid training looks like.
+                        </p>
+                        <p style="margin-top: 12px;">
+                            Next goals: a sub-24-hour 100 miler and a first Ironman.
+                        </p>
+                    </div>
+
+                    <div class="value-card">
+                        <div class="value-card-number">03</div>
+                        <h3>The standard</h3>
+                        <p>
+                            KPG is for athletes who want more than motivation.
+                            They want a system. A standard. A week they can execute.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="section" id="generator">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Build the block</h2>
+                    <p class="generator-lead">
+                    You decided to start. Now build the plan.
+                    </p>
+
+                    <p>
+                    Set your structure. Lock in your week.
+                    Get a plan built for progression, recovery, and execution.
+                    </p>
+                </div>
+
+                <div class="generator-shell">
+                    <div class="generator-top">
+                        <div>
+                            <h3>Your next move starts here</h3>
+                            <p>
+                            No guesswork. No random mileage.
+                            <br>
+                            Just a plan you can follow.
+                            </p>
+                        </div>
+                        <div class="generator-badge">KPG Engine v1</div>
+                    </div>
+
+                    <form id="planForm">
+                        <div class="field-group">
+                            <label for="experience">Experience</label>
+                            <select id="experience" name="experience" required>
+                                <option value="beginner">Beginner</option>
+                                <option value="intermediate" selected>Intermediate</option>
+                                <option value="advanced">Advanced</option>
+                            </select>
+                        </div>
+
+                        <div class="field-group">
+                            <label for="current_mileage">Current Weekly Mileage</label>
+                            <input type="number" id="current_mileage" name="current_mileage" required />
+                        </div>
+
+                        <div class="field-group">
+                            <label for="longest_run">Current Longest Run</label>
+                            <input type="number" id="longest_run" name="longest_run" required />
+                        </div>
+
+                        <div class="field-group">
+                            <label for="runs_per_week">Runs Per Week</label>
+                            <select id="runs_per_week" name="runs_per_week" required>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="6" selected>6</option>
+                            </select>
+                        </div>
+
+                        <div class="field-group">
+                            <label for="weeks">Plan Length (weeks)</label>
+                            <input type="number" id="weeks" name="weeks" value="16" required />
+                        </div>
+
+                        <div class="field-group">
+                            <label for="long_run_day">Long Run Day</label>
+                            <select id="long_run_day" name="long_run_day" required>
+                                <option value="Mon">Mon</option>
+                                <option value="Tue">Tue</option>
+                                <option value="Wed">Wed</option>
+                                <option value="Thu">Thu</option>
+                                <option value="Fri">Fri</option>
+                                <option value="Sat" selected>Sat</option>
+                                <option value="Sun">Sun</option>
+                            </select>
+                        </div>
+
+                        <div class="field-group">
+                            <label for="speed_day">Speed Day</label>
+                            <select id="speed_day" name="speed_day" required>
+                                <option value="Mon">Mon</option>
+                                <option value="Tue" selected>Tue</option>
+                                <option value="Wed">Wed</option>
+                                <option value="Thu">Thu</option>
+                                <option value="Fri">Fri</option>
+                                <option value="Sat">Sat</option>
+                                <option value="Sun">Sun</option>
+                            </select>
+                        </div>
+
+                        <div class="field-group">
+                            <label for="preferred_rest_days">Preferred Rest Days (comma separated)</label>
+                            <input type="text" id="preferred_rest_days" name="preferred_rest_days" placeholder="Sun" />
+                        </div>
+
+                        <div class="field-group">
+                            <label for="unavailable_days">Unavailable Days (comma separated)</label>
+                            <input type="text" id="unavailable_days" name="unavailable_days" placeholder="Fri" />
+                        </div>
+
+                        <div class="field-group">
+                            <label for="hard_day_style">Hard Day Style</label>
+                            <select id="hard_day_style" name="hard_day_style">
+                                <option value="spread" selected>Spread</option>
+                                <option value="stack">Stack</option>
+                            </select>
+                        </div>
+
+                        <div class="submit-wrap">
+                            <button type="submit" class="submit-btn">Generate Plan</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div id="results"></div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container footer-grid">
+            <div class="footer-brand">
+                <div class="brand">
+                    <img src="{{ url_for('static', filename='images/kpg-logo.png') }}" alt="KPG Logo">
+                    <div class="brand-text">
+                        <span>Kairos Performance Group</span>
+                        <span>Discipline. Structure. Performance.</span>
+                    </div>
+                </div>
+                <p>
+                    Kairos Performance Group exists for athletes who train with purpose.
+                    We don’t wait for the right time.
+                    <br>
+                    We start.
+                </p>
+            </div>
+
+            <div class="footer-links">
+                <div class="footer-links-column">
+                    <h4>Navigate</h4>
+                    <a href="#about-kpg">Philosophy</a>
+                    <a href="#founders">Founders</a>
+                    <a href="#generator">Generator</a>
+                </div>
+
+                <div class="footer-links-column">
+                    <h4>Training</h4>
+                    <a href="#generator">Marathon Plans</a>
+                    <a href="#generator">Plan Builder</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const form = document.getElementById("planForm");
+        const resultsDiv = document.getElementById("results");
+
+        function parseDays(input) {
+            return input
+                .split(",")
+                .map(day => day.trim())
+                .filter(day => day.length > 0);
+        }
+
+        function getWorkoutClass(workout) {
+            if (workout.includes("Long Run")) return "lr";
+            if (workout.includes("VO2")) return "vo2";
+            if (workout.includes("Tempo")) return "tempo";
+            if (workout.includes("MLR")) return "tempo";
+            if (workout.includes("Z2")) return "z2";
+            return "rest";
+        }
+
+        form.addEventListener("submit", async function(event) {
+            event.preventDefault();
+
+            const payload = {
+                experience: document.getElementById("experience").value,
+                current_mileage: document.getElementById("current_mileage").value,
+                longest_run: document.getElementById("longest_run").value,
+                runs_per_week: document.getElementById("runs_per_week").value,
+                weeks: document.getElementById("weeks").value,
+                long_run_day: document.getElementById("long_run_day").value,
+                speed_day: document.getElementById("speed_day").value,
+                preferred_rest_days: parseDays(document.getElementById("preferred_rest_days").value),
+                unavailable_days: parseDays(document.getElementById("unavailable_days").value),
+                hard_day_style: document.getElementById("hard_day_style").value
+            };
+
+            resultsDiv.innerHTML = `
+                <div class="results-header">
+                    <h2>Building your plan...</h2>
+                </div>
+            `;
+
+            const response = await fetch("/generate-plan", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(payload)
+            });
+
+            const plan = await response.json();
+            displayPlan(plan);
+        });
+
+        function displayPlan(plan) {
+            const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+
+            resultsDiv.innerHTML = `
+                <div class="results-header">
+                    <h2>Your KPG Plan</h2>
+                </div>
+            `;
+
+            plan.forEach(week => {
+                const weekDiv = document.createElement("div");
+                weekDiv.className = "week-card";
+
+                let scheduleHtml = `<div class="schedule-grid">`;
+
+                DAYS.forEach(day => {
+                    const workout = week.schedule[day] || "Rest";
+                    scheduleHtml += `
+                        <div class="day-card">
+                            <div class="day-name">${day}</div>
+                            <div class="workout ${getWorkoutClass(workout)}">${workout}</div>
+                        </div>
+                    `;
+                });
+
+                scheduleHtml += `</div>`;
+
+                let warningsHtml = "";
+                if (week.warnings && week.warnings.length > 0) {
+                    warningsHtml = `
+                        <div class="warnings">
+                            <strong>Warnings</strong>
+                            <ul>
+                                ${week.warnings.map(w => `<li>${w}</li>`).join("")}
+                            </ul>
+                        </div>
+                    `;
+                }
+
+                weekDiv.innerHTML = `
+                    <div class="week-header">
+                        <div class="week-title">Week ${week.week}</div>
+                        <div class="phase-badge">${week.phase} · ${week.mileage} mi</div>
+                    </div>
+
+                    <div class="summary-row">
+                        <div class="summary-box">
+                            <div class="summary-label">VO2</div>
+                            <div class="summary-value">${week.sessions.vo2}</div>
+                        </div>
+                        <div class="summary-box">
+                            <div class="summary-label">Tempo</div>
+                            <div class="summary-value">${week.sessions.tempo}</div>
+                        </div>
+                        <div class="summary-box">
+                            <div class="summary-label">Long Run</div>
+                            <div class="summary-value">${week.sessions.lr}</div>
+                        </div>
+                        <div class="summary-box">
+                            <div class="summary-label">MLR</div>
+                            <div class="summary-value">${week.sessions.mlr}</div>
+                        </div>
+                        <div class="summary-box">
+                            <div class="summary-label">Z2 Runs</div>
+                            <div class="summary-value">${week.sessions.z2_runs.join(", ")}</div>
+                        </div>
+                    </div>
+
+                    ${scheduleHtml}
+                    ${warningsHtml}
+                `;
+
+                resultsDiv.appendChild(weekDiv);
+            });
+
+            resultsDiv.scrollIntoView({ behavior: "smooth" });
+        }
+    </script>
+</body>
+</html>

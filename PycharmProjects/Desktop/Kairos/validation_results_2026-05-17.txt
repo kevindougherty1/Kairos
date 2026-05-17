@@ -1,0 +1,113 @@
+VALIDATION RUN RESULTS — half_marathon_engine_main_4plus_v5_7.py
+================================================================
+Date: 2026-05-17  (updated after LR cap fixes)
+Source: test_engine.py (8 test cases — 3-day case removed)
+Output file: engine_tests.txt
+
+
+────────────────────────────────────────────────────────────
+RESULT SUMMARY
+────────────────────────────────────────────────────────────
+  PASS  ('beginner',     20,  8, 4, 12)  peak=28
+  PASS  ('beginner',     30, 10, 5, 12)  peak=32
+  PASS  ('intermediate', 25,  8, 5, 12)  peak=42
+  PASS  ('intermediate', 35, 10, 5, 12)  peak=42
+  WARN  ('intermediate', 40, 12, 6, 12)  peak=52  — chunky week 9 (structural)
+  PASS  ('advanced',     40, 10, 5, 12)  peak=44
+  PASS  ('advanced',     45, 12, 5, 12)  peak=45  ← previously RED FLAG, now clean
+  WARN  ('advanced',     55, 14, 6, 12)  peak=58  — chunky weeks 5 & 9 (structural)
+
+All 8 tests completed without errors or crashes.
+
+
+────────────────────────────────────────────────────────────
+ISSUES RESOLVED SINCE LAST RUN
+────────────────────────────────────────────────────────────
+
+1. advanced 45/5d — peak below current mileage (FIXED)
+   Was: peak=44 (below runner's starting 45 mpw). Plan opened with a deload
+        and never recovered to their actual fitness level.
+   Fix: determine_peak_mileage() now enforces peak >= current_mileage.
+        peak = max(peak, min(current_mileage, MAX_PEAK))
+   Now: peak=45. Plan builds correctly, reaches 45 mi at weeks 4 and 9.
+
+2. advanced 5-day — 16-mile long runs at 44-45 mpw (FIXED)
+   Was: optimizer raised LR from 14 → 16 on build weeks because [11,10] easy
+        runs triggered the ugly-distribution check. Three consecutive 16-mile
+        LRs appeared (wave logic ran on raw LRs of 14, never saw the 16s).
+   Fix: Four targeted changes:
+     a) lr_cap(): advanced 5-day capped at 14 (was 16). HM specificity;
+        16-mile LRs at this frequency are marathon territory.
+     b) easy_run_soft_cap(): advanced 5-day raised 9 → 10. Advanced runners
+        at 44-45 mpw handle 10-mile easy days; soft cap was too conservative.
+     c) ugly_distribution() 5-day threshold: >= 10 → >= 11. Two 10-mile easy
+        runs with LR=14 is not chunky for an advanced runner.
+     d) ugly_distribution() proximity check: added `and max(z2_runs) >= 12`.
+        Prevents the wave-reduced week (LR=12, easy=11) from false-positive
+        triggering the LR±1 guard.
+   Now: LR capped at 14 throughout. Wave fires correctly (14/12/14 in build
+        weeks 4-5-6). No shape warnings for advanced 45/5d.
+
+3. test_engine.py — 3-day test case caused crash on every run (FIXED)
+   Was: ('beginner', 20, 6, 3, 12) was line 1 of the test list. Engine
+        raises ValueError for runs_per_week < 4. Entire test run crashed.
+   Fix: Removed the 3-day test case. Also cleaned up the file (imports moved
+        to top, removed in-loop import duplication).
+
+4. Old engine files deleted
+   Removed: half_marathon_engine_v4.py
+            half_marathon_engine_v5_3.py
+            half_marathon_engine_v5_4.py
+            half_marathon_engine_v5_5.py
+            half_marathon_engine_main_4plus_v5_6.py
+   Kept:    half_marathon_engine_main_4plus_v5_7.py  (active engine)
+            engine.py / engineV2.py / engineV3.py    (marathon engine, app.py uses V3)
+
+
+────────────────────────────────────────────────────────────
+REMAINING WARNINGS (STRUCTURAL — NOT BUGS)
+────────────────────────────────────────────────────────────
+
+intermediate 40/6d  Week 9  (52 mi)
+  Primary=9, LR=14, Secondary=5, Easy=[8,8,8]
+  Chunky warning fires. At 52 mi on 6 run days, easy runs must be 8 miles
+  to absorb volume. The warning message is accurate — this configuration is
+  inherently at the density limit for 6-day plans. No code change warranted.
+
+advanced 55/6d  Week 5  (55 mi)
+  Primary=9, LR=14 (wave-reduced), Secondary=5, Easy=[9,9,9]
+  Chunky. Wave correctly reduced LR from 16 to 14 but easy runs grow to fill.
+  Structural at this volume/frequency.
+
+advanced 55/6d  Week 9  (58 mi, peak)
+  Primary=10, LR=16, Secondary=4, Easy=[10,9,9]
+  Chunky. Inherent at 58 mi / 6-day. Message is accurate.
+
+
+────────────────────────────────────────────────────────────
+LONG RUN PATTERNS — ALL TESTS
+────────────────────────────────────────────────────────────
+beginner  20/4d:  8  8  8 10 10 10  8 10 12  8  6
+beginner  30/5d:  8  8  8 10 10 10  8  8 10  6  6
+interm.   25/5d:  8  8 10 12 12 12 10 12 14  8  6
+interm.   35/5d: 10 12 12 12 14 14 12 12 14  8  6
+interm.   40/6d: 12 12 12 14 12 14 12 14 14 10  8
+advanced  40/5d: 10 12 12 12 12 12 12 12 14 10  8
+advanced  45/5d: 12 14 12 14 12 14 12 12 14 10  8
+advanced  55/6d: 14 16 14 16 14 16 14 16 16 10  8
+
+
+────────────────────────────────────────────────────────────
+OPEN OBSERVATIONS (NOT BLOCKING)
+────────────────────────────────────────────────────────────
+
+intermediate 25/5d and 35/5d both peak at 42 mi despite a 10 mpw gap in
+starting point. This is by design (frequency_peak_range upper bound is 42
+for intermediate 5-day) but means a runner at 35 mpw enters a plan that
+barely ramps them. Not a bug, but worth confirming the tier ceiling is
+intentional rather than accidentally shared.
+
+advanced 40/5d LR is 12 miles for weeks 4 through 8 (five straight weeks).
+Wave logic does not fire because raw LRs sit below cap (cap=14, raw=12).
+This is technically correct but produces a flat LR block mid-plan. Low
+priority — the final specific week correctly steps up to 14.

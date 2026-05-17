@@ -1,0 +1,158 @@
+half_marathon_engine_main_4plus_v5_7.py — Bug Fix Summary
+===========================================================
+Date: 2026-05-17
+All fixes applied to: half_marathon_engine_main_4plus_v5_7.py
+
+
+────────────────────────────────────────────────────────────
+FIX 1 — Wave Logic Conflict (optimize_week_shape overwriting wave LR reductions)
+────────────────────────────────────────────────────────────
+
+PROBLEM:
+  calc_lrs() applies intentional wave variation to break up long streaks of
+  identical long runs (e.g., 14/14/14 → 14/12/14). However, optimize_week_shape()
+  would see the reduced LR, detect an "ugly" z2 distribution, and raise the LR
+  back up to the phase cap — silently undoing the wave.
+
+ROOT CAUSE:
+  optimize_week_shape() used the global lr_cap() as its ceiling in all cases,
+  with no way to know whether a given week's LR had been intentionally reduced.
+
+FIX:
+  1. Added optional lr_ceiling parameter to optimize_week_shape().
+     When provided, it overrides lr_cap() as the growth ceiling inside the
+     Build/Specific optimizer loop.
+
+  2. In build_plan(), captured pre-wave long runs via raw_long_runs() alongside
+     the post-wave long runs from calc_lrs(). For each week, computed:
+       lr_ceiling = long_runs[i] if long_runs[i] < pre_wave_lrs[i] else cap
+     Wave-reduced weeks get their reduced LR as the ceiling; other weeks are
+     unconstrained (ceiling = cap).
+
+  3. Passed lr_ceiling into optimize_week_shape() on every call.
+
+RESULT:
+  Wave reductions are preserved end-to-end. The optimizer can still improve z2
+  distributions on non-wave weeks but cannot raise a wave-reduced LR.
+
+
+────────────────────────────────────────────────────────────
+FIX 2 — Beginner 4-Day LR Stagnation (LR stuck at 8 miles, never reaching 12-mile cap)
+────────────────────────────────────────────────────────────
+
+PROBLEM:
+  For beginners running 4 days/week, the long run was stuck at 8 miles
+  throughout the entire plan, even though the 12-mile cap should be reachable
+  by the Specific phase.
+
+ROOT CAUSE (two combined issues):
+  A. base_long_run_target() used a flat 30-32% of weekly mileage regardless of
+     run frequency. At low 4-day mileage (e.g., 25 mpw), 30% = 7.5 → rounds
+     to 8. Not enough headroom to ever grow past 8.
+  B. Python's banker's rounding: round(9/2)*2 = round(4.5)*2 = 4*2 = 8, not 10.
+     So LR targets of 9 (an odd number) were snapping DOWN to 8 instead of up.
+
+FIX:
+  A. Made base_long_run_target() frequency-aware:
+       if runs_per_week == 4:
+           pct = {"Base": 0.32, "Build": 0.38, "Specific": 0.44}
+       else:
+           pct = {"Base": 0.30, "Build": 0.31, "Specific": 0.32}
+     4-day runners now get higher LR percentages so the target grows past 8
+     earlier in the plan.
+
+  B. Used math.ceil rounding instead of banker's rounding for 4-day plans:
+       if runs_per_week == 4:
+           lr = max(6, math.ceil(lr / 2) * 2)   # 9 → 10, not 9 → 8
+       else:
+           lr = max(6, round(lr / 2) * 2)        # unchanged for other frequencies
+
+RESULT:
+  Beginner 4-day long runs now progress from ~8 miles in Base through 10, 12
+  miles in Build/Specific, matching the intended 12-mile cap trajectory.
+
+
+────────────────────────────────────────────────────────────
+FIX 3 — Advanced 7-Day Base Phase Downward Trend
+────────────────────────────────────────────────────────────
+
+PROBLEM:
+  For an advanced runner already at ~50 mpw entering a plan with a ~60 mpw peak,
+  the base phase mileage was declining from week 1 instead of building. The
+  plan opened at 50 mpw and dropped toward the base-end target of ~49 mpw.
+
+ROOT CAUSE:
+  weekly_curve() always computed base_end = round(peak * 0.82). For a 60 mpw
+  peak, that's 49 mpw — which is below the runner's current mileage of 50 mpw.
+  The segment() call then had to go downward to reach the target.
+
+FIX:
+  Detect when current_mileage >= normal_base_end and substitute a base_end that
+  is slightly above current mileage:
+    normal_base_end = round(peak * 0.82)
+    if current_mileage >= normal_base_end:
+        build_entry = round(peak * 0.95)
+        base_end = min(current_mileage + 4, build_entry - 2)
+        base_end = max(base_end, current_mileage)
+    else:
+        base_end = normal_base_end
+
+  This ensures the base phase either holds steady or adds a small 2-4 mpw
+  buffer above the starting point, giving segment() a non-negative slope.
+
+RESULT:
+  Advanced runners entering near their base-end target no longer see a declining
+  first phase. The base phase now holds or gently rises before the build phase
+  accelerates toward peak.
+
+
+────────────────────────────────────────────────────────────
+FIX 4 — Advanced 7-Day Peak Week Quality Load (53% "quality" miles at peak)
+────────────────────────────────────────────────────────────
+
+PROBLEM:
+  At peak week for an advanced 7-day runner (~60 mpw), primary + secondary
+  workouts were consuming ~53% of weekly mileage. This is unrealistic — quality
+  work at that volume leads to overtraining. The accepted ceiling is ~25% for
+  advanced runners.
+
+ROOT CAUSE:
+  No cap on combined quality mileage existed. optimize_week_shape() could freely
+  raise primary_miles to improve z2 distributions, and secondary was set
+  independently by assign_secondary_workout(), resulting in combined quality
+  exceeding 50% of total mileage at high volumes.
+
+FIX (placed AFTER optimize_week_shape to prevent the optimizer from undoing it):
+    quality_budget_pct = 0.25 if experience == "advanced" else 0.28
+    quality_budget = round(mileage * quality_budget_pct)
+    combined_quality = primary["miles"] + secondary["miles"]
+    if combined_quality > quality_budget and secondary["miles"] > 0:
+        excess = combined_quality - quality_budget
+        secondary["miles"] = max(0, secondary["miles"] - excess)
+        if z2_runs:
+            z2_runs = split_even(sum(z2_runs) + excess, len(z2_runs))
+
+  Key design decisions:
+  - Only secondary is trimmed (primary workout integrity preserved).
+  - Excess miles returned to z2_runs so weekly total stays exact.
+  - Threshold is experience-aware: 25% for advanced, 28% for intermediate/beginner.
+    (28% avoids firing on intermediate 5d plans where combined quality is
+     legitimately ~27% and trimming caused unwanted side effects.)
+  - Cap is post-optimizer to ensure the optimizer's z2 improvements aren't
+    immediately reversed, while still enforcing the final quality ceiling.
+
+RESULT:
+  Advanced peak weeks now stay at or below 25% quality mileage. Intermediate
+  and beginner plans are unaffected. Weekly mileage totals remain exact after
+  the trim.
+
+
+────────────────────────────────────────────────────────────
+FILES MODIFIED
+────────────────────────────────────────────────────────────
+  half_marathon_engine_main_4plus_v5_7.py  — all 4 fixes applied
+
+FILES READ (context only, not modified):
+  half_marathon_engine_v5_5.py
+  engineV3.py
+  app.py
