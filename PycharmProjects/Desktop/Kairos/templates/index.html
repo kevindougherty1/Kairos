@@ -627,6 +627,52 @@
             padding-left: 18px;
         }
 
+        .plan-notes {
+            margin-top: 18px;
+            background: #fefce8;
+            border: 1px solid #fde047;
+            border-radius: 16px;
+            padding: 14px 16px;
+            color: #713f12;
+        }
+
+        .plan-notes strong {
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .plan-notes ul {
+            margin: 0;
+            padding-left: 18px;
+        }
+
+        .race-toggle {
+            display: flex;
+            background: var(--surface-alt);
+            border-radius: 999px;
+            padding: 4px;
+            gap: 4px;
+            max-width: 320px;
+        }
+
+        .race-btn {
+            flex: 1;
+            padding: 10px 18px;
+            border: none;
+            border-radius: 999px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            background: transparent;
+            color: var(--muted);
+            transition: 0.2s ease;
+        }
+
+        .race-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+
         .site-footer {
             padding: 48px 0 60px;
             margin-top: 50px;
@@ -995,10 +1041,19 @@
                             Just a plan you can follow.
                             </p>
                         </div>
-                        <div class="generator-badge">KPG Engine v1</div>
+                        <div class="generator-badge" id="engineBadge">Marathon Engine</div>
                     </div>
 
                     <form id="planForm">
+                        <div class="full-span" style="padding-bottom: 4px;">
+                            <label style="margin-bottom: 10px; display: block; font-size: 0.95rem; font-weight: 700;">Race Type</label>
+                            <div class="race-toggle">
+                                <button type="button" class="race-btn active" data-race="marathon">Marathon</button>
+                                <button type="button" class="race-btn" data-race="half_marathon">Half Marathon</button>
+                            </div>
+                            <input type="hidden" id="race_type" value="marathon">
+                        </div>
+
                         <div class="field-group">
                             <label for="experience">Experience</label>
                             <select id="experience" name="experience" required>
@@ -1024,6 +1079,7 @@
                                 <option value="4">4</option>
                                 <option value="5">5</option>
                                 <option value="6" selected>6</option>
+                                <option value="7" class="hm-only" style="display:none">7</option>
                             </select>
                         </div>
 
@@ -1125,6 +1181,30 @@
     <script>
         const form = document.getElementById("planForm");
         const resultsDiv = document.getElementById("results");
+        const weeksInput = document.getElementById("weeks");
+        const engineBadge = document.getElementById("engineBadge");
+        const rpwSelect = document.getElementById("runs_per_week");
+
+        // Race type toggle
+        document.querySelectorAll(".race-btn").forEach(btn => {
+            btn.addEventListener("click", () => {
+                document.querySelectorAll(".race-btn").forEach(b => b.classList.remove("active"));
+                btn.classList.add("active");
+                const race = btn.dataset.race;
+                document.getElementById("race_type").value = race;
+
+                if (race === "half_marathon") {
+                    weeksInput.value = 12;
+                    engineBadge.textContent = "Half Marathon Engine";
+                    rpwSelect.querySelector("option[value='7']").style.display = "";
+                } else {
+                    weeksInput.value = 16;
+                    engineBadge.textContent = "Marathon Engine";
+                    rpwSelect.querySelector("option[value='7']").style.display = "none";
+                    if (rpwSelect.value === "7") rpwSelect.value = "6";
+                }
+            });
+        });
 
         function parseDays(input) {
             return input
@@ -1134,11 +1214,12 @@
         }
 
         function getWorkoutClass(workout) {
-            if (workout.includes("Long Run")) return "lr";
+            if (workout.includes("Long Run") || workout.includes("Half Marathon Race")) return "lr";
+            if (workout.includes("Threshold") || workout.includes("HMP")) return "tempo";
+            if (workout.includes("Hill") || workout.includes("Speed Support") || workout.includes("Economy")) return "vo2";
             if (workout.includes("VO2")) return "vo2";
-            if (workout.includes("Tempo")) return "tempo";
-            if (workout.includes("MLR")) return "tempo";
-            if (workout.includes("Z2")) return "z2";
+            if (workout.includes("Tempo") || workout.includes("MLR")) return "tempo";
+            if (workout.includes("Easy") || workout.includes("Z2") || workout.includes("Shakeout")) return "z2";
             return "rest";
         }
 
@@ -1146,6 +1227,7 @@
             event.preventDefault();
 
             const payload = {
+                race_type: document.getElementById("race_type").value,
                 experience: document.getElementById("experience").value,
                 current_mileage: document.getElementById("current_mileage").value,
                 longest_run: document.getElementById("longest_run").value,
@@ -1166,31 +1248,47 @@
 
             const response = await fetch("/generate-plan", {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(payload)
             });
 
-            const plan = await response.json();
-            displayPlan(plan);
+            const data = await response.json();
+            displayPlan(data);
         });
 
-        function displayPlan(plan) {
-            const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+        function fmtWorkout(w) {
+            if (!w || w.category === "None" || w.miles === 0) return "—";
+            return `${w.category} · ${w.miles}mi`;
+        }
 
-            resultsDiv.innerHTML = `
-                <div class="results-header">
-                    <h2>Your KPG Plan</h2>
-                </div>
-            `;
+        function displayPlan(response) {
+            const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+            const isHM = response.race_type === "half_marathon";
+            const plan = response.plan;
+
+            let topHtml = `<div class="results-header"><h2>Your KPG Plan</h2>`;
+            if (isHM && response.peak) {
+                topHtml += `<p style="color:var(--muted);margin:6px 0 0;font-size:1rem;">Peak: <strong>${response.peak} mi/week</strong></p>`;
+            }
+            topHtml += `</div>`;
+
+            const planWarnings = isHM && plan[0]?.plan_warnings?.length ? plan[0].plan_warnings : [];
+            if (planWarnings.length) {
+                topHtml += `
+                    <div class="plan-notes">
+                        <strong>Plan Notes</strong>
+                        <ul>${planWarnings.map(w => `<li>${w}</li>`).join("")}</ul>
+                    </div>
+                `;
+            }
+
+            resultsDiv.innerHTML = topHtml;
 
             plan.forEach(week => {
                 const weekDiv = document.createElement("div");
                 weekDiv.className = "week-card";
 
                 let scheduleHtml = `<div class="schedule-grid">`;
-
                 DAYS.forEach(day => {
                     const workout = week.schedule[day] || "Rest";
                     scheduleHtml += `
@@ -1200,28 +1298,34 @@
                         </div>
                     `;
                 });
-
                 scheduleHtml += `</div>`;
 
-                let warningsHtml = "";
-                if (week.warnings && week.warnings.length > 0) {
-                    warningsHtml = `
-                        <div class="warnings">
-                            <strong>Warnings</strong>
-                            <ul>
-                                ${week.warnings.map(w => `<li>${w}</li>`).join("")}
-                            </ul>
+                let summaryHtml = `<div class="summary-row">`;
+                if (isHM) {
+                    summaryHtml += `
+                        <div class="summary-box">
+                            <div class="summary-label">Primary</div>
+                            <div class="summary-value" style="font-size:0.9rem">${fmtWorkout(week.primary)}</div>
+                        </div>
+                        <div class="summary-box">
+                            <div class="summary-label">Secondary</div>
+                            <div class="summary-value" style="font-size:0.9rem">${fmtWorkout(week.secondary)}</div>
+                        </div>
+                        <div class="summary-box">
+                            <div class="summary-label">Long Run</div>
+                            <div class="summary-value">${week.lr}mi</div>
+                        </div>
+                        <div class="summary-box">
+                            <div class="summary-label">LR Style</div>
+                            <div class="summary-value" style="font-size:0.9rem">${week.lr_style}</div>
+                        </div>
+                        <div class="summary-box">
+                            <div class="summary-label">Easy Runs</div>
+                            <div class="summary-value" style="font-size:0.9rem">${week.z2_runs.join(", ")}mi</div>
                         </div>
                     `;
-                }
-
-                weekDiv.innerHTML = `
-                    <div class="week-header">
-                        <div class="week-title">Week ${week.week}</div>
-                        <div class="phase-badge">${week.phase} · ${week.mileage} mi</div>
-                    </div>
-
-                    <div class="summary-row">
+                } else {
+                    summaryHtml += `
                         <div class="summary-box">
                             <div class="summary-label">VO2</div>
                             <div class="summary-value">${week.sessions.vo2}</div>
@@ -1242,8 +1346,26 @@
                             <div class="summary-label">Z2 Runs</div>
                             <div class="summary-value">${week.sessions.z2_runs.join(", ")}</div>
                         </div>
-                    </div>
+                    `;
+                }
+                summaryHtml += `</div>`;
 
+                let warningsHtml = "";
+                if (week.warnings && week.warnings.length > 0) {
+                    warningsHtml = `
+                        <div class="warnings">
+                            <strong>Warnings</strong>
+                            <ul>${week.warnings.map(w => `<li>${w}</li>`).join("")}</ul>
+                        </div>
+                    `;
+                }
+
+                weekDiv.innerHTML = `
+                    <div class="week-header">
+                        <div class="week-title">Week ${week.week}</div>
+                        <div class="phase-badge">${week.phase} · ${week.mileage} mi</div>
+                    </div>
+                    ${summaryHtml}
                     ${scheduleHtml}
                     ${warningsHtml}
                 `;
