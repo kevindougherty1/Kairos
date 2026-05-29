@@ -26,6 +26,290 @@ def workout(category, miles, style=None):
         "suggested_style": style,
     }
 
+# -----------------------------
+# V6 PRODUCT / APP LAYER
+# -----------------------------
+
+WORKOUT_GLOSSARY = {
+    "Threshold Session": {
+        "purpose": "Improve sustainable speed and lactate-threshold fitness.",
+        "effort_cue": "Comfortably hard and controlled.",
+        "styles": {
+            "Cruise Intervals": [
+                "4 x 1 mile at threshold with 60-90 sec easy jog",
+                "5 x 5 min at threshold with 75 sec easy jog",
+                "3 x 2 km at threshold with 90 sec easy jog",
+            ],
+            "Tempo Blocks": [
+                "3 x 10 min at threshold with 2 min easy jog",
+                "2 x 15 min controlled hard with 3 min easy jog",
+                "4 x 8 min at threshold with 90 sec easy jog",
+            ],
+            "Continuous Tempo": [
+                "20 min continuous tempo",
+                "25-35 min controlled tempo",
+                "40 min steady tempo slightly slower than true threshold",
+            ],
+            "Tempo Progression": [
+                "Start steady, finish near half-marathon effort",
+                "10 min steady + 10 min moderate + 10 min strong",
+                "Last 15-20 min gradually progressing to HMP feel",
+            ],
+        },
+    },
+    "HMP Session": {
+        "purpose": "Practice goal half-marathon pace and make race rhythm feel familiar.",
+        "effort_cue": "Goal half-marathon effort; strong but smooth, not a time trial.",
+        "styles": {
+            "HMP Blocks": [
+                "2 x 2 miles at HMP with 3 min easy jog",
+                "2 x 3 miles at HMP with 3 min easy jog",
+                "3 x 2 miles at HMP with 2-3 min easy jog",
+            ],
+            "Continuous HMP": [
+                "3-4 miles continuous at HMP",
+                "4-6 miles continuous at HMP for advanced runners",
+                "20-35 min continuous at goal race effort",
+            ],
+            "Progression to HMP": [
+                "Easy start, finish final 15-25 min near HMP",
+                "Middle miles steady, final miles at HMP feel",
+                "Controlled progression ending at race rhythm",
+            ],
+        },
+    },
+    "Hill Strength": {
+        "purpose": "Build running economy, mechanics, and strength without exact pace targets.",
+        "effort_cue": "Strong uphill running with clean form and controlled breathing.",
+        "styles": {
+            "Short Hill Reps": [
+                "8-10 x 30-45 sec uphill, jog down recovery",
+                "10 x 45 sec strong hill effort, jog down",
+                "6-8 x 60 sec uphill at controlled hard effort",
+            ],
+            "Long Hill Reps": [
+                "5-6 x 2 min uphill at 10K effort",
+                "4-5 x 3 min uphill at controlled hard effort",
+                "Rolling hill run with controlled surges",
+            ],
+            "Hill Sprints": [
+                "6-8 x 10-15 sec steep hill sprint with full recovery",
+                "Add after easy run when legs feel fresh",
+                "Focus on power and form, not exhaustion",
+            ],
+        },
+    },
+    "Speed Support": {
+        "purpose": "Improve speed reserve, aerobic ceiling, and comfort faster than HMP.",
+        "effort_cue": "Faster than HMP, but controlled. Quality reps, not a race effort.",
+        "styles": {
+            "VO2 Support": [
+                "5 x 3 min at 5K-10K effort with equal easy recovery",
+                "6 x 800m at 5K-10K effort with easy jog recovery",
+                "4-6 x 1 km at 10K effort with 2 min easy jog",
+            ],
+            "10K Support": [
+                "6 x 2 min at 10K effort with 90 sec easy",
+                "5 x 4 min at 10K effort with 2 min easy",
+                "4 x 1 mile around 10K effort with generous recovery",
+            ],
+        },
+    },
+    "Economy Support": {
+        "purpose": "Keep turnover, coordination, and relaxed speed without adding much fatigue.",
+        "effort_cue": "Fast but relaxed. Full recovery between accelerations.",
+        "styles": {
+            "Strides": [
+                "6-10 x 20 sec relaxed-fast strides after easy miles",
+                "8 x 15 sec fast-but-smooth with full recovery",
+                "Easy run plus short relaxed accelerations",
+            ],
+            "Short Repetition Touches": [
+                "6-8 x 200m relaxed-fast with full recovery",
+                "10 x 30 sec quick but smooth with easy jog recovery",
+                "Light turnover work after an easy run",
+            ],
+        },
+    },
+    "Long Run": {
+        "purpose": "Build aerobic durability and late-race fatigue resistance.",
+        "effort_cue": "Mostly easy. Quality finishes should feel controlled, not like racing.",
+        "styles": {
+            "Easy LR": [
+                "All easy conversational running",
+                "Keep effort relaxed and sustainable",
+                "Use this when fatigue is high or mileage is building",
+            ],
+            "Steady Finish LR": [
+                "Last 10-15 min steady",
+                "Last 1-2 miles moderate but controlled",
+                "Easy overall with a small finish progression",
+            ],
+            "Progression LR": [
+                "Start easy, gradually progress the final third",
+                "Finish near steady/HM effort without sprinting",
+                "Controlled negative split long run",
+            ],
+            "Fast Finish LR": [
+                "Last 2-4 miles steady or HMP feel",
+                "Final 20-30 min controlled strong",
+                "Easy first half, stronger second half",
+            ],
+            "Taper LR": [
+                "Reduced long run",
+                "Keep effort relaxed",
+                "No hero workouts during taper",
+            ],
+        },
+    },
+}
+
+
+def day_index(day):
+    return DAYS.index(day)
+
+
+def offset_day(day, offset):
+    return DAYS[(day_index(day) + offset) % 7]
+
+
+def schedule_item(name, miles=0, style=None):
+    return {"name": name, "miles": miles, "style": style}
+
+
+def schedule_label(item, show_styles=False):
+    name = item["name"]
+    miles = item.get("miles", 0)
+    style = item.get("style")
+
+    if name == "Rest":
+        return "Rest"
+
+    if show_styles and style:
+        return f"{name} ({miles}) [{style}]"
+
+    if miles:
+        return f"{name} ({miles})"
+
+    return name
+
+
+def is_available(day, schedule, unavailable_days):
+    return schedule[day]["name"] == "Rest" and day not in unavailable_days
+
+
+def choose_best_day(candidates, schedule, unavailable_days, preferred_rest_days):
+    for day in candidates:
+        if schedule[day]["name"] == "Rest" and day not in unavailable_days and day not in preferred_rest_days:
+            return day
+
+    for day in candidates:
+        if schedule[day]["name"] == "Rest" and day not in unavailable_days:
+            return day
+
+    return None
+
+
+def secondary_candidates(primary_day, long_run_day):
+    return [
+        offset_day(primary_day, 2),
+        offset_day(primary_day, 3),
+        offset_day(long_run_day, -3),
+        offset_day(long_run_day, -4),
+        offset_day(primary_day, -2),
+    ]
+
+
+def build_week_schedule(sessions, phase, preferences):
+    schedule = {day: schedule_item("Rest") for day in DAYS}
+    warnings = []
+
+    long_run_day = preferences.get("long_run_day", "Sat")
+    primary_day = preferences.get("quality_day", preferences.get("speed_day", "Tue"))
+    unavailable_days = preferences.get("unavailable_days", [])
+    preferred_rest_days = preferences.get("preferred_rest_days", [])
+    hard_day_style = preferences.get("hard_day_style", "spread")
+
+    z2_runs = sessions["z2_runs"][:]
+
+    if phase == "Race":
+        if long_run_day in unavailable_days:
+            warnings.append(f"Race day {long_run_day} is unavailable.")
+        else:
+            schedule[long_run_day] = schedule_item("Half Marathon Race")
+
+        for day, miles in zip([offset_day(long_run_day, -5), offset_day(long_run_day, -3)], [3, 3]):
+            if day not in unavailable_days and schedule[day]["name"] == "Rest":
+                schedule[day] = schedule_item("Shakeout", miles)
+
+        return {"schedule": schedule, "warnings": warnings}
+
+    if long_run_day in unavailable_days:
+        warnings.append(f"Long run day {long_run_day} is unavailable.")
+    else:
+        schedule[long_run_day] = schedule_item("Long Run", sessions["lr"], sessions["lr_style"])
+
+    primary = sessions["primary"]
+    if primary and primary["miles"] > 0:
+        if primary_day == long_run_day:
+            warnings.append("Primary quality day conflicts with long run day.")
+        elif primary_day in unavailable_days:
+            warnings.append(f"Primary quality day {primary_day} is unavailable.")
+        elif schedule[primary_day]["name"] != "Rest":
+            warnings.append(f"Primary quality day {primary_day} is already occupied.")
+        else:
+            schedule[primary_day] = schedule_item(primary["category"], primary["miles"], primary["suggested_style"])
+
+    secondary = sessions["secondary"]
+    if secondary and secondary["miles"] > 0:
+        candidates = secondary_candidates(primary_day, long_run_day)
+
+        if hard_day_style == "spread":
+            candidates = [day for day in candidates if day not in [primary_day, long_run_day]]
+
+        chosen_day = choose_best_day(candidates, schedule, unavailable_days, preferred_rest_days)
+
+        if chosen_day:
+            schedule[chosen_day] = schedule_item(secondary["category"], secondary["miles"], secondary["suggested_style"])
+        else:
+            warnings.append("Could not place secondary workout in an ideal slot.")
+
+    remaining_days = [
+        day for day in DAYS
+        if is_available(day, schedule, unavailable_days) and day not in preferred_rest_days
+    ]
+
+    for day in remaining_days:
+        if z2_runs:
+            schedule[day] = schedule_item("Easy", z2_runs.pop(0))
+
+    for day in preferred_rest_days:
+        if z2_runs and is_available(day, schedule, unavailable_days):
+            schedule[day] = schedule_item("Easy", z2_runs.pop(0))
+            warnings.append(f"Preferred rest day {day} was used for a run.")
+
+    if z2_runs:
+        warnings.append("Not all easy runs could be placed.")
+
+    return {"schedule": schedule, "warnings": warnings}
+
+
+def print_workout_glossary():
+    print("\nKAIROS HALF MARATHON WORKOUT GLOSSARY\n")
+
+    for category, data in WORKOUT_GLOSSARY.items():
+        print(category)
+        print(f"  Purpose: {data['purpose']}")
+        print(f"  Effort Cue: {data['effort_cue']}")
+        print("  Example Options:")
+
+        for style, examples in data["styles"].items():
+            print(f"    {style}:")
+            for example in examples:
+                print(f"      - {example}")
+
+        print()
+
 
 def validate_engine_inputs(experience, runs_per_week):
     """
@@ -645,8 +929,18 @@ def build_plan(
     recent_longest_run,
     runs_per_week,
     weeks,
+    preferences=None,
 ):
     validate_engine_inputs(experience, runs_per_week)
+
+    if preferences is None:
+        preferences = {
+            "long_run_day": "Sat",
+            "quality_day": "Tue",
+            "unavailable_days": [],
+            "preferred_rest_days": ["Sun"],
+            "hard_day_style": "spread",
+        }
 
     peak = determine_peak_mileage(
         experience,
@@ -654,6 +948,16 @@ def build_plan(
         weeks,
         runs_per_week,
     )
+
+    recommended_lower, recommended_upper = frequency_peak_range(experience, runs_per_week)
+    global_plan_warnings = []
+    if current_mileage > recommended_upper:
+        global_plan_warnings.append(
+            f"Current mileage ({current_mileage} mi/week) exceeds the recommended cap "
+            f"for {experience} / {runs_per_week} days ({recommended_upper} mi/week). "
+            "Plan is allowed because you already report handling this volume, but weeks may be dense. "
+            "Consider adding a run day or choosing a lower-volume plan."
+        )
 
     phases = build_phases(weeks)
     weekly = weekly_curve(peak, phases, current_mileage)
@@ -678,16 +982,27 @@ def build_plan(
         mileage = weekly[i]
 
         if phase == "Race":
-            plan.append({
-                "week": week_num,
-                "phase": phase,
-                "mileage": 6,
+            sessions = {
                 "primary": None,
                 "secondary": None,
                 "lr": 0,
                 "lr_style": "Race",
                 "z2_runs": [3, 3],
-                "warnings": [],
+            }
+            schedule_data = build_week_schedule(sessions, phase, preferences)
+            plan.append({
+                "week": week_num,
+                "phase": phase,
+                "mileage": 6,
+                "sessions": sessions,
+                "primary": None,
+                "secondary": None,
+                "lr": 0,
+                "lr_style": "Race",
+                "z2_runs": [3, 3],
+                "schedule": schedule_data["schedule"],
+                "warnings": schedule_data["warnings"],
+                "plan_warnings": global_plan_warnings,
                 "peak_mileage": peak,
             })
             continue
@@ -760,16 +1075,30 @@ def build_plan(
         if ugly_distribution(z2_runs, lr, runs_per_week, experience, phase):
             warnings.append("Weekly shape is chunky. Consider more run days or lower peak mileage.")
 
-        plan.append({
-            "week": week_num,
-            "phase": phase,
-            "mileage": mileage,
+        sessions = {
             "primary": primary,
             "secondary": secondary,
             "lr": lr,
             "lr_style": long_run_style(phase, week_num, lr, cap),
             "z2_runs": z2_runs,
+        }
+
+        schedule_data = build_week_schedule(sessions, phase, preferences)
+        warnings.extend(schedule_data["warnings"])
+
+        plan.append({
+            "week": week_num,
+            "phase": phase,
+            "mileage": mileage,
+            "sessions": sessions,
+            "primary": primary,
+            "secondary": secondary,
+            "lr": lr,
+            "lr_style": sessions["lr_style"],
+            "z2_runs": z2_runs,
+            "schedule": schedule_data["schedule"],
             "warnings": warnings,
+            "plan_warnings": global_plan_warnings,
             "peak_mileage": peak,
         })
 
@@ -780,9 +1109,15 @@ def build_plan(
 # PRINT PLAN
 # -----------------------------
 
-def print_plan(peak, plan):
+def print_plan(peak, plan, show_styles=True, show_schedule=True, show_glossary=False):
     print("\nHALF MARATHON PLAN MAIN 4PLUS V5.7\n")
     print(f"Peak Mileage: {peak} mi\n")
+
+    if plan and plan[0].get("plan_warnings"):
+        print("Plan Notes:")
+        for warning in plan[0]["plan_warnings"]:
+            print(f"  - {warning}")
+        print()
 
     for week in plan:
         print(f"Week {week['week']} | {week['phase']} | {week['mileage']} mi")
@@ -796,21 +1131,31 @@ def print_plan(peak, plan):
 
             if primary and primary["miles"] > 0:
                 print(f"  Primary: {primary['category']} ({primary['miles']})")
-                print(f"    Suggested Style: {primary['suggested_style']}")
+                if show_styles and primary["suggested_style"]:
+                    print(f"    Suggested Style: {primary['suggested_style']}")
 
             if secondary and secondary["miles"] > 0:
                 print(f"  Secondary: {secondary['category']} ({secondary['miles']})")
-                print(f"    Suggested Style: {secondary['suggested_style']}")
+                if show_styles and secondary["suggested_style"]:
+                    print(f"    Suggested Style: {secondary['suggested_style']}")
 
             print(f"  Long Run: {week['lr_style']} ({week['lr']})")
             print("  Easy Runs:", week["z2_runs"])
 
+        if show_schedule and "schedule" in week:
+            print("  Schedule:")
+            for day, item in week["schedule"].items():
+                print(f"    {day}: {schedule_label(item, show_styles=False)}")
+
         if week["warnings"]:
-            print("  Warnings:")
+            print("  Notes:")
             for warning in week["warnings"]:
                 print(f"    - {warning}")
 
         print()
+
+    if show_glossary:
+        print_workout_glossary()
 
 
 # -----------------------------
