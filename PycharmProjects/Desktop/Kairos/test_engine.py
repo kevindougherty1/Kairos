@@ -13,6 +13,8 @@ from half_marathon_engine_main_4plus_v5_7 import build_plan, print_plan, lr_cap
 TESTS = [
     # (experience, current_mileage, recent_longest_run, runs_per_week, weeks)
     ("beginner",      20,  8, 4, 12),
+    ("intermediate",  25,  8, 4, 12),
+    ("advanced",      30, 10, 4, 12),
     ("beginner",      30, 10, 5, 12),
     ("intermediate",  25,  8, 5, 12),
     ("intermediate",  35, 10, 5, 12),
@@ -20,6 +22,8 @@ TESTS = [
     ("advanced",      40, 10, 5, 12),
     ("advanced",      45, 12, 5, 12),
     ("advanced",      55, 14, 6, 12),
+    ("intermediate",  40, 12, 7, 12),
+    ("advanced",      50, 14, 7, 12),
 ]
 
 PHASE_ORDER = ["Base", "Build", "Specific", "Taper", "Race"]
