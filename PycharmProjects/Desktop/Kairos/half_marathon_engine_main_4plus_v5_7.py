@@ -500,8 +500,6 @@ def lr_cap(experience, runs_per_week):
 
     if runs_per_week == 4:
         cap = min(cap, 12)
-    if runs_per_week == 5:
-        cap = min(cap, 14)  # half marathon specificity; 16 is marathon territory at 5-day frequency
 
     return cap
 
@@ -514,7 +512,7 @@ def base_long_run_target(mileage, phase, runs_per_week=5):
     if runs_per_week == 4:
         pct = {"Base": 0.32, "Build": 0.38, "Specific": 0.44}.get(phase, 0.32)
     else:
-        pct = {"Base": 0.30, "Build": 0.31, "Specific": 0.32}.get(phase, 0.30)
+        pct = {"Base": 0.30, "Build": 0.33, "Specific": 0.35}.get(phase, 0.30)
 
     return round(mileage * pct)
 
@@ -527,7 +525,7 @@ def initialize_week1_lr(target_lr, weekly_mileage, recent_longest_run):
     lr = min(target_lr, upper_bound)
     lr = max(lr, lower_bound)
     lr = min(lr, upper_bound)
-    lr = max(6, round(lr / 2) * 2)
+    lr = max(6, lr)
     return lr
 
 
@@ -557,13 +555,7 @@ def raw_long_runs(weekly, phases, experience, recent_longest_run, runs_per_week)
             lr = min(target, previous + 2)
             lr = max(lr, round(mileage * 0.25))
         lr = min(lr, cap)
-        # 4-day plans use ceiling-to-even so that an odd target like 9 rounds
-        # up to 10 rather than down to 8 (Python banker's rounding).  This lets
-        # the LR actually progress on low-volume 4-day plans.
-        if runs_per_week == 4:
-            lr = max(6, math.ceil(lr / 2) * 2)
-        else:
-            lr = max(6, round(lr / 2) * 2)
+        lr = max(6, lr)
 
         long_runs.append(lr)
         previous = lr
@@ -618,18 +610,18 @@ def apply_taper_long_runs(long_runs, phases, experience, runs_per_week):
     taper_indices = [i for i, phase in enumerate(phases) if phase == "Taper"]
 
     if len(taper_indices) == 2:
-        first = max(6, round((peak_lr * 0.65) / 2) * 2)
-        second = max(6, round((peak_lr * 0.50) / 2) * 2)
+        first = max(6, round(peak_lr * 0.65))
+        second = max(6, round(peak_lr * 0.50))
 
         # Make sure second taper LR is not equal to or greater than first unless floor forces it.
         if second >= first and first > 6:
-            second = first - 2
+            second = first - 1
 
         adjusted[taper_indices[0]] = first
         adjusted[taper_indices[1]] = second
 
     elif len(taper_indices) == 1:
-        adjusted[taper_indices[0]] = max(6, round((peak_lr * 0.55) / 2) * 2)
+        adjusted[taper_indices[0]] = max(6, round(peak_lr * 0.55))
 
     return adjusted
 
@@ -839,8 +831,8 @@ def optimize_week_shape(
 
     # Step 1: raise LR, but only in build/specific phases.
     if phase in ["Build", "Specific"]:
-        while lr + 2 <= effective_ceiling:
-            trial_lr = lr + 2
+        while lr + 1 <= effective_ceiling:
+            trial_lr = lr + 1
             trial_z2 = current_z2(trial_lr, primary_miles)
 
             if not ugly_distribution(trial_z2, trial_lr, runs_per_week, experience, phase):
