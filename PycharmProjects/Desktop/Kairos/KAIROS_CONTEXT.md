@@ -228,15 +228,10 @@ Run with: `python test_engine.py`
 
 1. **intermediate 25/5d and 35/5d share the same 42 mi peak** despite 10 mpw difference in starting point. The tier ceiling is 42 for intermediate 5-day. Might be worth giving the 35 mpw runner a slightly higher ceiling or a different tier. Not a bug.
 
-2. **advanced 40/5d LR flat at 12 for weeks 4–8** (five straight). Wave logic doesn't fire because raw LRs sit at 12, below the cap of 14. Only steps up to 14 at the final specific peak week. Low priority — the plan is technically correct.
-
-3. **`app.py` still imports from `engineV3`** (marathon engine). The half marathon engine is not yet wired into the Flask app. That integration is a future task.
-
 ---
 
 ## Next Likely Tasks
 
-- Wire `half_marathon_engine_main_4plus_v5_7.py` into `app.py` alongside the marathon engine
-- Build frontend UI to support half marathon plan generation
 - Potentially add a 3-day low-frequency engine (currently rejected with a clear error message)
+- Add 7-day beginner support (currently blocked in the tier table)
 - Add 7-day beginner support (currently blocked in the tier table)
