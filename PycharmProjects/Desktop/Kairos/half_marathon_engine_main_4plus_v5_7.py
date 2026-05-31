@@ -496,12 +496,7 @@ def lr_cap(experience, runs_per_week):
         "advanced": 16,
     }
 
-    cap = caps[experience]
-
-    if runs_per_week == 4:
-        cap = min(cap, 12)
-
-    return cap
+    return caps[experience]
 
 
 def base_long_run_target(mileage, phase, runs_per_week=5):
