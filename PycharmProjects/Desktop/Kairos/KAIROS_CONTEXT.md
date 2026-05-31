@@ -12,17 +12,16 @@ Kairos is a training plan generator for runners. The web app (Flask) takes runne
 
 ```
 Kairos/
-├── app.py                                      # Flask entry point — imports from engineV3 (marathon)
+├── app.py                                      # Flask entry point — imports both engines, routes on race_type
 ├── engine.py                                   # Marathon engine v1 (old)
 ├── engineV2.py                                 # Marathon engine v2 (old)
-├── engineV3.py                                 # Marathon engine v3 — what app.py uses (35-70 mi peak)
+├── engineV3.py                                 # Marathon engine v3 — marathon engine app.py uses (35-70 mi peak)
 ├── half_marathon_engine_main_4plus_v5_7.py     # ★ ACTIVE half marathon engine
-├── half_marathon_engine_v6_merged_updated.py   # Old V6 draft — now redundant (V6 features merged into v5_7)
-├── test_engine.py                              # Test runner — writes engine_tests.txt
-├── engine_tests.txt                            # Generated test output (gitignored)
-├── v5_7_fixes_summary.txt                      # Summary of bug fixes made in the v5.7 session
-├── validation_results_2026-05-17.txt           # Validation run results with red flags and analysis
-├── templates/index.html                        # Frontend
+├── test_engine.py                              # Assertion-based test suite (12 cases × 10 invariants)
+├── engine_tests.txt                            # Generated plan output for visual review (gitignored)
+├── v5_7_fixes_summary.txt                      # Summary of v5.7 development bug fixes
+├── validation_results_2026-05-17.txt           # Older validation run with red flags and analysis
+├── templates/index.html                        # Frontend — race-type toggle, marathon + HM rendering
 ├── static/images/kpg-logo.png.PNG
 └── .gitignore
 ```
@@ -94,16 +93,16 @@ Each week in the returned plan has:
 ## Long Run Caps
 
 ```
-beginner:      12 mi (max 12 on 4-day)
-intermediate:  14 mi (max 14 on 4-day)
-advanced:      16 mi (max 14 on 5-day, max 12 on 4-day)
+beginner:      12 mi
+intermediate:  14 mi
+advanced:      16 mi
 ```
 
-The 5-day advanced cap at 14 (not 16) was a deliberate fix — 16-mile LRs at 44 mpw are marathon territory.
+Tier-only caps — no frequency-based reductions. 16 is the absolute ceiling across any HM plan.
 
 ---
 
-## Bugs Fixed (this session)
+## Bugs Fixed (v5.7 development)
 
 ### Fix 1 — Wave Logic Conflict
 **Problem:** `calc_lrs()` applies wave logic to reduce LR variety (e.g., 14/12/14 instead of 14/14/14). But `optimize_week_shape()` would see the reduced LR, call it "ugly", and raise it back up — undoing the wave.
@@ -119,7 +118,7 @@ The 5-day advanced cap at 14 (not 16) was a deliberate fix — 16-mile LRs at 44
 1. `base_long_run_target()` used 30-32% of mileage regardless of frequency — too low for 4-day plans at low volume
 2. Python banker's rounding: `round(9/2)*2 = 8` (not 10)
 
-**Fix:** Frequency-aware target percentages for 4-day (Base 32%, Build 38%, Specific 44%) and `math.ceil` rounding instead of `round` for 4-day plans.
+**Fix:** Frequency-aware target percentages for 4-day (Base 32%, Build 38%, Specific 44%) and `math.ceil` rounding instead of `round` for 4-day plans. _(The even-rounding step has since been dropped — see "Follow-up improvements" below.)_
 
 ---
 
@@ -156,11 +155,41 @@ peak = max(peak, min(current_mileage, MAX_PEAK))
 3. `ugly_distribution()` 5-day threshold: `>= 10` → `>= 11` (two 10-mile easy days at this volume is fine)
 4. `ugly_distribution()` proximity check: added `and max(z2_runs) >= 12` (prevents wave-reduced week LR=12/easy=11 from false-positive triggering)
 
+_(Item 1 — the 5-day cap reduction — has since been removed. See "Follow-up improvements" below.)_
+
+---
+
+## Follow-up Improvements (May 2026)
+
+### Long-run variety (`1cca541`)
+- Dropped even-only rounding at all 5 LR rounding sites; odd LR lengths now allowed
+- Removed the 5-day adv cap reduction; universal LR ceiling is 16
+- Phase % bumped for 5+ day plans: Build 31 → 33, Specific 32 → 35 (restores Base→Build LR step, keeps Specific ≥ Build at peak)
+- Optimizer step `lr+2` → `lr+1`; taper safety `first-2` → `first-1`
+
+**Effect on the original flat plan (adv 40 / 5d):**
+- Before: `10, 12, 12, 12, 12, 12, 12, 12, 14` (five flat 12s)
+- After: `10, 12, 12, 13, 14, 14, 12, 14, 15`
+
+### 4-day cap differentiation (`34b62f8`)
+- Removed the 4-day reduction in `lr_cap()` entirely
+- Caps are now pure tier (beg 12, int 14, adv 16) regardless of frequency
+- Effect: adv 4d peak LR goes from 12 to 16, int 4d from 12 to 14
+
+### Beginner quality-day reduction
+- `secondary_workout()` now returns "None" for beginners regardless of frequency
+- Beginners at 5+ day frequency get 1 primary + LR + extra easy day (previously 2 quality days)
+- Intermediate / advanced unchanged (still 2 quality days at 5+ day)
+
+### Frontend wired in (`20fdf0d`)
+- `app.py` now routes `/generate-plan` on `race_type` and calls the HM engine when requested
+- `index.html` adds a race-type toggle and HM-specific summary rendering (primary / secondary / LR style)
+
 ---
 
 ## V6 Product Layer (Merged In)
 
-`half_marathon_engine_v6_merged_updated.py` had a product/app layer on top of the same core engine. These additions were merged into v5.7:
+An earlier V6 draft contributed a product/app layer on top of the core engine. These additions live in v5.7:
 
 - **`WORKOUT_GLOSSARY`** — purpose, effort cue, and example prescriptions for every workout type
 - **Scheduling layer** — `build_week_schedule()` places workouts onto Mon–Sun based on `preferences`
@@ -169,8 +198,6 @@ peak = max(peak, min(current_mileage, MAX_PEAK))
 - **`print_plan()` enhanced** — `show_styles`, `show_schedule`, `show_glossary` flags; prints day schedule and plan-level notes
 - **`print_workout_glossary()`** — prints the full glossary
 - **`HMP Blocks`** added to Specific phase primary rotation
-
-The V6 file is now redundant — everything is in v5.7.
 
 ---
 
@@ -203,9 +230,7 @@ Run with: `python test_engine.py`
 
 2. **advanced 40/5d LR flat at 12 for weeks 4–8** (five straight). Wave logic doesn't fire because raw LRs sit at 12, below the cap of 14. Only steps up to 14 at the final specific peak week. Low priority — the plan is technically correct.
 
-3. **`half_marathon_engine_v6_merged_updated.py` can be deleted** — it's now fully superseded by v5.7. Kept for now in case reference is needed.
-
-4. **`app.py` still imports from `engineV3`** (marathon engine). The half marathon engine is not yet wired into the Flask app. That integration is a future task.
+3. **`app.py` still imports from `engineV3`** (marathon engine). The half marathon engine is not yet wired into the Flask app. That integration is a future task.
 
 ---
 

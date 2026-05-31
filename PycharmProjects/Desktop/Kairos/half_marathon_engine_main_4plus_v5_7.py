@@ -673,10 +673,11 @@ def secondary_workout(weekly_mileage, phase, week_num, runs_per_week, experience
     if runs_per_week < 5:
         return workout("None", 0)
 
-    # Beginner secondary every week is okay only if 5 days,
-    # but keep mileage small.
+    # Beginners get a single quality day (primary) regardless of frequency.
+    if experience == "beginner":
+        return workout("None", 0)
+
     cap = {
-        "beginner": 4,
         "intermediate": 6,
         "advanced": 7,
     }[experience]
