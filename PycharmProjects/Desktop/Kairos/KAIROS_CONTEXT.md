@@ -79,14 +79,36 @@ Each week in the returned plan has:
 
 ---
 
-## Peak Mileage Tier Table
+## Peak Mileage Logic
+
+Peak is bound by three concepts (formerly conflated into a single tier table):
+
+**1. Clean shape cap** — max weekly mileage that distributes without forcing easy runs above their soft cap. Frequency × experience dependent because experience drives both `lr_cap` and `easy_run_soft_cap`.
 
 ```
-4-day:  beginner (18-28), intermediate (28-38), advanced (34-40)
-5-day:  beginner (22-32), intermediate (34-42), advanced (40-44)
-6-day:  beginner (28-38), intermediate (38-52), advanced (46-58)
-7-day:  intermediate (42-55), advanced (50-58)  [beginner 7-day blocked]
+4-day:  beginner 28, intermediate 38, advanced 40
+5-day:  beginner 32, intermediate 42, advanced 44
+6-day:  beginner 38, intermediate 52, advanced 58
+7-day:  intermediate 55, advanced 58  [beginner 7d blocked]
 ```
+
+**2. Experience ceiling** — hard upper bound regardless of structural feasibility.
+
+```
+beginner:     38   (injury risk dominates — beginners cap below shape on 6d/7d)
+intermediate: 60   (MAX_PEAK)
+advanced:     60   (MAX_PEAK)
+```
+
+**3. Tolerance extension** — when the clean cap would leave a runner under-loaded (growth from current_mileage < 25%), upper bound extends to `1.10 × clean_cap`, capped at experience ceiling. The existing "chunky shape" warning then fires at peak, correctly signaling the runner is at the structural edge of their frequency. **Beginners get no extension** (`TOLERANCE_MULT = 1.00`) — they should add a day or step up to intermediate, not push past injury tolerance.
+
+```
+intermediate: 1.10
+advanced:     1.10
+beginner:     1.00 (disabled)
+```
+
+Code: `frequency_peak_range()` and `determine_peak_mileage()` in the engine.
 
 ---
 
@@ -181,11 +203,17 @@ _(Item 1 — the 5-day cap reduction — has since been removed. See "Follow-up 
 - Beginners at 5+ day frequency get 1 primary + LR + extra easy day (previously 2 quality days)
 - Intermediate / advanced unchanged (still 2 quality days at 5+ day)
 
-### Intermediate 5-day peak collision fix
-- `frequency_peak_range()` now accepts an optional `current_mileage` argument
-- For intermediate 5-day runners with `current_mileage > 32`, upper bound bumps from 42 → 46
-- 25 / 30 mpw runners stay at the 42 cap (clean Z2 distribution preserved)
-- 35 / 40 mpw runners now peak at 46 (proper overload instead of being clamped with everyone at 42)
+### Peak mileage logic refactor (principled replacement of the tier table)
+- Replaced the conflated `(lower, upper)` tier table with three explicit concepts: clean shape cap, experience ceiling, tolerance extension (see "Peak Mileage Logic" section above)
+- Subsumed the earlier int-5d-specific patch — same logic now applies uniformly across all tiers
+- Effects on previously broken tiers:
+  - adv 40/5d: 44 → 48 (was +10% growth, now +20% via extension)
+  - adv 45/5d: 45 → 48 (was 0% growth — pointless plan — now +7%)
+  - adv 55/6d: 58 → 60 (ceiling-bound, with "consider 7d" warning)
+  - adv 50/7d, 55/7d: 58 → 60 (ceiling-bound)
+  - int 50/6d (new test case): 52 → 57 (extension fires correctly)
+- Beginner caps unchanged (`TOLERANCE_MULT = 1.00` — injury risk takes priority over overload pressure)
+- Added 3 edge-case tests: int 50/6d, adv 50/5d, adv 55/7d
 - High-mileage cases fire the existing "Weekly shape is chunky" warning at peak week — informational, not a regression
 - New test cases added: int 30/5d, int 40/5d (alongside existing int 25/5d, int 35/5d)
 

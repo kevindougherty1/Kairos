@@ -341,61 +341,87 @@ def validate_engine_inputs(experience, runs_per_week):
 # PEAK MILEAGE ENGINE
 # -----------------------------
 
+# Peak mileage logic separates three concepts that the old single-tier-table conflated.
+#
+# 1. CLEAN_SHAPE_CAP: max weekly mileage that distributes cleanly given the runner's
+#    easy_run_soft_cap, lr_cap, and frequency. Below this, easy runs sit comfortably
+#    under their soft cap; above this, the chunky-shape warning fires.
+#
+# 2. EXPERIENCE_CEILING: hard upper bound regardless of structural feasibility.
+#    Beginners are capped well below shape (a beginner 6-day runner could
+#    structurally hold ~47 mi but shouldn't — injury risk and skill mismatch
+#    dominate). Intermediate/advanced use MAX_PEAK as a backstop.
+#
+# 3. TOLERANCE_EXTENSION: when the clean cap leaves a high-mileage runner with
+#    an inadequate overload (< 20% growth over a 12-week block), extend the cap
+#    by ~10% so they get a meaningful stimulus. The chunky-shape warning fires
+#    at peak, correctly signaling that the runner is at the structural edge of
+#    their frequency and may benefit from adding a day. Beginners do NOT get
+#    this extension — they should add a day or step up to intermediate, not
+#    push peak mileage past their injury tolerance.
+
+CLEAN_SHAPE_CAP = {
+    # Calibrated empirically against the chunky-shape detector and validation
+    # plans. Below these peaks, easy_run_soft_cap holds without forced overruns.
+    4: {"beginner": 28, "intermediate": 38, "advanced": 40},
+    5: {"beginner": 32, "intermediate": 42, "advanced": 44},
+    6: {"beginner": 38, "intermediate": 52, "advanced": 58},
+    7: {"beginner": 40, "intermediate": 55, "advanced": 58},
+}
+
+CLEAN_SHAPE_LOWER = {
+    4: {"beginner": 18, "intermediate": 28, "advanced": 34},
+    5: {"beginner": 22, "intermediate": 34, "advanced": 40},
+    6: {"beginner": 28, "intermediate": 38, "advanced": 46},
+    7: {"beginner": 30, "intermediate": 42, "advanced": 50},
+}
+
+EXPERIENCE_CEILING = {
+    "beginner": 38,        # Hard cap — beginner shouldn't peak higher regardless of frequency
+    "intermediate": MAX_PEAK,
+    "advanced": MAX_PEAK,
+}
+
+# Growth-percentage threshold: if a runner's overload at the clean cap is below
+# this fraction of their current mileage, we extend the cap. A 12-week HM block
+# should produce a noticeable training stimulus — below 25% growth it starts to
+# feel like maintenance, which is not what the runner asked for.
+UNDERLOAD_THRESHOLD = 0.25
+
+# How far the tolerance extension can push above the clean shape cap.
+TOLERANCE_MULT = {
+    "beginner": 1.00,      # No tolerance — injury risk dominates
+    "intermediate": 1.10,
+    "advanced": 1.10,
+}
+
+
 def frequency_peak_range(experience, runs_per_week, current_mileage=None):
     """
-    Peak mileage range depends on experience AND run frequency.
+    Returns (lower, upper) peak mileage range.
 
-    For intermediate 5-day, the upper bound is raised from 42 to 46 when the
-    runner is above 32 mpw — they need that headroom to get a real overload,
-    and they can tolerate the chunkier peak-week shape. Low-mileage runners
-    stay at 42 to preserve clean Z2 distribution.
+    `upper` defaults to the clean shape cap. When current_mileage is provided
+    and would leave the runner under-loaded at the clean cap, upper is
+    extended by TOLERANCE_MULT (capped at EXPERIENCE_CEILING). Beginners are
+    never extended.
 
-    Supported in main engine:
+    Supported tiers:
     - 4-day beginner/intermediate/advanced
     - 5-day beginner/intermediate/advanced
     - 6-day beginner/intermediate/advanced
-    - 7-day intermediate/advanced only
+    - 7-day intermediate/advanced (beginner 7d still blocked elsewhere)
     """
-    table = {
-        4: {
-            "beginner": (18, 28),
-            # Lowered from 40 after validation showed chunky 4-day intermediate peak weeks.
-            "intermediate": (28, 38),
-            # Lowered from 44 after validation showed LR identity issues on 4-day advanced plans.
-            "advanced": (34, 40),
-        },
-        5: {
-            "beginner": (22, 32),
-            "intermediate": (34, 42),
-            # Lowered from 46 after validation showed occasional 10/9 easy runs.
-            "advanced": (40, 44),
-        },
-        6: {
-            "beginner": (28, 38),
-            "intermediate": (38, 52),
-            # Lowered from 60 to reduce edge-case advanced peak chunkiness.
-            "advanced": (46, 58),
-        },
-        7: {
-            "beginner": (30, 40),  # blocked by validation for now
-            "intermediate": (42, 55),
-            # Slightly lowered from 60 for consistency with advanced cap philosophy.
-            "advanced": (50, 58),
-        },
-    }
-
     rpw = max(4, min(7, runs_per_week))
-    lower, upper = table[rpw][experience]
+    lower = CLEAN_SHAPE_LOWER[rpw][experience]
+    clean_upper = CLEAN_SHAPE_CAP[rpw][experience]
 
-    # Open headroom for high-mileage intermediate 5-day runners so 35-40 mpw
-    # runners get a real overload instead of being clamped at 42 with everyone else.
-    if (
-        experience == "intermediate"
-        and rpw == 5
-        and current_mileage is not None
-        and current_mileage > 32
-    ):
-        upper = 46
+    upper = clean_upper
+    if current_mileage is not None and current_mileage > 0:
+        marginal_growth = (clean_upper - current_mileage) / current_mileage
+        if marginal_growth < UNDERLOAD_THRESHOLD:
+            extended = round(clean_upper * TOLERANCE_MULT[experience])
+            ceiling = EXPERIENCE_CEILING[experience]
+            upper = min(extended, ceiling)
 
     return lower, upper
 

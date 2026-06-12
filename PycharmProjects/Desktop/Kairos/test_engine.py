@@ -21,11 +21,14 @@ TESTS = [
     ("intermediate",  35, 10, 5, 12),
     ("intermediate",  40, 12, 5, 12),
     ("intermediate",  40, 12, 6, 12),
+    ("intermediate",  50, 14, 6, 12),  # edge: high-end intermediate 6d, exercises ext
     ("advanced",      40, 10, 5, 12),
     ("advanced",      45, 12, 5, 12),
+    ("advanced",      50, 14, 5, 12),  # edge: advanced 5d well above clean cap, ext to ceiling
     ("advanced",      55, 14, 6, 12),
     ("intermediate",  40, 12, 7, 12),
     ("advanced",      50, 14, 7, 12),
+    ("advanced",      55, 14, 7, 12),  # edge: advanced 7d at high end, ceiling-bound
 ]
 
 PHASE_ORDER = ["Base", "Build", "Specific", "Taper", "Race"]
