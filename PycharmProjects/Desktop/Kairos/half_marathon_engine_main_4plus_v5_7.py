@@ -341,9 +341,14 @@ def validate_engine_inputs(experience, runs_per_week):
 # PEAK MILEAGE ENGINE
 # -----------------------------
 
-def frequency_peak_range(experience, runs_per_week):
+def frequency_peak_range(experience, runs_per_week, current_mileage=None):
     """
     Peak mileage range depends on experience AND run frequency.
+
+    For intermediate 5-day, the upper bound is raised from 42 to 46 when the
+    runner is above 32 mpw — they need that headroom to get a real overload,
+    and they can tolerate the chunkier peak-week shape. Low-mileage runners
+    stay at 42 to preserve clean Z2 distribution.
 
     Supported in main engine:
     - 4-day beginner/intermediate/advanced
@@ -380,11 +385,23 @@ def frequency_peak_range(experience, runs_per_week):
     }
 
     rpw = max(4, min(7, runs_per_week))
-    return table[rpw][experience]
+    lower, upper = table[rpw][experience]
+
+    # Open headroom for high-mileage intermediate 5-day runners so 35-40 mpw
+    # runners get a real overload instead of being clamped at 42 with everyone else.
+    if (
+        experience == "intermediate"
+        and rpw == 5
+        and current_mileage is not None
+        and current_mileage > 32
+    ):
+        upper = 46
+
+    return lower, upper
 
 
 def determine_peak_mileage(experience, current_mileage, weeks, runs_per_week):
-    lower, upper = frequency_peak_range(experience, runs_per_week)
+    lower, upper = frequency_peak_range(experience, runs_per_week, current_mileage)
 
     growth_weeks = max(1, weeks - 3)
     ramp_peak = round(current_mileage * (1.065 ** growth_weeks))

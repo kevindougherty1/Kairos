@@ -181,6 +181,14 @@ _(Item 1 — the 5-day cap reduction — has since been removed. See "Follow-up 
 - Beginners at 5+ day frequency get 1 primary + LR + extra easy day (previously 2 quality days)
 - Intermediate / advanced unchanged (still 2 quality days at 5+ day)
 
+### Intermediate 5-day peak collision fix
+- `frequency_peak_range()` now accepts an optional `current_mileage` argument
+- For intermediate 5-day runners with `current_mileage > 32`, upper bound bumps from 42 → 46
+- 25 / 30 mpw runners stay at the 42 cap (clean Z2 distribution preserved)
+- 35 / 40 mpw runners now peak at 46 (proper overload instead of being clamped with everyone at 42)
+- High-mileage cases fire the existing "Weekly shape is chunky" warning at peak week — informational, not a regression
+- New test cases added: int 30/5d, int 40/5d (alongside existing int 25/5d, int 35/5d)
+
 ### Frontend wired in (`20fdf0d`)
 - `app.py` now routes `/generate-plan` on `race_type` and calls the HM engine when requested
 - `index.html` adds a race-type toggle and HM-specific summary rendering (primary / secondary / LR style)
@@ -226,7 +234,7 @@ Run with: `python test_engine.py`
 
 ## Open / Low-Priority Items
 
-1. **intermediate 25/5d and 35/5d share the same 42 mi peak** despite 10 mpw difference in starting point. The tier ceiling is 42 for intermediate 5-day. Might be worth giving the 35 mpw runner a slightly higher ceiling or a different tier. Not a bug.
+*(None at the moment — last open item resolved by the intermediate 5-day peak collision fix.)*
 
 ---
 
