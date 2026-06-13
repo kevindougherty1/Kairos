@@ -688,16 +688,78 @@ def calc_lrs(weekly, phases, experience, recent_longest_run, runs_per_week):
 # WORKOUT GENERATION
 # -----------------------------
 
-def primary_workout(weekly_mileage, phase, week_num, experience):
-    cap = {
-        "beginner": 5,
-        "intermediate": 7,
-        "advanced": 9,
-    }[experience]
+# Workout mileage progression decoupled from weekly volume.
+#
+# Each entry is (phase_start_mileage, phase_peak_mileage) — workout grows
+# linearly across the phase from start to peak. Final Build week applies the
+# 0.86 cutback matching weekly_curve. These numbers are coaching prescriptions
+# anchored to a real coach's intuition for each phase:
+#   Base     — introduce the workout, build durability
+#   Build    — peak Threshold work for aerobic capacity
+#   Specific — race-pace sessions, slightly longer than Threshold
+#   Taper    — short rhythm session, capped at 4 mi
+PRIMARY_MILEAGE = {
+    "Base":     {"beginner": (3, 4), "intermediate": (4, 5), "advanced": (5, 6)},
+    "Build":    {"beginner": (4, 5), "intermediate": (5, 7), "advanced": (6, 8)},
+    "Specific": {"beginner": (4, 4), "intermediate": (6, 7), "advanced": (7, 8)},
+}
 
-    miles = min(cap, max(3, round(weekly_mileage * 0.14)))
+SECONDARY_MILEAGE = {
+    "Base":     {"intermediate": (3, 4), "advanced": (4, 5)},
+    "Build":    {"intermediate": (4, 5), "advanced": (5, 6)},
+    "Specific": {"intermediate": (4, 5), "advanced": (5, 6)},
+}
 
-    if phase in ["Base", "Build"]:
+
+def _phase_position(week_index, phases):
+    """Returns (position_in_phase, total_in_phase) — both 1-indexed."""
+    current_phase = phases[week_index]
+    same_phase_indices = [
+        i for i, p in enumerate(phases)
+        if p == current_phase and i <= week_index
+    ]
+    total = sum(1 for p in phases if p == current_phase)
+    return len(same_phase_indices), total
+
+
+def _interpolate_phase_mileage(table, phase, experience, position, total, is_cutback):
+    """
+    Linear interp from phase_start to phase_peak across `total` weeks.
+    Final Build week applies the 0.86 cutback to match weekly_curve.
+    """
+    if experience not in table.get(phase, {}):
+        return 0
+    start, peak = table[phase][experience]
+    if total <= 1:
+        miles = peak
+    else:
+        progress = (position - 1) / (total - 1)
+        miles = start + (peak - start) * progress
+    if is_cutback:
+        miles = miles * 0.86
+    return max(3, round(miles))
+
+
+def primary_workout(weekly_mileage, phase, week_num, experience, phases):
+    if phase == "Taper":
+        # Keep rhythm, but do not turn taper into workout hero week.
+        return workout("Threshold Session", 4 if experience != "beginner" else 3, "Continuous Tempo")
+
+    if phase not in ("Base", "Build", "Specific"):
+        return workout("None", 0)
+
+    week_index = week_num - 1
+    position, total = _phase_position(week_index, phases)
+    is_cutback = (
+        phase == "Build"
+        and position == total
+        and total >= 4
+    )
+    miles = _interpolate_phase_mileage(
+        PRIMARY_MILEAGE, phase, experience, position, total, is_cutback
+    )
+
+    if phase in ("Base", "Build"):
         styles = [
             "Cruise Intervals",
             "Tempo Blocks",
@@ -706,23 +768,16 @@ def primary_workout(weekly_mileage, phase, week_num, experience):
         ]
         return workout("Threshold Session", miles, styles[(week_num - 1) % len(styles)])
 
-    if phase == "Specific":
-        styles = [
-            "HMP Blocks",
-            "Continuous HMP",
-            "Progression to HMP",
-        ]
-        miles = min(cap + 1, max(4, round(weekly_mileage * 0.15)))
-        return workout("HMP Session", miles, styles[(week_num - 1) % len(styles)])
-
-    if phase == "Taper":
-        # Keep rhythm, but do not turn taper into workout hero week.
-        return workout("Threshold Session", min(4, miles), "Continuous Tempo")
-
-    return workout("None", 0)
+    # Specific
+    styles = [
+        "HMP Blocks",
+        "Continuous HMP",
+        "Progression to HMP",
+    ]
+    return workout("HMP Session", miles, styles[(week_num - 1) % len(styles)])
 
 
-def secondary_workout(weekly_mileage, phase, week_num, runs_per_week, experience):
+def secondary_workout(weekly_mileage, phase, week_num, runs_per_week, experience, phases):
     if phase in ["Race", "Taper"]:
         return workout("None", 0)
 
@@ -733,12 +788,16 @@ def secondary_workout(weekly_mileage, phase, week_num, runs_per_week, experience
     if experience == "beginner":
         return workout("None", 0)
 
-    cap = {
-        "intermediate": 6,
-        "advanced": 7,
-    }[experience]
-
-    miles = min(cap, max(3, round(weekly_mileage * 0.10)))
+    week_index = week_num - 1
+    position, total = _phase_position(week_index, phases)
+    is_cutback = (
+        phase == "Build"
+        and position == total
+        and total >= 4
+    )
+    miles = _interpolate_phase_mileage(
+        SECONDARY_MILEAGE, phase, experience, position, total, is_cutback
+    )
 
     rotation = [
         ("Hill Strength", "Short Hill Reps"),
@@ -751,7 +810,7 @@ def secondary_workout(weekly_mileage, phase, week_num, runs_per_week, experience
     return workout(category, miles, style)
 
 
-def long_run_style(phase, week_num, lr, cap):
+def long_run_style(phase, week_num, lr, cap, is_final_specific=False):
     if phase == "Race":
         return "Race"
 
@@ -765,7 +824,10 @@ def long_run_style(phase, week_num, lr, cap):
         return "Progression LR" if week_num % 2 == 0 else "Easy LR"
 
     if phase == "Specific":
-        if lr >= cap:
+        # Fast Finish LR is the race simulator — reserved for the LAST Specific
+        # week before taper. Earlier Specific weeks build into it with a
+        # Progression LR (race-pace contact without the brutal closing demand).
+        if is_final_specific and lr >= cap:
             return "Fast Finish LR"
         return "Progression LR"
 
@@ -1024,6 +1086,10 @@ def build_plan(
     plan = []
     cap = lr_cap(experience, runs_per_week)
 
+    # Identify the final Specific week so Fast Finish LR is reserved for it.
+    specific_indices = [j for j, p in enumerate(phases) if p == "Specific"]
+    final_specific_index = specific_indices[-1] if specific_indices else -1
+
     for i in range(weeks):
         week_num = i + 1
         phase = phases[i]
@@ -1055,8 +1121,8 @@ def build_plan(
             })
             continue
 
-        primary = primary_workout(mileage, phase, week_num, experience)
-        secondary = secondary_workout(mileage, phase, week_num, runs_per_week, experience)
+        primary = primary_workout(mileage, phase, week_num, experience, phases)
+        secondary = secondary_workout(mileage, phase, week_num, runs_per_week, experience, phases)
 
         quality_days = 1
         if primary["miles"] > 0:
@@ -1132,7 +1198,10 @@ def build_plan(
             "primary": primary,
             "secondary": secondary,
             "lr": lr,
-            "lr_style": long_run_style(phase, week_num, lr, cap),
+            "lr_style": long_run_style(
+                phase, week_num, lr, cap,
+                is_final_specific=(i == final_specific_index),
+            ),
             "z2_runs": z2_runs,
         }
 

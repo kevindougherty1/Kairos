@@ -214,6 +214,18 @@ _(Item 1 — the 5-day cap reduction — has since been removed. See "Follow-up 
 - High-mileage cases fire the existing "Weekly shape is chunky" warning at peak week — informational, not a regression
 - New test cases added: int 30/5d, int 40/5d (alongside existing int 25/5d, int 35/5d)
 
+### Long-run style: Fast Finish reserved for final Specific week
+- Previously `long_run_style()` returned "Fast Finish LR" for any Specific week with `lr >= cap`, producing back-to-back race-simulator LRs at peak fatigue
+- Now `is_final_specific` is passed in; only the last Specific week becomes Fast Finish
+- Earlier Specific weeks become Progression LR (race-pace contact without the brutal closing demand)
+
+### Quality decoupled from weekly mileage (`PRIMARY_MILEAGE` / `SECONDARY_MILEAGE` tables)
+- Replaced the `weekly_mileage * 0.14` and `* 0.10` percentage formulas with phase-position progression tables
+- Each entry is `(phase_start, phase_peak)` — workout mileage interpolates linearly across the phase
+- Cutback applied to final Build week (×0.86) matching `weekly_curve`
+- Coaching-defensible absolute mileages: a coach can look at "intermediate Build peaks at 7 mi Threshold" and agree or disagree, instead of inferring intent from a percentage
+- Effect on plans: smoother quality progression (no spike when weekly mileage jumps); gentler cutbacks; same overall peak values
+
 ### Frontend wired in (`20fdf0d`)
 - `app.py` now routes `/generate-plan` on `race_type` and calls the HM engine when requested
 - `index.html` adds a race-type toggle and HM-specific summary rendering (primary / secondary / LR style)
