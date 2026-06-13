@@ -219,6 +219,13 @@ _(Item 1 — the 5-day cap reduction — has since been removed. See "Follow-up 
 - Now `is_final_specific` is passed in; only the last Specific week becomes Fast Finish
 - Earlier Specific weeks become Progression LR (race-pace contact without the brutal closing demand)
 
+### Week 1 LR shape: no regression, target-driven, sanity-capped
+- Old `initialize_week1_lr` capped Week 1 LR at exactly `recent_longest_run`, which produced visually weak LRs (e.g., 10-mi LR alongside [8, 7] easy days) and could regress runners below their recent ability
+- New logic: `lr = max(target_lr, recent_longest_run)` sanity-capped at `target × 1.2`
+- `recent_longest_run` is treated as a readiness guide, not a hard ceiling (same principle as `current_mileage`)
+- `base_week_mileage_adjustment` also relaxed from -4 to -5 mi reduction cap so it can fully resolve oversized easy runs in Base wk 1
+- Effect: int 35/5d wk 1 goes from LR 10 / easy [8, 7] → LR 11 / easy [7, 7] (LR now dominates by 4 mi instead of 2)
+
 ### Quality decoupled from weekly mileage (`PRIMARY_MILEAGE` / `SECONDARY_MILEAGE` tables)
 - Replaced the `weekly_mileage * 0.14` and `* 0.10` percentage formulas with phase-position progression tables
 - Each entry is `(phase_start, phase_peak)` — workout mileage interpolates linearly across the phase

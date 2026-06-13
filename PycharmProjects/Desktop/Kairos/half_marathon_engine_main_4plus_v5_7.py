@@ -569,13 +569,21 @@ def base_long_run_target(mileage, phase, runs_per_week=5):
 
 
 def initialize_week1_lr(target_lr, weekly_mileage, recent_longest_run):
-    """recent_longest_run is a Week 1 ceiling/readiness marker, not a required floor."""
-    lower_bound = max(6, round(weekly_mileage * 0.24))
-    upper_bound = max(6, recent_longest_run)
+    """
+    Week 1 LR aims for max(target, recent_longest_run) — the runner shouldn't
+    regress below their recent capability, and the target lifts them slightly
+    when their volume supports a longer LR. Sanity-capped at target × 1.2 so
+    a runner with an unusually high one-off recent LR (e.g., a recent race)
+    doesn't get an aggressive Week 1.
 
-    lr = min(target_lr, upper_bound)
+    recent_longest_run is a readiness guide, not a hard ceiling.
+    """
+    lower_bound = max(6, round(weekly_mileage * 0.24))
+    sanity_cap = max(target_lr, round(target_lr * 1.2))
+
+    lr = max(target_lr, recent_longest_run)
+    lr = min(lr, sanity_cap)
     lr = max(lr, lower_bound)
-    lr = min(lr, upper_bound)
     lr = max(6, lr)
     return lr
 
@@ -1029,8 +1037,11 @@ def base_week_mileage_adjustment(
         adjusted_easy_total = preferred_easy_cap * z2_days
         adjusted_mileage = fixed_mileage + adjusted_easy_total
 
-        # Do not cut more than 4 miles from the original target in one adjustment.
-        adjusted_mileage = max(mileage - 4, adjusted_mileage)
+        # Do not cut more than 5 miles from the original target in one adjustment.
+        # Set to 5 (not 4) so the adjustment can fully bring easy runs down to
+        # their preferred cap when needed for clean shape — e.g., wk 1 of a
+        # 35 mpw runner now lands at [7, 7] instead of being stuck at [8, 7].
+        adjusted_mileage = max(mileage - 5, adjusted_mileage)
 
         # Never create tiny filler runs.
         adjusted_mileage = max(adjusted_mileage, fixed_mileage + 3 * z2_days)
