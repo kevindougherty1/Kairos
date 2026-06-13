@@ -344,29 +344,30 @@ def validate_engine_inputs(experience, runs_per_week):
 # Peak mileage logic separates three concepts that the old single-tier-table conflated.
 #
 # 1. CLEAN_SHAPE_CAP: max weekly mileage that distributes cleanly given the runner's
-#    easy_run_soft_cap, lr_cap, and frequency. Below this, easy runs sit comfortably
-#    under their soft cap; above this, the chunky-shape warning fires.
+#    easy_run_soft_cap, lr_cap, and frequency. Non-beginner values are DERIVED from
+#    the formula:
+#        clean_cap = lr_cap + primary(~7) + secondary(5 if applicable) + (n_easy × soft_cap)
+#    At clean_cap, easy runs sit exactly at their soft cap — no chunky.
+#    Beginner caps are tighter than shape math allows (injury risk dominates).
 #
 # 2. EXPERIENCE_CEILING: hard upper bound regardless of structural feasibility.
-#    Beginners are capped well below shape (a beginner 6-day runner could
-#    structurally hold ~47 mi but shouldn't — injury risk and skill mismatch
-#    dominate). Intermediate/advanced use MAX_PEAK as a backstop.
+#    Beginners are capped frequency-by-frequency in the table itself; non-beginners
+#    use MAX_PEAK as a backstop.
 #
-# 3. TOLERANCE_EXTENSION: when the clean cap leaves a high-mileage runner with
-#    an inadequate overload (< 20% growth over a 12-week block), extend the cap
-#    by ~10% so they get a meaningful stimulus. The chunky-shape warning fires
-#    at peak, correctly signaling that the runner is at the structural edge of
-#    their frequency and may benefit from adding a day. Beginners do NOT get
-#    this extension — they should add a day or step up to intermediate, not
-#    push peak mileage past their injury tolerance.
+# 3. TOLERANCE_EXTENSION: when the clean cap would leave a runner under-loaded
+#    (< 25% growth over a 12-week block), extend the cap by ~10% so they get a
+#    meaningful stimulus. Only applies on 4d/5d — for 6d/7d runners "add a day"
+#    is not realistic advice and the runner already picked their preferred
+#    frequency. Their plan stays at clean cap and respects the choice.
+#    Beginners never get an extension (injury risk).
 
 CLEAN_SHAPE_CAP = {
-    # Calibrated empirically against the chunky-shape detector and validation
-    # plans. Below these peaks, easy_run_soft_cap holds without forced overruns.
-    4: {"beginner": 28, "intermediate": 38, "advanced": 40},
-    5: {"beginner": 32, "intermediate": 42, "advanced": 44},
-    6: {"beginner": 38, "intermediate": 52, "advanced": 58},
-    7: {"beginner": 40, "intermediate": 55, "advanced": 58},
+    # Derived: lr_cap + 7 (primary) + 5 if secondary else 0 + (n_easy × soft_cap).
+    # Beginner rows are hard injury-conservative caps, NOT derived from shape math.
+    4: {"beginner": 28, "intermediate": 39, "advanced": 43},
+    5: {"beginner": 32, "intermediate": 42, "advanced": 48},
+    6: {"beginner": 38, "intermediate": 47, "advanced": 52},
+    7: {"beginner": 40, "intermediate": 54, "advanced": 60},
 }
 
 CLEAN_SHAPE_LOWER = {
@@ -376,19 +377,8 @@ CLEAN_SHAPE_LOWER = {
     7: {"beginner": 30, "intermediate": 42, "advanced": 50},
 }
 
-EXPERIENCE_CEILING = {
-    "beginner": 38,        # Hard cap — beginner shouldn't peak higher regardless of frequency
-    "intermediate": MAX_PEAK,
-    "advanced": MAX_PEAK,
-}
-
-# Growth-percentage threshold: if a runner's overload at the clean cap is below
-# this fraction of their current mileage, we extend the cap. A 12-week HM block
-# should produce a noticeable training stimulus — below 25% growth it starts to
-# feel like maintenance, which is not what the runner asked for.
 UNDERLOAD_THRESHOLD = 0.25
 
-# How far the tolerance extension can push above the clean shape cap.
 TOLERANCE_MULT = {
     "beginner": 1.00,      # No tolerance — injury risk dominates
     "intermediate": 1.10,
@@ -396,14 +386,26 @@ TOLERANCE_MULT = {
 }
 
 
+def _extension_allowed(experience, runs_per_week):
+    """
+    Tolerance extension only fires when 'add a day' is realistic advice.
+    Beginners never extend (injury risk). 6d/7d runners don't extend —
+    their frequency choice is respected and the plan stays clean.
+    """
+    if experience == "beginner":
+        return False
+    if runs_per_week >= 6:
+        return False
+    return True
+
+
 def frequency_peak_range(experience, runs_per_week, current_mileage=None):
     """
     Returns (lower, upper) peak mileage range.
 
-    `upper` defaults to the clean shape cap. When current_mileage is provided
-    and would leave the runner under-loaded at the clean cap, upper is
-    extended by TOLERANCE_MULT (capped at EXPERIENCE_CEILING). Beginners are
-    never extended.
+    `upper` defaults to the clean shape cap. When the runner is under-loaded
+    at the clean cap AND extension is allowed for their frequency, upper is
+    extended by TOLERANCE_MULT (capped at MAX_PEAK).
 
     Supported tiers:
     - 4-day beginner/intermediate/advanced
@@ -416,12 +418,15 @@ def frequency_peak_range(experience, runs_per_week, current_mileage=None):
     clean_upper = CLEAN_SHAPE_CAP[rpw][experience]
 
     upper = clean_upper
-    if current_mileage is not None and current_mileage > 0:
+    if (
+        current_mileage is not None
+        and current_mileage > 0
+        and _extension_allowed(experience, rpw)
+    ):
         marginal_growth = (clean_upper - current_mileage) / current_mileage
         if marginal_growth < UNDERLOAD_THRESHOLD:
             extended = round(clean_upper * TOLERANCE_MULT[experience])
-            ceiling = EXPERIENCE_CEILING[experience]
-            upper = min(extended, ceiling)
+            upper = min(extended, MAX_PEAK)
 
     return lower, upper
 
@@ -435,8 +440,11 @@ def determine_peak_mileage(experience, current_mileage, weeks, runs_per_week):
     peak = min(upper, ramp_peak)
     peak = max(lower, peak)
     peak = min(MAX_PEAK, max(MIN_PEAK, peak))
-    # Never plan below the runner's current fitness
-    peak = max(peak, min(current_mileage, MAX_PEAK))
+    # Honor current_mileage as a floor — but only up to the runner's effective
+    # cap. A high-mileage runner choosing 6d for an HM block shouldn't have
+    # peak pushed above their frequency's clean cap; they get an HM-appropriate
+    # plan at clean cap and the plan_warning surfaces the volume mismatch.
+    peak = max(peak, min(current_mileage, upper))
 
     return peak
 
@@ -489,18 +497,23 @@ def weekly_curve(peak, phases, current_mileage):
     build_n = phases.count("Build")
     specific_n = phases.count("Specific")
 
+    # Cap the runner's effective starting volume at peak. An over-qualified
+    # runner (current_mileage > peak) doesn't ramp up — the plan starts at
+    # peak and the global plan warning explains the volume mismatch.
+    effective_start = min(current_mileage, peak)
+
     normal_base_end = round(peak * 0.82)
-    if current_mileage >= normal_base_end:
+    if effective_start >= normal_base_end:
         # Runner enters the plan at or above the normal base ceiling.
         # Ramp gently toward the build phase rather than trending flat or down.
         build_entry = round(peak * 0.95)
-        base_end = min(current_mileage + 4, build_entry - 2)
-        base_end = max(base_end, current_mileage)
+        base_end = min(effective_start + 4, build_entry - 2)
+        base_end = max(base_end, effective_start)
     else:
         base_end = normal_base_end
 
     weekly += segment(
-        current_mileage,
+        effective_start,
         base_end,
         base_n,
         cutback=False,
@@ -983,11 +996,15 @@ def build_plan(
     recommended_lower, recommended_upper = frequency_peak_range(experience, runs_per_week)
     global_plan_warnings = []
     if current_mileage > recommended_upper:
+        # Peak is capped at the runner's clean shape ceiling — we don't try
+        # to match current_mileage when the runner is structurally over-qualified
+        # for HM training at this frequency. The plan focuses on race-specific
+        # work at clean volume; runner can maintain extra easy mileage separately.
         global_plan_warnings.append(
-            f"Current mileage ({current_mileage} mi/week) exceeds the recommended cap "
-            f"for {experience} / {runs_per_week} days ({recommended_upper} mi/week). "
-            "Plan is allowed because you already report handling this volume, but weeks may be dense. "
-            "Consider adding a run day or choosing a lower-volume plan."
+            f"Your current mileage ({current_mileage} mi/week) is higher than the typical "
+            f"HM peak for {experience} runners on {runs_per_week} days/week ({recommended_upper} mi). "
+            "This plan focuses on race-specific structure at a clean weekly volume; "
+            "you can keep your additional easy miles outside the plan if you'd like."
         )
 
     phases = build_phases(weeks)
@@ -1104,7 +1121,12 @@ def build_plan(
             warnings.append(f"Math check: planned mileage is {planned_total}, target is {mileage}.")
 
         if ugly_distribution(z2_runs, lr, runs_per_week, experience, phase):
-            warnings.append("Weekly shape is chunky. Consider more run days or lower peak mileage.")
+            if runs_per_week < 6:
+                warnings.append("Weekly shape is chunky. Consider more run days or lower peak mileage.")
+            else:
+                # 6d/7d runners already at high frequency — "add a day" isn't
+                # useful advice. Acknowledge the volume mismatch instead.
+                warnings.append("Weekly shape is chunky for this volume. Consider a lower-volume plan.")
 
         sessions = {
             "primary": primary,

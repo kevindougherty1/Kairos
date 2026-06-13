@@ -83,32 +83,29 @@ Each week in the returned plan has:
 
 Peak is bound by three concepts (formerly conflated into a single tier table):
 
-**1. Clean shape cap** — max weekly mileage that distributes without forcing easy runs above their soft cap. Frequency × experience dependent because experience drives both `lr_cap` and `easy_run_soft_cap`.
+**1. Clean shape cap** — max weekly mileage that distributes without forcing easy runs above their soft cap. **Derived** from `lr_cap + 7 (primary) + 5 if applicable (secondary) + (n_easy × soft_cap)`. Beginner rows are hard injury-conservative caps, NOT derived from shape math.
 
 ```
-4-day:  beginner 28, intermediate 38, advanced 40
-5-day:  beginner 32, intermediate 42, advanced 44
-6-day:  beginner 38, intermediate 52, advanced 58
-7-day:  intermediate 55, advanced 58  [beginner 7d blocked]
+4-day:  beginner 28, intermediate 39, advanced 43
+5-day:  beginner 32, intermediate 42, advanced 48
+6-day:  beginner 38, intermediate 47, advanced 52
+7-day:  intermediate 54, advanced 60  [beginner 7d blocked]
 ```
 
-**2. Experience ceiling** — hard upper bound regardless of structural feasibility.
+**2. Experience ceiling** — `MAX_PEAK = 60` is the only hard absolute. Beginner-specific caps are baked into the table above.
+
+**3. Tolerance extension** — when growth at clean cap < 25%, upper extends to `1.10 × clean_cap` (capped at `MAX_PEAK`). **Only fires on 4d/5d** — for 6d/7d runners, "add a day" is not realistic advice, so their frequency choice is respected and the plan stays at clean cap. Beginners never extend (injury risk).
 
 ```
-beginner:     38   (injury risk dominates — beginners cap below shape on 6d/7d)
-intermediate: 60   (MAX_PEAK)
-advanced:     60   (MAX_PEAK)
+intermediate 4d/5d: 1.10
+advanced     4d/5d: 1.10
+beginner          : 1.00 (disabled)
+6d/7d (any exp)   : disabled
 ```
 
-**3. Tolerance extension** — when the clean cap would leave a runner under-loaded (growth from current_mileage < 25%), upper bound extends to `1.10 × clean_cap`, capped at experience ceiling. The existing "chunky shape" warning then fires at peak, correctly signaling the runner is at the structural edge of their frequency. **Beginners get no extension** (`TOLERANCE_MULT = 1.00`) — they should add a day or step up to intermediate, not push past injury tolerance.
+**Over-qualified runner handling**: `current_mileage` is honored as a floor only up to the runner's effective upper bound — it cannot push peak above the clean cap. A 55 mpw advanced runner on 6d peaks at 52 (clean), not 55. The plan note acknowledges the volume mismatch: *"This plan focuses on race-specific structure at a clean weekly volume; you can keep your additional easy miles outside the plan if you'd like."*
 
-```
-intermediate: 1.10
-advanced:     1.10
-beginner:     1.00 (disabled)
-```
-
-Code: `frequency_peak_range()` and `determine_peak_mileage()` in the engine.
+Code: `frequency_peak_range()`, `determine_peak_mileage()`, `weekly_curve()` (clamps starting volume at peak).
 
 ---
 
