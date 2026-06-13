@@ -222,9 +222,9 @@ _(Item 1 — the 5-day cap reduction — has since been removed. See "Follow-up 
 ### Quality decoupled from weekly mileage (`PRIMARY_MILEAGE` / `SECONDARY_MILEAGE` tables)
 - Replaced the `weekly_mileage * 0.14` and `* 0.10` percentage formulas with phase-position progression tables
 - Each entry is `(phase_start, phase_peak)` — workout mileage interpolates linearly across the phase
-- Cutback applied to final Build week (×0.86) matching `weekly_curve`
-- Coaching-defensible absolute mileages: a coach can look at "intermediate Build peaks at 7 mi Threshold" and agree or disagree, instead of inferring intent from a percentage
-- Effect on plans: smoother quality progression (no spike when weekly mileage jumps); gentler cutbacks; same overall peak values
+- For Build phase with ≥ 4 weeks, peak lands at the **second-to-last** week; final week is a true cutback at 0.75 × peak (~25% reduction)
+- Result: classic cutback shape (e.g., intermediate Build primary: 5, 6, 7, 5) where quality reduces meaningfully along with volume, not just volume in isolation
+- Coaching-defensible absolute mileages: a coach can look at "intermediate Build peaks at 7 mi Threshold, drops to 5 on the cutback" and agree or disagree, instead of inferring intent from a percentage
 
 ### Frontend wired in (`20fdf0d`)
 - `app.py` now routes `/generate-plan` on `race_type` and calls the HM engine when requested

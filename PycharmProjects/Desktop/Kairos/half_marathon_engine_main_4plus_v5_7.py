@@ -724,19 +724,34 @@ def _phase_position(week_index, phases):
 
 def _interpolate_phase_mileage(table, phase, experience, position, total, is_cutback):
     """
-    Linear interp from phase_start to phase_peak across `total` weeks.
-    Final Build week applies the 0.86 cutback to match weekly_curve.
+    Workout mileage progression across a phase.
+
+    For phases with a cutback at the end (Build with >= 4 weeks), peak lands
+    at the SECOND-to-last week and the final week drops to 0.75 × peak. This
+    gives the classic cutback shape (e.g., intermediate Build: 5, 6, 7, 5)
+    where quality genuinely reduces along with volume.
+
+    For phases without a cutback (Base, Specific), peak lands at the last week.
     """
     if experience not in table.get(phase, {}):
         return 0
     start, peak = table[phase][experience]
-    if total <= 1:
+
+    CUTBACK_MULT = 0.75  # Quality drops to 75% of peak on cutback (-25%)
+
+    if is_cutback:
+        miles = peak * CUTBACK_MULT
+    elif total <= 1:
         miles = peak
     else:
-        progress = (position - 1) / (total - 1)
-        miles = start + (peak - start) * progress
-    if is_cutback:
-        miles = miles * 0.86
+        has_cutback = phase == "Build" and total >= 4
+        peak_position = total - 1 if has_cutback else total
+        if peak_position <= 1:
+            miles = peak
+        else:
+            progress = min(1.0, (position - 1) / (peak_position - 1))
+            miles = start + (peak - start) * progress
+
     return max(3, round(miles))
 
 
