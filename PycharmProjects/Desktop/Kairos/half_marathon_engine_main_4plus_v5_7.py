@@ -475,17 +475,20 @@ def build_phases(weeks):
 # WEEKLY MILEAGE CURVE
 # -----------------------------
 
-def segment(start, end, n, cutback=False):
+def segment(start, end, n, cutback=False, cutback_floor=None, exponent=1.20):
     if n <= 0:
         return []
 
     vals = []
     for i in range(1, n + 1):
-        progress = (i / n) ** 1.20
+        progress = (i / n) ** exponent
         vals.append(round(start + (end - start) * progress))
 
     if cutback and n >= 4:
-        vals[-1] = round(vals[-2] * 0.86)
+        cutback_val = round(vals[-2] * 0.86)
+        if cutback_floor is not None:
+            cutback_val = max(cutback_val, cutback_floor)
+        vals[-1] = cutback_val
 
     return vals
 
@@ -519,20 +522,38 @@ def weekly_curve(peak, phases, current_mileage):
         cutback=False,
     )
 
+    # Compute the minimum Build-cutback floor. The Specific phase must climb
+    # from the cutback to peak with no week-over-week jump exceeding
+    # max(+10%, +4 mi). Step backward from peak `specific_n` times to find
+    # the lowest acceptable cutback week.
+    MAX_PCT = 0.10
+    MAX_ABS = 4
+    min_cutback = peak
+    for _ in range(specific_n):
+        floor_by_pct = math.ceil(min_cutback / (1 + MAX_PCT))
+        floor_by_abs = min_cutback - MAX_ABS
+        min_cutback = min(floor_by_pct, floor_by_abs)
+
     build_start = weekly[-1] if weekly else current_mileage
     weekly += segment(
         build_start,
         round(peak * 0.95),
         build_n,
         cutback=True,
+        cutback_floor=min_cutback,
     )
 
+    # Specific phase uses linear interpolation (exponent=1.0). The default
+    # ^1.20 easing puts the steepest jump on the final week — which is the
+    # climb to peak, exactly where we don't want a spike. Uniform increments
+    # keep the cutback-floor math honest.
     specific_start = weekly[-1] if weekly else current_mileage
     weekly += segment(
         specific_start,
         peak,
         specific_n,
         cutback=False,
+        exponent=1.0,
     )
 
     # Two-week taper + race week.

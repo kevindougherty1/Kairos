@@ -162,25 +162,36 @@ def generate_weekly_mileage(
     build_target = round(peak * 0.95)
     peak_target = peak
 
-    def build_segment(start, end, n, cutback=False):
+    def build_segment(start, end, n, cutback=False, cutback_floor=None, exponent=1.25):
         if n == 0:
             return []
 
         segment = []
 
         for i in range(1, n + 1):
-            progress = (i / n)
-
-            # slow early ramp, faster later
-            progress = progress ** 1.25
-
+            progress = (i / n) ** exponent
             val = round(start + (end - start) * progress)
             segment.append(val)
 
         if cutback and n >= 4:
-            segment[-1] = round(segment[-2] * 0.85)
+            cutback_val = round(segment[-2] * 0.85)
+            if cutback_floor is not None:
+                cutback_val = max(cutback_val, cutback_floor)
+            segment[-1] = cutback_val
 
         return segment
+
+    # Compute the minimum Build-cutback floor. The Peak phase must climb from
+    # the cutback to peak with no week-over-week jump exceeding max(+10%, +4 mi).
+    # Step backward from peak `peak_n` times to find the lowest acceptable
+    # cutback week. Mirrors the HM engine's fix.
+    MAX_PCT = 0.10
+    MAX_ABS = 4
+    min_cutback = peak_target
+    for _ in range(peak_n):
+        floor_by_pct = math.ceil(min_cutback / (1 + MAX_PCT))
+        floor_by_abs = min_cutback - MAX_ABS
+        min_cutback = min(floor_by_pct, floor_by_abs)
 
     # Base
     base_segment = build_segment(
@@ -197,17 +208,21 @@ def generate_weekly_mileage(
         start=build_start,
         end=build_target,
         n=build_n,
-        cutback=True
+        cutback=True,
+        cutback_floor=min_cutback,
     )
     weekly += build_segment_vals
 
-    # Peak starts from wherever Build ended
+    # Peak starts from wherever Build ended. Linear interpolation (exponent=1.0)
+    # so the curve's own easing doesn't put the steepest jump on the climb to
+    # peak — that's exactly where we don't want a spike.
     peak_start = weekly[-1] if weekly else current_mileage
     peak_segment_vals = build_segment(
         start=peak_start,
         end=peak_target,
         n=peak_n,
-        cutback=False
+        cutback=False,
+        exponent=1.0,
     )
     weekly += peak_segment_vals
 

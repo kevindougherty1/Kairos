@@ -276,14 +276,104 @@ Run with: `python test_engine.py`
 
 ---
 
-## Open / Low-Priority Items
+## Where We Left Off (2026-06-19)
 
-*(None at the moment — last open item resolved by the intermediate 5-day peak collision fix.)*
+Reviewing the **intermediate / 35 mpw / 5-day / 12-week** plan against the engine's current state. All 170 assertion tests pass, but the *shape* still has hiccups the test suite doesn't catch. Working toward MVP — see below.
+
+Plan output snapshot (int 35/5d, peak 46):
+
+```
+Wk 1  Base    32   Thr(4) Hill(3)   LR 11           Easy [7, 7]
+Wk 2  Base    33   Thr(4) Speed(4)  LR 11           Easy [7, 7]
+Wk 3  Base    34   Thr(5) Econ(4)   LR 11           Easy [7, 7]
+Wk 4  Build   39   Thr(5) Speed(4)  LR 13           Easy [9, 8]
+Wk 5  Build   41   Thr(6) Hill(4)   LR 14           Easy [9, 8]
+Wk 6  Build   42   Thr(7) Speed(5)  LR 14           Easy [8, 8]
+Wk 7  Build   36   Thr(5) Econ(4)   LR 12           Easy [8, 7]   ← cutback
+Wk 8  Spec    40   HMP(6) Speed(4)  LR 14           Easy [8, 8]
+Wk 9  Spec    46   HMP(8) Hill(5)   LR 14 FastFin   Easy [10, 9]  ← peak, chunky warn
+Wk 10 Taper   32   Thr(4)           LR 9            Easy [7, 6, 6]
+Wk 11 Taper   24   Thr(4)           LR 7            Easy [5, 4, 4]
+Wk 12 Race    6                                     Shakeouts
+```
 
 ---
 
-## Next Likely Tasks
+## Open Problems
 
-- Potentially add a 3-day low-frequency engine (currently rejected with a clear error message)
-- Add 7-day beginner support (currently blocked in the tier table)
-- Add 7-day beginner support (currently blocked in the tier table)
+Living list. Add items the moment we notice them. Don't archive without resolution or explicit deferral.
+
+### ~~Wk 9 peak jump too steep (int 35/5d)~~ — FIXED 2026-06-19
+- Was: Build cutback Wk 7 = 36 → Wk 8 = 40 → Wk 9 peak = 46 (+11%, +15% jumps)
+- Now: Wk 7 = 38 → Wk 8 = 42 → Wk 9 = 46 (+10.5%, +9.5% jumps)
+- **Principle added:** no week-over-week increase exceeds max(+10%, +4 mi). Cutback floor is computed by stepping backward from peak through Specific phase. Specific phase switched to linear interpolation so the curve's own easing doesn't put the steepest jump on the final week.
+- `segment()` gained `cutback_floor` and `exponent` params. `weekly_curve()` computes `min_cutback` from peak + `specific_n` and passes it to the Build segment.
+- Chunky warning at Wk 9 still fires for int 35/5d — that's the LR/easy distribution at peak on 5d, unrelated to the cutback.
+- Verified on adv 55/6d: cutback 50→44 (-12%), Spec 44→48→52, both +9.1%/+8.3%. Generalizes.
+
+### Marathon engine audit (2026-06-19)
+
+Ran `marathon_audit.py` across 12 tier × frequency × volume cases. Findings:
+
+**~~M-1. Final week-to-peak jump (~+11–12%)~~** — FIXED 2026-06-19. Ported the HM cutback-floor + linear-final-segment fix to `engineV3.py`. Results:
+
+| Case | Before | After |
+|---|---|---|
+| bgn 20/4d | 40 → 45 (+12.5%) | 41 → 45 (+9.8%) |
+| int 25/5d | 49 → 55 (+12.2%) | 51 → 55 (+7.8%) |
+| int 35/6d | 49 → 55 (+12.2%) | 51 → 55 (+7.8%) |
+| adv 40/5d | 63 → 70 (+11.1%) | 65 → 70 (+7.7%) |
+| adv 45/6d | 63 → 70 (+11.1%) | 65 → 70 (+7.7%) |
+
+`build_segment` (nested in `generate_weekly_mileage`) gained `cutback_floor` and `exponent` params. `min_cutback` is computed from peak by stepping backward through `peak_n` weeks. Peak segment uses `exponent=1.0`.
+
+**M-2. Base phase ends with a cutback** — `build_segment(..., cutback=True)` is called on the Base segment, producing weird troughs:
+- int 25/5d: `28 → 31 → 36 → 40 → 34 →` (Wk 4 climbs to 40, Wk 5 drops to 34, then Build starts climbing again)
+- int 35/6d: `36 → 38 → 40 → 43 → 37 →` (same shape)
+
+Semantically odd — Base is the gentle ramp. Cutback should be in Build or Peak, not Base. Fix candidate: in `generate_weekly_mileage()`, remove `cutback=True` from the Base `build_segment` call (`engineV3.py:185–191`).
+
+**M-3. Wk 1 LR can exceed `recent_long_run`** — `calculate_long_runs()` uses `lr = max(recent_long_run, target_lr)` for Wk 1 with no sanity cap. An adv 60/7d runner with recent LR=18 gets Wk 1 LR=20. HM engine solved this with `min(lr, target × 1.2)` in `initialize_week1_lr()`. Port the same approach.
+
+**M-4. Peak LR issues:**
+- **Stagnation:** adv 60/7d hits LR=20 in Wk 1 and stays there through Wk 4. Four consecutive 20-mile Base LRs is excessive.
+- **Premature termination:** adv 55/6d Peak LR maxes at 18, never reaches 20. The `twenty_count >= 2` and `last_was_twenty` logic in `calculate_long_runs()` cuts off the 20s too aggressively for advanced runners with longer Peak phases.
+
+**M-5. Audit-check false positive (not a real bug):**
+- "Quality dominates week" check flags 60–76% on low-mileage weeks, but for marathon the LR alone is 30–35% of weekly volume. Adding VO2+tempo legitimately puts quality at 60%+ on a 22 mpw beginner week — and the easy run distribution still works out fine (1 easy day at 6 mi). Audit check needs recalibration or removal, not the engine. Documenting so we don't chase this later.
+
+**M-6. Inputs (`current_mileage`, `recent_long_run`) are driving structure, not guarding it** — surfaced 2026-06-19. Both engines anchor Week 1 to these inputs (e.g., Base starts at `current_mileage`, Wk 1 LR = `max(recent_long_run, target)`). That makes them dominant structural levers when they should be subordinate guardrails. Symptoms:
+- int 25/5d marathon: Wk 3 jump `31 → 36` (+16.1%) because Base starts at current_mileage=25 and has to climb to peak=55 — the Base ramp slope is dictated by current_mileage, not by what a sensible Base looks like
+- adv 60/7d marathon: Wk 1 LR=20 because `max(recent_lr=18, target=20)` picks target — but the deeper issue is that recent_lr feeds the LR computation at all
+- HM engine Wk 1 LR uses `max(target_lr, recent_longest_run)` — same pattern
+
+**Principle:** structure should be derived from phase logic + peak target + experience. Inputs should be sanity-checks layered on top (don't regress below current, don't aggressively exceed recent), not the starting point for the curve. This is a philosophy-level fix that may touch several places in both engines.
+
+**Priority order:** ~~M-1~~ ✓ done. M-6 (philosophy, may unblock M-2/M-3 too), M-2 (semantic cleanliness — Base shouldn't cutback), M-3 (regression guard — actually a subset of M-6), M-4 (advanced runner polish). M-5 is an audit-script issue, not an engine issue.
+
+---
+
+## MVP Roadmap
+
+**Goal:** ship a consumer-facing version of Kairos (HM + marathon plan generators) that's good enough for early users without polishing forever.
+
+**Guiding tension:** lots of bug fixes are still ahead, but we don't want to overfit. Every fix should be expressible as a principle — not a special case for one input combo. If a fix can only be stated as "and also when experience=intermediate and frequency=5 and current_mileage in [35, 45]…", that's a signal to step back.
+
+**What "MVP" means here (draft — refine as we go):**
+- Both engines produce a coach-defensible plan for the common cases (no obvious shape bugs, sensible quality progression)
+- Frontend renders both race types cleanly
+- Effort-first language present in workout descriptions (per [[project-kairos-effort-philosophy]])
+- Strength training has at least a placeholder hook (the run+strength combo is the strategic wedge per [[project-kairos-vision]])
+- Known edge cases documented, not necessarily fixed
+
+**What MVP does NOT require:**
+- 3-day engine
+- 7-day beginner support
+- Per-runner pace targets (we're effort-first)
+- Every test case producing a 100% clean shape
+
+**Next likely tasks (ordered):**
+1. Diagnose + fix the Wk 9 peak jump principle (not just for int 35/5d, but as a `weekly_curve()` invariant)
+2. Audit the marathon engine (`engineV3.py`) the same way we audited the HM engine — generate plans, list hiccups
+3. Decide what level of "good enough" each engine needs before MVP cut
+4. Frontend polish pass once engines are stable
