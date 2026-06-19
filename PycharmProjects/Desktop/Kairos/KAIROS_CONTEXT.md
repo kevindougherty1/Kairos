@@ -333,9 +333,20 @@ Effect on int 25/5d: Wk 1-5 `28 31 36 40 34` (trough) → `28 31 35 39 43` (clea
 
 **M-3. Wk 1 LR can exceed `recent_long_run`** — `calculate_long_runs()` uses `lr = max(recent_long_run, target_lr)` for Wk 1 with no sanity cap. An adv 60/7d runner with recent LR=18 gets Wk 1 LR=20. HM engine solved this with `min(lr, target × 1.2)` in `initialize_week1_lr()`. Port the same approach.
 
-**M-4. Peak LR issues:**
-- **Stagnation:** adv 60/7d hits LR=20 in Wk 1 and stays there through Wk 4. Four consecutive 20-mile Base LRs is excessive.
-- **Premature termination:** adv 55/6d Peak LR maxes at 18, never reaches 20. The `twenty_count >= 2` and `last_was_twenty` logic in `calculate_long_runs()` cuts off the 20s too aggressively for advanced runners with longer Peak phases.
+**~~M-4. Peak LR issues~~** — FIXED 2026-06-19.
+
+Three issues, one underlying cause: even rounding ran *after* the 20-control logic, so `lr=19` would bypass the spacing rule and become a stealth 20 via `round(19/2)*2 = 20`.
+
+Fixes in `calculate_long_runs()`:
+- Even rounding moved BEFORE the 20-control and the Base-stagnation check so they see the actual final LR
+- Dropped the `twenty_count >= 2` total cap (was cutting off Peak prematurely — once Build hit 2 twenties, Peak couldn't reach 20)
+- Added `is_peak_week` exemption — the highest-mileage Peak week is sacred and always gets its 20 regardless of the back-to-back spacing rule
+
+Effects:
+- adv 60/7d Base: `20 20 20 20` → `20 18 20 18` (proper spacing)
+- adv 55/6d Peak: maxes at 18 → maxes at 20 on peak week
+- adv 40/5d, 45/6d: Peak LR reaches 20 on the peak week
+- adv 50/6d: 3-consecutive 16s in Base resolved by post-rounding stagnation check
 
 **M-5. Audit-check false positive (not a real bug):**
 - "Quality dominates week" check flags 60–76% on low-mileage weeks, but for marathon the LR alone is 30–35% of weekly volume. Adding VO2+tempo legitimately puts quality at 60%+ on a 22 mpw beginner week — and the easy run distribution still works out fine (1 easy day at 6 mi). Audit check needs recalibration or removal, not the engine. Documenting so we don't chase this later.
@@ -356,9 +367,9 @@ Effect on int 25/5d: Wk 1-5 `28 31 36 40 34` (trough) → `28 31 35 39 43` (clea
 
 This subsumes M-3 (Wk 1 LR regression guard — now handled by the regression_floor pattern). M-2 (Base shouldn't cutback) is independent semantic cleanup. M-4 (Peak LR stagnation/early termination on advanced runners) remains as-is.
 
-**Priority order remaining:** ~~M-1~~ ✓, ~~M-2~~ ✓, ~~M-3~~ ✓ (via M-6), ~~M-6~~ ✓. M-4 (advanced Peak LR polish) is the only marathon-engine bug left. Note: M-2 fix surfaced M-4 more loudly — 4 advanced cases now flag "Peak LR maxes at 18" (was 1). Not a regression — the `twenty_count` early-termination logic was always too aggressive, just less visible before.
+**Priority order remaining:** ~~M-1~~ ✓, ~~M-2~~ ✓, ~~M-3~~ ✓, ~~M-4~~ ✓, ~~M-6~~ ✓. All known marathon-engine bugs resolved as of 2026-06-19. The only flags left in the audit script are the M-5 false positives ("Quality dominates week") which we documented as audit-check miscalibration, not an engine issue.
 
-M-5 is an audit-script issue, not an engine issue.
+Both engines are now in a good state for MVP consideration. Next likely work: frontend polish for marathon UI parity with HM, or a strength-training placeholder hook (per the run+strength wedge in [[project-kairos-vision]]).
 
 ---
 

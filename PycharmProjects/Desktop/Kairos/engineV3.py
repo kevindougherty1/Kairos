@@ -328,7 +328,6 @@ def calculate_long_runs(weekly, phases, peak, recent_long_run):
 
     long_runs = []
     prev_lr = 0
-    twenty_count = 0
     last_was_twenty = False
 
     phase_pct = {
@@ -403,29 +402,36 @@ def calculate_long_runs(weekly, phases, peak, recent_long_run):
             lr = prev_lr
 
         # Force peak LR during highest mileage week
-        if phase == "Peak" and mileage == peak_week_mileage:
+        is_peak_week = (phase == "Peak" and mileage == peak_week_mileage)
+        if is_peak_week:
             lr = min(20, round(mileage * 0.36))
+
+        # Even rounding happens BEFORE the 20-control so the control sees the
+        # final LR value. Previously round(19/2)*2 = 20 (banker's rounding)
+        # produced stealth 20-milers that bypassed the spacing rule.
+        lr = round(lr / 2) * 2
+        lr = max(8, lr)
+
+        # Re-check Base stagnation after rounding — `lr=17` next to `prev=16`
+        # looks non-stagnant pre-rounding but rounds to 16 (stagnant).
+        if phase == "Base" and prev_lr > 0 and lr == prev_lr:
+            lr += 2
 
         # Cap at 20
         lr = min(lr, 20)
 
-        # Control 20 milers
+        # Spacing rule: no back-to-back 20-mile LRs. Peak week is sacred —
+        # the highest-mileage week always gets its 20 regardless of spacing.
+        # No total cap on 20-milers: an advanced runner's Peak phase legitimately
+        # has 2-3 of them across the plan, and capping at 2 total cuts off Peak.
         if lr == 20:
-            if last_was_twenty:
-                lr = 18
-                last_was_twenty = False
-            elif twenty_count >= 2:
+            if last_was_twenty and not is_peak_week:
                 lr = 18
                 last_was_twenty = False
             else:
-                twenty_count += 1
                 last_was_twenty = True
         else:
             last_was_twenty = False
-
-        # Even rounding
-        lr = round(lr / 2) * 2
-        lr = max(8, lr)
 
         long_runs.append(lr)
         prev_lr = lr
