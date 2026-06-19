@@ -342,14 +342,23 @@ Semantically odd — Base is the gentle ramp. Cutback should be in Build or Peak
 **M-5. Audit-check false positive (not a real bug):**
 - "Quality dominates week" check flags 60–76% on low-mileage weeks, but for marathon the LR alone is 30–35% of weekly volume. Adding VO2+tempo legitimately puts quality at 60%+ on a 22 mpw beginner week — and the easy run distribution still works out fine (1 easy day at 6 mi). Audit check needs recalibration or removal, not the engine. Documenting so we don't chase this later.
 
-**M-6. Inputs (`current_mileage`, `recent_long_run`) are driving structure, not guarding it** — surfaced 2026-06-19. Both engines anchor Week 1 to these inputs (e.g., Base starts at `current_mileage`, Wk 1 LR = `max(recent_long_run, target)`). That makes them dominant structural levers when they should be subordinate guardrails. Symptoms:
-- int 25/5d marathon: Wk 3 jump `31 → 36` (+16.1%) because Base starts at current_mileage=25 and has to climb to peak=55 — the Base ramp slope is dictated by current_mileage, not by what a sensible Base looks like
-- adv 60/7d marathon: Wk 1 LR=20 because `max(recent_lr=18, target=20)` picks target — but the deeper issue is that recent_lr feeds the LR computation at all
-- HM engine Wk 1 LR uses `max(target_lr, recent_longest_run)` — same pattern
+**~~M-6. Inputs driving structure, not guarding it~~** — FIXED 2026-06-19 (Parts 1 & 2).
 
-**Principle:** structure should be derived from phase logic + peak target + experience. Inputs should be sanity-checks layered on top (don't regress below current, don't aggressively exceed recent), not the starting point for the curve. This is a philosophy-level fix that may touch several places in both engines.
+**Principle established:** `current_mileage` and `recent_long_run` are GUARDRAILS (what the engine should not spit out — no regression, no overload), not DRIVERS (don't compute structure from them). Structure derives from phase logic + peak + experience; inputs constrain the output.
 
-**Priority order:** ~~M-1~~ ✓ done. M-6 (philosophy, may unblock M-2/M-3 too), M-2 (semantic cleanliness — Base shouldn't cutback), M-3 (regression guard — actually a subset of M-6), M-4 (advanced runner polish). M-5 is an audit-script issue, not an engine issue.
+**Part 1 — Wk 1 LR no longer lifted by `recent_long_run`:**
+- Marathon `calculate_long_runs()`: `lr = max(recent_long_run, target_lr)` → `lr = target_lr` with `regression_floor = round(recent * 0.70)` as soft floor
+- HM `initialize_week1_lr()`: same change — phase logic drives, recent_lr only prevents embarrassing regression below 70%
+- Effects: marathon int 25/5d Wk 1 LR 10→8, marathon adv 40/5d Wk 1 LR 14→12 (target was higher, recent inflated less so smaller change for HM)
+
+**Part 2 — Global +10%/+4 mi week-over-week guardrail:**
+- Both engines post-process the weekly curve. Any climbing week exceeding `max(+10%, +4 mi)` over prior gets capped. Cutbacks and Taper/Race weeks untouched.
+- Effects: marathon int 25/5d Wk 3 jump 31→36 (+16%) → 31→35 (capped at +4); same pattern smooths all Base/Build climbs
+- HM curves were already within cap (no visible changes), but the rule is in place as a guard
+
+This subsumes M-3 (Wk 1 LR regression guard — now handled by the regression_floor pattern). M-2 (Base shouldn't cutback) is independent semantic cleanup. M-4 (Peak LR stagnation/early termination on advanced runners) remains as-is.
+
+**Priority order remaining:** ~~M-1~~ ✓, ~~M-3~~ ✓ (via M-6), ~~M-6~~ ✓. M-2 (Base cutback semantics), M-4 (advanced Peak LR polish). M-5 is an audit-script issue, not an engine issue.
 
 ---
 

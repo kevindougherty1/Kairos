@@ -559,6 +559,18 @@ def weekly_curve(peak, phases, current_mileage):
     # Two-week taper + race week.
     weekly += [round(peak * 0.70), round(peak * 0.52), 6]
 
+    # Global week-over-week guardrail. No climbing week jumps more than
+    # max(+10%, +4 mi) over the prior week. Keeps the curve honest regardless
+    # of how phase math, current_mileage, or peak interact upstream. Cutbacks
+    # (drops) and Taper/Race weeks are left alone.
+    for i in range(1, len(weekly)):
+        if phases[i] in ("Taper", "Race"):
+            continue
+        prev = weekly[i - 1]
+        max_jump = max(round(prev * 0.10), 4)
+        if weekly[i] - prev > max_jump:
+            weekly[i] = prev + max_jump
+
     return weekly
 
 
@@ -591,19 +603,17 @@ def base_long_run_target(mileage, phase, runs_per_week=5):
 
 def initialize_week1_lr(target_lr, weekly_mileage, recent_longest_run):
     """
-    Week 1 LR aims for max(target, recent_longest_run) — the runner shouldn't
-    regress below their recent capability, and the target lifts them slightly
-    when their volume supports a longer LR. Sanity-capped at target × 1.2 so
-    a runner with an unusually high one-off recent LR (e.g., a recent race)
-    doesn't get an aggressive Week 1.
-
-    recent_longest_run is a readiness guide, not a hard ceiling.
+    Phase logic drives Week 1 LR. `recent_longest_run` is a soft regression
+    floor (don't drop below ~70% of recent capability), not a value that
+    lifts the LR upward. A runner who recently ran 14 mi gets a sensible
+    Base-phase LR target, not 14 again — the plan is allowed to establish
+    a softer baseline.
     """
     lower_bound = max(6, round(weekly_mileage * 0.24))
-    sanity_cap = max(target_lr, round(target_lr * 1.2))
+    regression_floor = round(recent_longest_run * 0.70)
 
-    lr = max(target_lr, recent_longest_run)
-    lr = min(lr, sanity_cap)
+    lr = target_lr
+    lr = max(lr, regression_floor)
     lr = max(lr, lower_bound)
     lr = max(6, lr)
     return lr

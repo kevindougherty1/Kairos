@@ -238,6 +238,21 @@ def generate_weekly_mileage(
     if race_n == 1:
         weekly += [8]
 
+    # Global week-over-week guardrail. No climbing week jumps more than
+    # max(+10%, +4 mi) over the prior week. This is the engine's overall
+    # "don't spit out" rule — it keeps the curve honest regardless of how
+    # phase math, current_mileage, or peak interact upstream. Cutbacks
+    # (drops) and Taper/Race weeks are left alone.
+    MAX_PCT = 0.10
+    MAX_ABS = 4
+    for i in range(1, len(weekly)):
+        if phases[i] in ("Taper", "Race"):
+            continue
+        prev = weekly[i - 1]
+        max_jump = max(round(prev * MAX_PCT), MAX_ABS)
+        if weekly[i] - prev > max_jump:
+            weekly[i] = prev + max_jump
+
     return weekly
 
 
@@ -348,9 +363,14 @@ def calculate_long_runs(weekly, phases, peak, recent_long_run):
         pct = phase_pct.get(phase, 0.34)
         target_lr = round(mileage * pct)
 
-        # First week anchor
+        # First week: phase logic drives the value. recent_long_run is a soft
+        # regression floor (don't drop below ~70% of recent capability), not a
+        # value that lifts the LR upward. A runner who recently ran 18 mi gets
+        # a sensible Base-phase LR target, not 18 again — the plan is allowed
+        # to establish a softer baseline.
         if prev_lr == 0:
-            lr = max(recent_long_run, target_lr)
+            regression_floor = round(recent_long_run * 0.70)
+            lr = max(target_lr, regression_floor)
         else:
             lr = min(target_lr, prev_lr + 2)
 
