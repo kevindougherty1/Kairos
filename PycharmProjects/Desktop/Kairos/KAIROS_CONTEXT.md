@@ -327,11 +327,9 @@ Ran `marathon_audit.py` across 12 tier × frequency × volume cases. Findings:
 
 `build_segment` (nested in `generate_weekly_mileage`) gained `cutback_floor` and `exponent` params. `min_cutback` is computed from peak by stepping backward through `peak_n` weeks. Peak segment uses `exponent=1.0`.
 
-**M-2. Base phase ends with a cutback** — `build_segment(..., cutback=True)` is called on the Base segment, producing weird troughs:
-- int 25/5d: `28 → 31 → 36 → 40 → 34 →` (Wk 4 climbs to 40, Wk 5 drops to 34, then Build starts climbing again)
-- int 35/6d: `36 → 38 → 40 → 43 → 37 →` (same shape)
+**~~M-2. Base phase ends with a cutback~~** — FIXED 2026-06-19. Base segment now called with `cutback=False`. Base is the establishment phase — no load applied yet, nothing to recover from.
 
-Semantically odd — Base is the gentle ramp. Cutback should be in Build or Peak, not Base. Fix candidate: in `generate_weekly_mileage()`, remove `cutback=True` from the Base `build_segment` call (`engineV3.py:185–191`).
+Effect on int 25/5d: Wk 1-5 `28 31 36 40 34` (trough) → `28 31 35 39 43` (clean ramp). The +10%/+4 global cap from M-6 keeps the Base ramp from getting too aggressive even with the cutback removed.
 
 **M-3. Wk 1 LR can exceed `recent_long_run`** — `calculate_long_runs()` uses `lr = max(recent_long_run, target_lr)` for Wk 1 with no sanity cap. An adv 60/7d runner with recent LR=18 gets Wk 1 LR=20. HM engine solved this with `min(lr, target × 1.2)` in `initialize_week1_lr()`. Port the same approach.
 
@@ -358,7 +356,9 @@ Semantically odd — Base is the gentle ramp. Cutback should be in Build or Peak
 
 This subsumes M-3 (Wk 1 LR regression guard — now handled by the regression_floor pattern). M-2 (Base shouldn't cutback) is independent semantic cleanup. M-4 (Peak LR stagnation/early termination on advanced runners) remains as-is.
 
-**Priority order remaining:** ~~M-1~~ ✓, ~~M-3~~ ✓ (via M-6), ~~M-6~~ ✓. M-2 (Base cutback semantics), M-4 (advanced Peak LR polish). M-5 is an audit-script issue, not an engine issue.
+**Priority order remaining:** ~~M-1~~ ✓, ~~M-2~~ ✓, ~~M-3~~ ✓ (via M-6), ~~M-6~~ ✓. M-4 (advanced Peak LR polish) is the only marathon-engine bug left. Note: M-2 fix surfaced M-4 more loudly — 4 advanced cases now flag "Peak LR maxes at 18" (was 1). Not a regression — the `twenty_count` early-termination logic was always too aggressive, just less visible before.
+
+M-5 is an audit-script issue, not an engine issue.
 
 ---
 

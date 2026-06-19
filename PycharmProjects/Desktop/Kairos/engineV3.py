@@ -193,12 +193,16 @@ def generate_weekly_mileage(
         floor_by_abs = min_cutback - MAX_ABS
         min_cutback = min(floor_by_pct, floor_by_abs)
 
-    # Base
+    # Base is the establishment phase — gentle ramp, no cutback. Cutbacks are
+    # a recovery mechanism after a meaningful training load, which doesn't
+    # apply until Build. Previously Base had `cutback=True` which produced a
+    # trough between Base and Build (e.g., int 25/5d: 28→31→36→40→34→36, the
+    # 40→34 drop served no training purpose).
     base_segment = build_segment(
         start=current_mileage,
         end=base_target,
         n=base_n,
-        cutback=True
+        cutback=False,
     )
     weekly += base_segment
 
