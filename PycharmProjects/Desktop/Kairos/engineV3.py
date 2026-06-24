@@ -324,17 +324,20 @@ def tempo_mileage(weekly,enabled):
 # LONG RUN ENGINE
 # -----------------------------
 
-def calculate_long_runs(weekly, phases, peak, recent_long_run):
+def calculate_long_runs(weekly, phases, peak, recent_long_run, experience="intermediate"):
 
     long_runs = []
     prev_lr = 0
     last_was_twenty = False
 
-    phase_pct = {
-        "Base": 0.32,
-        "Build": 0.34,
-        "Peak": 0.36
-    }
+    # Advanced runners have high enough weekly volume that 32% of weekly in
+    # Base produces 18-mile Base LRs — too aggressive for an establishment
+    # phase. Drop their Base % so the absolute LR stays in the 14-16 range
+    # for Base, then climbs in Build/Peak.
+    if experience == "advanced":
+        phase_pct = {"Base": 0.28, "Build": 0.32, "Peak": 0.36}
+    else:
+        phase_pct = {"Base": 0.32, "Build": 0.34, "Peak": 0.36}
 
     peak_week_mileage = max(weekly)
 
@@ -377,8 +380,11 @@ def calculate_long_runs(weekly, phases, peak, recent_long_run):
         else:
             lr = min(target_lr, prev_lr + 2)
 
-        # Ensure LR not too small
-        min_lr = round(mileage * 0.30)
+        # Ensure LR not too small. Floor must sit below the phase target so it
+        # doesn't fight the phase_pct (advanced Base targets 0.28; a 0.30 floor
+        # would force advanced Base LRs back up to 18-20).
+        min_lr_pct = 0.27 if experience == "advanced" else 0.30
+        min_lr = round(mileage * min_lr_pct)
         lr = max(lr, min_lr)
 
         # Prevent stagnation in Base
@@ -416,6 +422,13 @@ def calculate_long_runs(weekly, phases, peak, recent_long_run):
         # looks non-stagnant pre-rounding but rounds to 16 (stagnant).
         if phase == "Base" and prev_lr > 0 and lr == prev_lr:
             lr += 2
+
+        # Advanced Base LR ceiling. Recreational-advanced (Kairos's audience)
+        # plans like Pfitzinger, Higdon, and Hanson cap Base-phase LRs at 16.
+        # 18-mile Base LRs are pro/elite territory — unsupervised, that's risky.
+        # Build/Peak still climb to 18-20.
+        if phase == "Base" and experience == "advanced":
+            lr = min(lr, 16)
 
         # Cap at 20
         lr = min(lr, 20)
@@ -567,7 +580,6 @@ def build_week_schedule_v2(sessions, phase, preferences, runs_per_week):
     speed_day = preferences["speed_day"]
     unavailable_days = preferences.get("unavailable_days", [])
     preferred_rest_days = preferences.get("preferred_rest_days", [])
-    hard_day_style = preferences.get("hard_day_style", "spread")
 
     # -----------------------------
     # Race week
@@ -612,11 +624,7 @@ def build_week_schedule_v2(sessions, phase, preferences, runs_per_week):
     # Place Tempo before LR
     # -----------------------------
     if tempo > 0:
-        candidates = []
-        for day in tempo_candidates(long_run_day):
-            if day == speed_day and hard_day_style == "spread":
-                continue
-            candidates.append(day)
+        candidates = [d for d in tempo_candidates(long_run_day) if d != speed_day]
 
         chosen_day = choose_best_day(
             candidates,
@@ -635,11 +643,7 @@ def build_week_schedule_v2(sessions, phase, preferences, runs_per_week):
     # Place MLR with optimal spacing from LR
     # -----------------------------
     if mlr > 0:
-        candidates = []
-        for day in mlr_candidates(long_run_day):
-            if day == speed_day and hard_day_style == "spread":
-                continue
-            candidates.append(day)
+        candidates = [d for d in mlr_candidates(long_run_day) if d != speed_day]
 
         chosen_day = choose_best_day(
             candidates,
@@ -694,6 +698,17 @@ def build_plan(
         weeks,
         preferences):
 
+    if runs_per_week > 6:
+        raise ValueError(
+            "7-day plans are not supported. Running 7 days a week for 16+ weeks "
+            "without a rest day is not healthy for the runners Kairos targets. "
+            "Choose 4-6 days per week."
+        )
+    if runs_per_week < 4:
+        raise ValueError(
+            "Marathon engine supports 4-6 run days per week. "
+            "Use a separate low-frequency engine for 3-day plans."
+        )
 
     peak = determine_peak_mileage(
         experience,
@@ -716,7 +731,8 @@ def build_plan(
         weekly,
         phases,
         peak,
-        longest_run
+        longest_run,
+        experience,
     )
 
     plan = []
@@ -825,7 +841,6 @@ if __name__=="__main__":
         "speed_day": "Tue",
         "unavailable_days": [],
         "preferred_rest_days": ["Sun"],
-        "hard_day_style": "spread"
     }
 
     plan = build_plan(

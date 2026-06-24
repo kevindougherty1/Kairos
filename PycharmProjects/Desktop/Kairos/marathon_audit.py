@@ -13,7 +13,6 @@ PREFERENCES = {
     "speed_day": "Tue",
     "unavailable_days": [],
     "preferred_rest_days": ["Sun"],
-    "hard_day_style": "spread",
 }
 
 
@@ -30,7 +29,7 @@ CASES = [
     ("advanced",     45, 16,  6, 16),
     ("advanced",     50, 16,  6, 18),
     ("advanced",     55, 18,  6, 18),
-    ("advanced",     60, 18,  7, 18),
+    ("advanced",     60, 18,  6, 18),
 ]
 
 

@@ -228,7 +228,6 @@ def build_week_schedule(sessions, phase, preferences):
     primary_day = preferences.get("quality_day", preferences.get("speed_day", "Tue"))
     unavailable_days = preferences.get("unavailable_days", [])
     preferred_rest_days = preferences.get("preferred_rest_days", [])
-    hard_day_style = preferences.get("hard_day_style", "spread")
 
     z2_runs = sessions["z2_runs"][:]
 
@@ -263,9 +262,7 @@ def build_week_schedule(sessions, phase, preferences):
     secondary = sessions["secondary"]
     if secondary and secondary["miles"] > 0:
         candidates = secondary_candidates(primary_day, long_run_day)
-
-        if hard_day_style == "spread":
-            candidates = [day for day in candidates if day not in [primary_day, long_run_day]]
+        candidates = [day for day in candidates if day not in [primary_day, long_run_day]]
 
         chosen_day = choose_best_day(candidates, schedule, unavailable_days, preferred_rest_days)
 
@@ -323,17 +320,15 @@ def validate_engine_inputs(experience, runs_per_week):
 
     if runs_per_week < 4:
         raise ValueError(
-            "This main half-marathon engine supports 4+ run days per week. "
+            "This main half-marathon engine supports 4-6 run days per week. "
             "Use a separate 3-day low-frequency engine for 3-day plans."
         )
 
-    if runs_per_week > 7:
-        raise ValueError("runs_per_week must be between 4 and 7 for this engine.")
-
-    if runs_per_week == 7 and experience == "beginner":
+    if runs_per_week > 6:
         raise ValueError(
-            "7-day beginner plans are not supported in the main engine. "
-            "Use 4-6 days for beginner plans."
+            "7-day plans are not supported. Running 7 days a week for 14+ weeks "
+            "without a rest day is not healthy for the runners Kairos targets. "
+            "Choose 4-6 days per week."
         )
 
 
@@ -1102,7 +1097,6 @@ def build_plan(
             "quality_day": "Tue",
             "unavailable_days": [],
             "preferred_rest_days": ["Sun"],
-            "hard_day_style": "spread",
         }
 
     peak = determine_peak_mileage(

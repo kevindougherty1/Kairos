@@ -27,7 +27,6 @@ def generate_plan():
             "quality_day": data.get("speed_day", "Tue"),
             "unavailable_days": data.get("unavailable_days", []),
             "preferred_rest_days": data.get("preferred_rest_days", []),
-            "hard_day_style": data.get("hard_day_style", "spread"),
         }
         peak, plan = build_hm_plan(
             experience=experience,
@@ -47,7 +46,6 @@ def generate_plan():
             "speed_day": data.get("speed_day"),
             "unavailable_days": data.get("unavailable_days", []),
             "preferred_rest_days": data.get("preferred_rest_days", []),
-            "hard_day_style": data.get("hard_day_style", "spread"),
         }
         plan = build_marathon_plan(
             experience=experience,

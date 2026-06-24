@@ -1079,7 +1079,6 @@
                                 <option value="4">4</option>
                                 <option value="5">5</option>
                                 <option value="6" selected>6</option>
-                                <option value="7" class="hm-only" style="display:none">7</option>
                             </select>
                         </div>
 
@@ -1122,14 +1121,6 @@
                         <div class="field-group">
                             <label for="unavailable_days">Unavailable Days (comma separated)</label>
                             <input type="text" id="unavailable_days" name="unavailable_days" placeholder="Fri" />
-                        </div>
-
-                        <div class="field-group">
-                            <label for="hard_day_style">Hard Day Style</label>
-                            <select id="hard_day_style" name="hard_day_style">
-                                <option value="spread" selected>Spread</option>
-                                <option value="stack">Stack</option>
-                            </select>
                         </div>
 
                         <div class="submit-wrap">
@@ -1196,12 +1187,9 @@
                 if (race === "half_marathon") {
                     weeksInput.value = 12;
                     engineBadge.textContent = "Half Marathon Engine";
-                    rpwSelect.querySelector("option[value='7']").style.display = "";
                 } else {
                     weeksInput.value = 16;
                     engineBadge.textContent = "Marathon Engine";
-                    rpwSelect.querySelector("option[value='7']").style.display = "none";
-                    if (rpwSelect.value === "7") rpwSelect.value = "6";
                 }
             });
         });
@@ -1237,7 +1225,6 @@
                 speed_day: document.getElementById("speed_day").value,
                 preferred_rest_days: parseDays(document.getElementById("preferred_rest_days").value),
                 unavailable_days: parseDays(document.getElementById("unavailable_days").value),
-                hard_day_style: document.getElementById("hard_day_style").value
             };
 
             resultsDiv.innerHTML = `

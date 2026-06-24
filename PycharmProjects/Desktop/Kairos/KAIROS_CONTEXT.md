@@ -15,10 +15,11 @@ Kairos/
 ├── app.py                                      # Flask entry point — imports both engines, routes on race_type
 ├── engine.py                                   # Marathon engine v1 (old)
 ├── engineV2.py                                 # Marathon engine v2 (old)
-├── engineV3.py                                 # Marathon engine v3 — marathon engine app.py uses (35-70 mi peak)
+├── engineV3.py                                 # ★ ACTIVE marathon engine (35-70 mi peak)
 ├── half_marathon_engine_main_4plus_v5_7.py     # ★ ACTIVE half marathon engine
-├── test_engine.py                              # Assertion-based test suite (12 cases × 10 invariants)
-├── engine_tests.txt                            # Generated plan output for visual review (gitignored)
+├── test_engine.py                              # HM assertion-based test suite (14 cases × 10 invariants)
+├── marathon_audit.py                           # Marathon engine diagnostic — generates plans + checks invariants
+├── engine_tests.txt                            # Generated HM plan output for visual review (gitignored)
 ├── v5_7_fixes_summary.txt                      # Summary of v5.7 development bug fixes
 ├── validation_results_2026-05-17.txt           # Older validation run with red flags and analysis
 ├── templates/index.html                        # Frontend — race-type toggle, marathon + HM rendering
@@ -26,7 +27,7 @@ Kairos/
 └── .gitignore
 ```
 
-**The active half marathon engine is `half_marathon_engine_main_4plus_v5_7.py`.** Everything else is either the marathon engine or old/archived files.
+**Active engines:** `half_marathon_engine_main_4plus_v5_7.py` (HM) and `engineV3.py` (marathon). The rest are old/archived.
 
 ---
 
@@ -38,9 +39,9 @@ Kairos/
 | `experience` | str | `"beginner"`, `"intermediate"`, `"advanced"` |
 | `current_mileage` | int | Runner's current weekly mileage |
 | `recent_longest_run` | int | Recent longest run (Week 1 ceiling) |
-| `runs_per_week` | int | 4–7 (engine enforces 4+) |
+| `runs_per_week` | int | 4–6 (7-day plans rejected, see Q-1 below) |
 | `weeks` | int | Plan length (typically 12) |
-| `preferences` | dict | Optional: `long_run_day`, `quality_day`, `unavailable_days`, `preferred_rest_days`, `hard_day_style` |
+| `preferences` | dict | Optional: `long_run_day`, `quality_day`, `unavailable_days`, `preferred_rest_days` |
 
 ### Plan Structure
 Each week in the returned plan has:
@@ -245,7 +246,7 @@ An earlier V6 draft contributed a product/app layer on top of the core engine. T
 
 - **`WORKOUT_GLOSSARY`** — purpose, effort cue, and example prescriptions for every workout type
 - **Scheduling layer** — `build_week_schedule()` places workouts onto Mon–Sun based on `preferences`
-- **`preferences` parameter** in `build_plan()` — `long_run_day` (default Sat), `quality_day` (default Tue), `unavailable_days`, `preferred_rest_days`, `hard_day_style`
+- **`preferences` parameter** in `build_plan()` — `long_run_day` (default Sat), `quality_day` (default Tue), `unavailable_days`, `preferred_rest_days`
 - **Global plan warnings** — fires when `current_mileage > recommended_upper` for the runner's tier
 - **`print_plan()` enhanced** — `show_styles`, `show_schedule`, `show_glossary` flags; prints day schedule and plan-level notes
 - **`print_workout_glossary()`** — prints the full glossary
@@ -276,26 +277,23 @@ Run with: `python test_engine.py`
 
 ---
 
-## Where We Left Off (2026-06-19)
+## Where We Left Off (2026-06-19, end of day)
 
-Reviewing the **intermediate / 35 mpw / 5-day / 12-week** plan against the engine's current state. All 170 assertion tests pass, but the *shape* still has hiccups the test suite doesn't catch. Working toward MVP — see below.
+**Mid-discussion on M-7 (frequency-aware peak in marathon engine).** User took a break before deciding on the proposed peak table. State at break:
 
-Plan output snapshot (int 35/5d, peak 46):
+- HM all 140 tests pass (was 170 before we removed 7-day cases)
+- Marathon audit clean across 12 cases (residual flags are documented M-5 false positives)
+- 5 commits landed today (see Session Log below)
+- **Uncommitted changes in the working tree** covering: `hard_day_style` removal, advanced Base LR cap at 16, 7-day plan rejection. These need to be committed when work resumes — user paused after asking about the adv 40/5d plan output.
 
-```
-Wk 1  Base    32   Thr(4) Hill(3)   LR 11           Easy [7, 7]
-Wk 2  Base    33   Thr(4) Speed(4)  LR 11           Easy [7, 7]
-Wk 3  Base    34   Thr(5) Econ(4)   LR 11           Easy [7, 7]
-Wk 4  Build   39   Thr(5) Speed(4)  LR 13           Easy [9, 8]
-Wk 5  Build   41   Thr(6) Hill(4)   LR 14           Easy [9, 8]
-Wk 6  Build   42   Thr(7) Speed(5)  LR 14           Easy [8, 8]
-Wk 7  Build   36   Thr(5) Econ(4)   LR 12           Easy [8, 7]   ← cutback
-Wk 8  Spec    40   HMP(6) Speed(4)  LR 14           Easy [8, 8]
-Wk 9  Spec    46   HMP(8) Hill(5)   LR 14 FastFin   Easy [10, 9]  ← peak, chunky warn
-Wk 10 Taper   32   Thr(4)           LR 9            Easy [7, 6, 6]
-Wk 11 Taper   24   Thr(4)           LR 7            Easy [5, 4, 4]
-Wk 12 Race    6                                     Shakeouts
-```
+**Open question awaiting user decision:** the proposed frequency-aware peak table for marathon engine (see Open Problem M-7 below). Once decided, implement in `engineV3.py` `determine_peak_mileage()`.
+
+**Session log:**
+1. `c43bf49` — Cap weekly mileage jumps at +10%/+4mi; smooth climb to peak (HM Wk 9 + marathon M-1)
+2. `4a59208` — Treat current_mileage and recent_long_run as guardrails, not drivers (M-6)
+3. `75499c8` — Remove cutback from marathon Base phase (M-2)
+4. `c5a7327` — Fix marathon Peak LR stagnation and early termination (M-4)
+5. **Uncommitted batch:** strip `hard_day_style`, cap advanced Base LR at 16, nuke 7-day plans, lower advanced Base phase_pct to 0.28
 
 ---
 
@@ -331,7 +329,7 @@ Ran `marathon_audit.py` across 12 tier × frequency × volume cases. Findings:
 
 Effect on int 25/5d: Wk 1-5 `28 31 36 40 34` (trough) → `28 31 35 39 43` (clean ramp). The +10%/+4 global cap from M-6 keeps the Base ramp from getting too aggressive even with the cutback removed.
 
-**M-3. Wk 1 LR can exceed `recent_long_run`** — `calculate_long_runs()` uses `lr = max(recent_long_run, target_lr)` for Wk 1 with no sanity cap. An adv 60/7d runner with recent LR=18 gets Wk 1 LR=20. HM engine solved this with `min(lr, target × 1.2)` in `initialize_week1_lr()`. Port the same approach.
+**~~M-3. Wk 1 LR can exceed `recent_long_run`~~** — RESOLVED 2026-06-19 via M-6 Part 1. The `max(recent, target)` pattern was replaced by `target` with `recent * 0.70` as a soft regression floor in both engines.
 
 **~~M-4. Peak LR issues~~** — FIXED 2026-06-19.
 
@@ -367,9 +365,48 @@ Effects:
 
 This subsumes M-3 (Wk 1 LR regression guard — now handled by the regression_floor pattern). M-2 (Base shouldn't cutback) is independent semantic cleanup. M-4 (Peak LR stagnation/early termination on advanced runners) remains as-is.
 
-**Priority order remaining:** ~~M-1~~ ✓, ~~M-2~~ ✓, ~~M-3~~ ✓, ~~M-4~~ ✓, ~~M-6~~ ✓. All known marathon-engine bugs resolved as of 2026-06-19. The only flags left in the audit script are the M-5 false positives ("Quality dominates week") which we documented as audit-check miscalibration, not an engine issue.
+**M-7. Marathon peak determination is not frequency-aware** — SURFACED 2026-06-19, AWAITING USER DECISION.
 
-Both engines are now in a good state for MVP consideration. Next likely work: frontend polish for marathon UI parity with HM, or a strength-training placeholder hook (per the run+strength wedge in [[project-kairos-vision]]).
+**Symptom that surfaced this:** adv 40/5d/16wk plan produces oversized "easy" runs at high mileage weeks:
+- Wk 5 (Base end, 57 mi): LR 16, Easy `[15, 14]` — easy runs essentially as long as the LR
+- Wk 13 (Peak, 70 mi): LR 20, Easy `[14, 14, 14]` — three 14-mi "easy" runs
+
+**Root cause:** `determine_peak_mileage()` in `engineV3.py` only uses `(experience, current_mileage, weeks)` — it doesn't see `runs_per_week`. So a 5-day advanced runner can peak at 70 mpw, which is 14 mi/run average. Not structurally supportable.
+
+**Why MLR doesn't fix it:** Tried mentally — adding MLR at 5-day makes it worse:
+```
+57 - 6 VO2 - 6 Tempo - 16 LR = 29 mi for 2 days
+With MLR: 57 - 28 - 11 (MLR) = 18 mi for 1 easy day  ← worse
+```
+The math is hard-locked by frequency: at 5 days, you can't distribute 57 mpw sensibly with a 16-mi LR cap.
+
+**HM engine already solves this** via `frequency_peak_range(experience, runs_per_week)`. Marathon needs the same.
+
+**Proposed peak table (awaiting user approval):**
+
+| | 4-day | 5-day | 6-day |
+|---|---|---|---|
+| Beginner | 32 | 38 | 45 |
+| Intermediate | 42 | 50 | 55 |
+| Advanced | 52 | 60 | 70 |
+
+For adv 40/5d this would change peak 70 → 60. Effect:
+- Wk 5 (Base end, 49 mi): LR 16, Easy `[11, 10]` — clean
+- Wk 13 (Peak, 60 mi): LR 20, Easy `[11, 11, 10]` — clean
+
+**Implementation if approved:** Add `frequency_peak_range()` to `engineV3.py`, plumb `runs_per_week` into `determine_peak_mileage()`, clamp peak. Mirror the HM engine's pattern.
+
+**Priority order remaining:** ~~M-1~~ ✓, ~~M-2~~ ✓, ~~M-3~~ ✓, ~~M-4~~ ✓, ~~M-6~~ ✓. **M-7 is the only open marathon-engine issue** (awaiting decision). M-5 is an audit-script false positive — documented, not fixed.
+
+---
+
+## Resolved Philosophical Questions
+
+**~~Q-1. 7-day plans~~** — REMOVED 2026-06-19. Both engines now raise ValueError on `runs_per_week=7`. Frontend dropdown no longer offers 7. Reasoning: running 7 days/week for 14+ weeks without a rest day isn't healthy for Kairos's audience (recreational runners, not pros with coaches). The HM engine already blocked 7-day beginners; we extended the block to all 7-day plans.
+
+**~~Q-2. Advanced Base LR ceiling~~** — CAPPED at 16 mi for advanced Base, 2026-06-19. Rationale: Pfitzinger (gold standard for serious amateurs) keeps endurance-phase LRs at 13-16 mi; Higdon Advanced doesn't hit 18 until late-plan; Hanson caps at 16 for the entire plan. Kairos's "advanced" tier is the upper end of recreational, not pros — an unsupervised online generator handing out 18-mi Base LRs is borrowing from elite programs without the coaching oversight. Build/Peak still climb to 18-20 normally. Implementation: `if phase == "Base" and experience == "advanced": lr = min(lr, 16)` in `calculate_long_runs()`.
+
+---
 
 ---
 
@@ -388,12 +425,16 @@ Both engines are now in a good state for MVP consideration. Next likely work: fr
 
 **What MVP does NOT require:**
 - 3-day engine
-- 7-day beginner support
+- 7-day plans (rejected by both engines as of 2026-06-19)
 - Per-runner pace targets (we're effort-first)
 - Every test case producing a 100% clean shape
 
 **Next likely tasks (ordered):**
-1. Diagnose + fix the Wk 9 peak jump principle (not just for int 35/5d, but as a `weekly_curve()` invariant)
-2. Audit the marathon engine (`engineV3.py`) the same way we audited the HM engine — generate plans, list hiccups
-3. Decide what level of "good enough" each engine needs before MVP cut
-4. Frontend polish pass once engines are stable
+1. **Resolve M-7** — decide on the frequency-aware peak table, implement in `engineV3.py`. This is the immediate next step when work resumes.
+2. **Commit the uncommitted batch** before M-7 work (hard_day_style strip + advanced Base cap + 7-day nuke + advanced phase_pct).
+3. **Frontend polish for marathon** — currently the marathon UI rendering may not have full parity with HM (workout glossary, plan-level notes, schedule formatting). Audit and align.
+4. **Strength-training placeholder hook** — per the run+strength wedge in [[project-kairos-vision]], we need at minimum a stub UI/data structure. Doesn't have to be a full strength engine for MVP, just acknowledgement that the feature is coming.
+5. **Audit script cleanup** — recalibrate the "Quality dominates week" check (M-5) so it stops producing false positives on low-mileage marathon weeks. Either remove the check, or lower the threshold to 75%+.
+6. **Coach review pass** — once the engines are stable, get a human coach (or detailed self-review) to look at 4-6 representative plans end-to-end. Catches the qualitative stuff automated audits miss.
+
+**Audience reminder (decision filter):** Kairos's target is the **recreational advanced runner buying an online plan** — not pros chasing sub-2:30. When in doubt, choose the more conservative, coach-defensible option (see Q-2 reasoning for Base LR cap as the canonical example).
