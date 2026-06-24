@@ -559,9 +559,12 @@ def distribute_runs(mileage, lr, vo2, tempo, runs_per_week, phase, week_num, bas
             z2_runs[i] += 1
 
     # -----------------------------
-    # ensure LR biggest run
+    # ensure LR biggest run — SKIP in Taper. Taper LRs are intentionally
+    # smaller than Peak; lifting them to dominate easy runs produces the
+    # nonsensical "Taper LR > Peak LR" pattern. In low-frequency Taper weeks
+    # one easy day will be long, but that's the math of the mileage target.
     # -----------------------------
-    if z2_runs:
+    if z2_runs and phase != "Taper":
 
         max_z2 = max(z2_runs)
 
@@ -576,8 +579,11 @@ def distribute_runs(mileage, lr, vo2, tempo, runs_per_week, phase, week_num, bas
     # easy run floor
     z2_runs = [max(3, r) for r in z2_runs]
 
-    if phase == "Taper":
-        z2_runs = [min(r, 6) for r in z2_runs]
+    # Note: previously Taper z2 runs were capped at 6 mi for recovery purposes,
+    # but that cap created systemic mileage leaks (e.g., adv 6d Taper Wk 16
+    # would report 52 mi while the schedule summed to 36). The Taper mileage
+    # target itself encodes the recovery — capping individual runs on top of
+    # that just makes the plan internally inconsistent.
 
     return {
         "z2_runs": z2_runs,

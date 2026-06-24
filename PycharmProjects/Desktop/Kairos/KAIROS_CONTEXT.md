@@ -297,7 +297,8 @@ M-7 implemented and verified. Marathon peak is now frequency-aware (see M-7 sect
 
 *2026-06-23:*
 6. `22804d3` — Marathon peak is now frequency-aware (M-7)
-7. *(pending commit)* — M-8: vary advanced Base LR downward at cap
+7. `eccfb8e` — Vary advanced Base LR downward at cap (M-8)
+8. *(pending commit)* — Fix Taper LR lift + mileage leak (M-9)
 
 ---
 
@@ -393,7 +394,30 @@ Other affected cases: most beginner peaks dropped (was 45 → now 32-38), int 5d
 
 **Side effect surfaced (M-8 below):** For advanced runners at high volume, Base LR now stagnates at the cap (4-5 consecutive 16-mi LRs) because the stagnation +2 bump gets clipped back by the 16-mi advanced Base cap from Q-2.
 
-**Priority order remaining:** ~~M-1~~ ✓, ~~M-2~~ ✓, ~~M-3~~ ✓, ~~M-4~~ ✓, ~~M-6~~ ✓, ~~M-7~~ ✓, ~~M-8~~ ✓. **No open marathon-engine bugs.** M-5 is an audit-script false positive — documented, not fixed.
+**~~M-9. Taper distribution bugs (LR lift + mileage leak)~~** — FIXED 2026-06-23.
+
+Surfaced during random-input diagnostic (beginner 18/4d/14wk marathon). Two related issues in `distribute_runs()`:
+
+1. **Taper LR > Peak LR.** The "ensure LR is biggest run" rule lifted Taper LR to dominate easy runs. Random plan: peak LR was 12-13, Wk 12 Taper LR ended up as 15. Taper LRs should be intentionally smaller than peak; lifting them violates the canonical Taper principle.
+
+2. **Systemic mileage leak from the 6-mi Taper z2 cap.** Every Taper week's schedule sum fell short of reported mileage. Adv 60/6d Wk 16: reported 52 mi, schedule summed to 36 (16-mi leak). Wk 17: 38 vs 32 (6-mi leak). The cap was incompatible with the mileage targets — the math just doesn't fit when easy runs are clamped to ≤6 mi.
+
+**Fixes:**
+- `if z2_runs and phase != "Taper":` around the LR-lift block — Taper LR stays at its calculated taper value
+- Removed the `z2_runs = [min(r, 6) for r in z2_runs]` cap entirely. Easy runs in Taper can now be 8-12 mi at high volume, which preserves mileage consistency. The Taper mileage target itself already encodes the recovery — capping individual runs on top was redundant and broken.
+
+**Results:**
+| Case | Wk | Before | After |
+|---|---|---|---|
+| bgn 18/4d random | Wk 12 | mi=24, lr=15, z2=[6] (sched 23) | mi=24, lr=8, z2=[14] (sched 24) |
+| adv 60/6d | Wk 16 | mi=52, lr=14, z2=[6,6,6] (sched 36) | mi=52, lr=14, z2=[12,11,11] (sched 52) |
+| adv 60/6d | Wk 17 | mi=38, lr=10, z2=[6,6,6] (sched 32) | mi=38, lr=10, z2=[8,8,8] (sched 38) |
+
+**Side note:** Low-frequency Taper (4-day, 14-mi z2 day) produces noticeably long "easy" runs. That's structural — at 3 runs with LR+VO2, the leftover mileage has to land on the one remaining easy day. Could revisit by keeping all runs in Taper at 4-day frequency, but deferred for now.
+
+**Priority order remaining:** ~~M-1~~ ✓, ~~M-2~~ ✓, ~~M-3~~ ✓, ~~M-4~~ ✓, ~~M-6~~ ✓, ~~M-7~~ ✓, ~~M-8~~ ✓, ~~M-9~~ ✓. **No open marathon-engine bugs.** M-5 is an audit-script false positive — documented, not fixed.
+
+**Open philosophical question (not a bug, awaiting decision):** LR-to-weekly-mileage ratio can hit 45-48% for low-volume beginners. Standard guidance is 30-35% (up to 40% acceptable). At 4-day low-mileage, the LR being a big % is partly unavoidable but the worst cases (e.g., 10/21=48%) cross into injury-risk territory. Potential fix: add a 40% LR-to-weekly cap.
 
 **~~M-8. Advanced Base LR stagnates at 16-mi cap~~** — FIXED 2026-06-23.
 
