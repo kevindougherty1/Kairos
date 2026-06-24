@@ -296,7 +296,8 @@ M-7 implemented and verified. Marathon peak is now frequency-aware (see M-7 sect
 5. `081d2b9` — Nuke 7-day plans, cap advanced Base LR at 16, drop hard_day_style
 
 *2026-06-23:*
-6. *(pending commit)* — M-7: frequency-aware peak in marathon engine
+6. `22804d3` — Marathon peak is now frequency-aware (M-7)
+7. *(pending commit)* — M-8: vary advanced Base LR downward at cap
 
 ---
 
@@ -392,16 +393,22 @@ Other affected cases: most beginner peaks dropped (was 45 → now 32-38), int 5d
 
 **Side effect surfaced (M-8 below):** For advanced runners at high volume, Base LR now stagnates at the cap (4-5 consecutive 16-mi LRs) because the stagnation +2 bump gets clipped back by the 16-mi advanced Base cap from Q-2.
 
-**Priority order remaining:** ~~M-1~~ ✓, ~~M-2~~ ✓, ~~M-3~~ ✓, ~~M-4~~ ✓, ~~M-6~~ ✓, ~~M-7~~ ✓. **M-8 (Base LR stagnation at cap) is the only new open issue.** M-5 is an audit-script false positive — documented, not fixed.
+**Priority order remaining:** ~~M-1~~ ✓, ~~M-2~~ ✓, ~~M-3~~ ✓, ~~M-4~~ ✓, ~~M-6~~ ✓, ~~M-7~~ ✓, ~~M-8~~ ✓. **No open marathon-engine bugs.** M-5 is an audit-script false positive — documented, not fixed.
 
-**M-8. Advanced Base LR stagnates at 16-mi cap.** The post-rounding stagnation bump (`lr += 2` when `lr == prev_lr`) gets clipped immediately by the advanced Base cap (`lr = min(lr, 16)`). Result: high-volume advanced runners get Base LRs like `16 16 16 16 16` instead of any variety. Audit flags this as "3+ consecutive at 16 in Base."
+**~~M-8. Advanced Base LR stagnates at 16-mi cap~~** — FIXED 2026-06-23.
 
-**Possible fixes:**
-- Vary *downward* when stagnation hits the cap (e.g., `16, 14, 16, 14, 16`) — gives wave variety without exceeding cap
-- Loosen the stagnation audit check to not flag values at a known cap
-- Accept it (flat Base is realistic and not dangerous)
+When `lr == prev_lr == 16` for advanced Base (the cap), vary downward to 14 instead of letting the pre-rounding `+2` bump get clipped back. Implemented as a post-cap check in `calculate_long_runs()`.
 
-Pending discussion — minor aesthetic issue, not a structural bug.
+Effect on advanced Base LRs:
+
+| Case | Before M-8 | After M-8 |
+|---|---|---|
+| adv 45/6d | `12 14 16 16 16` | `12 14 16 14 16` |
+| adv 50/6d | `14 16 16 16 16` | `14 16 14 16 14` |
+| adv 55/6d | `16 16 16 16 16` | `16 14 16 14 16` |
+| adv 60/6d | `16 14 16 16 16` | `16 14 16 14 16` |
+
+Audit ISSUES now clear for all advanced cases. Build/Peak phases unaffected.
 
 ---
 
@@ -435,10 +442,9 @@ Pending discussion — minor aesthetic issue, not a structural bug.
 - Every test case producing a 100% clean shape
 
 **Next likely tasks (ordered):**
-1. **Decide on M-8** (Base LR stagnation at cap) — accept, vary downward, or relax the audit check
-2. **Frontend polish for marathon** — currently the marathon UI rendering may not have full parity with HM (workout glossary, plan-level notes, schedule formatting). Audit and align.
-3. **Strength-training placeholder hook** — per the run+strength wedge in [[project-kairos-vision]], we need at minimum a stub UI/data structure. Doesn't have to be a full strength engine for MVP, just acknowledgement that the feature is coming.
-4. **Audit script cleanup** — recalibrate the "Quality dominates week" check (M-5) so it stops producing false positives on low-mileage marathon weeks. Either remove the check, or lower the threshold to 75%+.
-5. **Coach review pass** — once the engines are stable, get a human coach (or detailed self-review) to look at 4-6 representative plans end-to-end. Catches the qualitative stuff automated audits miss.
+1. **Frontend polish for marathon** — currently the marathon UI rendering may not have full parity with HM (workout glossary, plan-level notes, schedule formatting). Audit and align.
+2. **Strength-training placeholder hook** — per the run+strength wedge in [[project-kairos-vision]], we need at minimum a stub UI/data structure. Doesn't have to be a full strength engine for MVP, just acknowledgement that the feature is coming.
+3. **Audit script cleanup** — recalibrate the "Quality dominates week" check (M-5) so it stops producing false positives on low-mileage marathon weeks. Either remove the check, or lower the threshold to 75%+.
+4. **Coach review pass** — once the engines are stable, get a human coach (or detailed self-review) to look at 4-6 representative plans end-to-end. Catches the qualitative stuff automated audits miss.
 
 **Audience reminder (decision filter):** Kairos's target is the **recreational advanced runner buying an online plan** — not pros chasing sub-2:30. When in doubt, choose the more conservative, coach-defensible option (see Q-2 reasoning for Base LR cap as the canonical example).

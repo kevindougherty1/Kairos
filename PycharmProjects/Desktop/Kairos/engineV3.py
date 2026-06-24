@@ -439,6 +439,18 @@ def calculate_long_runs(weekly, phases, peak, recent_long_run, experience="inter
         if phase == "Base" and experience == "advanced":
             lr = min(lr, 16)
 
+        # If after the cap we'd be flat at 16 (because the +2 stagnation bump
+        # just got clipped), vary downward so the Base LR pattern alternates
+        # (16, 14, 16, 14, 16) instead of stagnating. Only fires for advanced
+        # Base at the cap.
+        if (
+            phase == "Base"
+            and experience == "advanced"
+            and prev_lr > 0
+            and lr == prev_lr == 16
+        ):
+            lr = 14
+
         # Cap at 20
         lr = min(lr, 20)
 
