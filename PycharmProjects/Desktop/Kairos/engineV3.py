@@ -62,27 +62,36 @@ def choose_best_day(candidates, schedule, unavailable_days, preferred_rest_days)
 # PEAK MILEAGE ENGINE
 # -----------------------------
 
-def determine_peak_mileage(experience,current_mileage,weeks):
+# Peak ceiling per (experience, runs_per_week). A 5-day runner can't sustainably
+# hit a 70 mpw peak — the math forces oversized "easy" days (a 70 mpw runner
+# on 5 days averages 14 mi/run). To push past your frequency's cap, add a day.
+# 7-day plans are rejected upstream in build_plan().
+PEAK_TABLE = {
+    "beginner":     {4: 32, 5: 38, 6: 45},
+    "intermediate": {4: 42, 5: 50, 6: 55},
+    "advanced":     {4: 52, 5: 60, 6: 70},
+}
 
-    ranges = {
-        "beginner":(35,45),
-        "intermediate":(45,55),
-        "advanced":(55,70)
-    }
 
-    lower,upper = ranges[experience]
+def frequency_peak_range(experience, runs_per_week):
+    upper = PEAK_TABLE[experience][runs_per_week]
+    lower = round(upper * 0.70)
+    return lower, upper
 
-    growth_weeks = weeks-3
 
-    ramp_peak = current_mileage*(1.07**growth_weeks)
+def determine_peak_mileage(experience, current_mileage, weeks, runs_per_week):
+    lower, upper = frequency_peak_range(experience, runs_per_week)
 
-    ramp_peak = round(ramp_peak)
+    growth_weeks = weeks - 3
+    ramp_peak = round(current_mileage * (1.07 ** growth_weeks))
 
-    peak = min(upper,ramp_peak)
+    peak = min(upper, ramp_peak)
+    peak = max(lower, peak)
 
-    peak = max(lower,peak)
-
-    peak = min(MAX_PEAK,max(MIN_PEAK,peak))
+    # Honor current_mileage as a floor only up to the frequency cap. An
+    # over-qualified runner (e.g., 60 mpw on 5d) gets peak clamped at their
+    # frequency's upper bound rather than being given an unsustainable plan.
+    peak = max(peak, min(current_mileage, upper))
 
     return peak
 
@@ -713,7 +722,8 @@ def build_plan(
     peak = determine_peak_mileage(
         experience,
         current_mileage,
-        weeks
+        weeks,
+        runs_per_week,
     )
 
     phases = build_phases(weeks)
