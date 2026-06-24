@@ -298,7 +298,8 @@ M-7 implemented and verified. Marathon peak is now frequency-aware (see M-7 sect
 *2026-06-23:*
 6. `22804d3` — Marathon peak is now frequency-aware (M-7)
 7. `eccfb8e` — Vary advanced Base LR downward at cap (M-8)
-8. *(pending commit)* — Fix Taper LR lift + mileage leak (M-9)
+8. `bc721ff` — Fix Taper LR lift + mileage leak (M-9)
+9. *(pending commit)* — Add 40% LR-to-weekly cap (M-10)
 
 ---
 
@@ -415,9 +416,30 @@ Surfaced during random-input diagnostic (beginner 18/4d/14wk marathon). Two rela
 
 **Side note:** Low-frequency Taper (4-day, 14-mi z2 day) produces noticeably long "easy" runs. That's structural — at 3 runs with LR+VO2, the leftover mileage has to land on the one remaining easy day. Could revisit by keeping all runs in Taper at 4-day frequency, but deferred for now.
 
-**Priority order remaining:** ~~M-1~~ ✓, ~~M-2~~ ✓, ~~M-3~~ ✓, ~~M-4~~ ✓, ~~M-6~~ ✓, ~~M-7~~ ✓, ~~M-8~~ ✓, ~~M-9~~ ✓. **No open marathon-engine bugs.** M-5 is an audit-script false positive — documented, not fixed.
+**~~M-10. LR-to-weekly-mileage ratio too high at low volume~~** — FIXED 2026-06-23.
 
-**Open philosophical question (not a bug, awaiting decision):** LR-to-weekly-mileage ratio can hit 45-48% for low-volume beginners. Standard guidance is 30-35% (up to 40% acceptable). At 4-day low-mileage, the LR being a big % is partly unavoidable but the worst cases (e.g., 10/21=48%) cross into injury-risk territory. Potential fix: add a 40% LR-to-weekly cap.
+Random-input diagnostic surfaced this: bgn 18/4d/14wk plan had Wk 2 LR=10 on mi=21 (48%), Wk 3 LR=11 on mi=24 (46%), etc. Coaching standard is 30-35% with up to 40% acceptable; >40% overweights weekly stress and increases injury risk.
+
+**Fix in two places:**
+1. `calculate_long_runs()` — added `lr = min(lr, int(mileage * 0.40))` after the existing Base cap. Catches the bulk of the issue.
+2. `distribute_runs()` — bounded the "ensure LR is biggest run" lift at the 40% cap too. Without this, the lift was pushing LR back above the cap (Wk 5 mi=27: calculated lr=8 was lifted to 13 to dominate the leftover easy day).
+
+**Results on bgn 18/4d random plan:**
+
+| Wk | Before | After |
+|---|---|---|
+| 2 | lr=10/21 (48%) | lr=8/21 (38%) |
+| 3 | lr=11/24 (46%) | lr=9/24 (38%) |
+| 5 | lr=11/27 (48% after distribute lift) | lr=10/27 (37%) |
+| 7 | lr=13/29 (45% after distribute lift) | lr=11/29 (38%) |
+
+All weeks now 32-40%. Wk 10 hits exactly 40% (the cap is allowed to be 40%, not 39%).
+
+**Structural side effect at low volume:** some weeks have an easy run tied with or larger than the LR (Wk 1: lr=7, z2=[7]; Wk 5: lr=10, z2=[10]). The "long run" label loses some weight at low volume — but the training stimulus (continuous endurance) is still distinct from easy runs (recovery), and honoring the 40% safety guideline matters more than the labeling. At higher volume the LR is naturally biggest.
+
+**Cap doesn't bite at higher volume.** Adv 40/5d: all weeks 26-36%, well under 40%. The cap is a low-volume safety net.
+
+**Priority order remaining:** ~~M-1~~ ✓, ~~M-2~~ ✓, ~~M-3~~ ✓, ~~M-4~~ ✓, ~~M-6~~ ✓, ~~M-7~~ ✓, ~~M-8~~ ✓, ~~M-9~~ ✓, ~~M-10~~ ✓. **No open marathon-engine bugs.** M-5 is an audit-script false positive — documented, not fixed.
 
 **~~M-8. Advanced Base LR stagnates at 16-mi cap~~** — FIXED 2026-06-23.
 

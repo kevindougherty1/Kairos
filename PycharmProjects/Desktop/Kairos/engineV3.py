@@ -451,6 +451,13 @@ def calculate_long_runs(weekly, phases, peak, recent_long_run, experience="inter
         ):
             lr = 14
 
+        # Universal LR-to-weekly ceiling: 40% of the week's mileage. Coaching
+        # standard is 30-35%; 40% is the upper bound past which the long run
+        # overweights the week's stress and injury risk climbs. This bites
+        # mostly at low volume (e.g., 4-day beginner Base where target_lr +
+        # stagnation bump can push LR to 48% of weekly).
+        lr = min(lr, int(mileage * 0.40))
+
         # Cap at 20
         lr = min(lr, 20)
 
@@ -563,6 +570,12 @@ def distribute_runs(mileage, lr, vo2, tempo, runs_per_week, phase, week_num, bas
     # smaller than Peak; lifting them to dominate easy runs produces the
     # nonsensical "Taper LR > Peak LR" pattern. In low-frequency Taper weeks
     # one easy day will be long, but that's the math of the mileage target.
+    #
+    # The lift is also bounded by the 40% LR-to-weekly ceiling. At low volume
+    # with multiple quality days, the leftover easy day can be larger than
+    # the LR — lifting LR all the way to dominate it would push the LR past
+    # 40% of weekly. In that case the LR settles at the cap and an easy day
+    # may be tied with (or slightly larger than) the LR.
     # -----------------------------
     if z2_runs and phase != "Taper":
 
@@ -570,11 +583,14 @@ def distribute_runs(mileage, lr, vo2, tempo, runs_per_week, phase, week_num, bas
 
         if max_z2 >= lr:
 
-            diff = max_z2 - (lr - 1)
-            idx = z2_runs.index(max_z2)
+            ideal_lr = max_z2 + 1
+            capped_lr = min(ideal_lr, int(mileage * 0.40))
+            diff = capped_lr - lr
 
-            z2_runs[idx] -= diff
-            lr += diff
+            if diff > 0:
+                idx = z2_runs.index(max_z2)
+                z2_runs[idx] -= diff
+                lr += diff
 
     # easy run floor
     z2_runs = [max(3, r) for r in z2_runs]
