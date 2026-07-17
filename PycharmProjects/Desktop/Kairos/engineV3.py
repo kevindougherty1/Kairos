@@ -249,7 +249,7 @@ def generate_weekly_mileage(
 
     # Race
     if race_n == 1:
-        weekly += [8]
+        weekly += [6]
 
     # Global week-over-week guardrail. No climbing week jumps more than
     # max(+10%, +4 mi) over the prior week. This is the engine's overall
@@ -487,7 +487,7 @@ def distribute_runs(mileage, lr, vo2, tempo, runs_per_week, phase, week_num, bas
 
     if lr == 0:
         return {
-            "z2_runs": [3, 3, 2],
+            "z2_runs": [3, 3],
             "tempo": 0,
             "vo2": 0,
             "lr": 0,

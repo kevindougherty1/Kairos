@@ -277,16 +277,21 @@ Run with: `python test_engine.py`
 
 ---
 
-## Where We Left Off (2026-06-23)
+## Where We Left Off (2026-07-17)
 
-M-7 implemented and verified. Marathon peak is now frequency-aware (see M-7 section below for the table). All known structural issues from the original audit are resolved.
+Ran a random-input marathon diagnostic (bgn 22/5d/14wk). All prior fixes hold cleanly (ramp, LR-40% cap, Base LR variety, Taper, guardrails). Surfaced and fixed **M-11**: Race week reported `mileage=8` but the schedule only delivered 6 mi (the "2" in the hardcoded `z2_runs=[3, 3, 2]` was never placed). HM engine already used 6 in its test suite — marathon was the outlier.
+
+**One observation logged and deferred (see Open Problems):**
+- Beginner marathon gets VO2 every week including Base Wk 1 — arguably too aggressive for the audience (Higdon Novice has no speedwork at all). Needs a philosophy discussion, not a patch.
+
+(Also noticed the Build cutback dipping below Base end — on closer look this is textbook cutback shape per Pfitzinger/Daniels and not a bug. Not logged.)
 
 **State now:**
 - HM all 140 tests pass
-- Marathon audit clean except: M-5 false positives (documented), M-8 (new minor aesthetic issue — Base LR stagnation at the 16-mi cap)
-- All work committed except this M-7 batch which needs to be committed next
+- Marathon audit clean except M-5 false positives (documented audit-script bug)
+- All prior work committed; M-11 fix pending commit
 
-**Session log (cumulative across both work days):**
+**Session log (cumulative across three work days):**
 
 *2026-06-19:*
 1. `c43bf49` — Cap weekly mileage jumps at +10%/+4mi; smooth climb to peak (HM Wk 9 + marathon M-1)
@@ -299,13 +304,20 @@ M-7 implemented and verified. Marathon peak is now frequency-aware (see M-7 sect
 6. `22804d3` — Marathon peak is now frequency-aware (M-7)
 7. `eccfb8e` — Vary advanced Base LR downward at cap (M-8)
 8. `bc721ff` — Fix Taper LR lift + mileage leak (M-9)
-9. *(pending commit)* — Add 40% LR-to-weekly cap (M-10)
+9. `ebcae20` — Add 40% LR-to-weekly cap (M-10)
+
+*2026-07-17:*
+10. *(pending commit)* — Marathon Race week mileage/schedule mismatch (M-11)
 
 ---
 
 ## Open Problems
 
 Living list. Add items the moment we notice them. Don't archive without resolution or explicit deferral.
+
+### Deferred observations (2026-07-17 diagnostic — bgn 22/5d/14wk)
+
+**Marathon beginner gets VO2 every week including Base Wk 1.** Higdon Novice / classic beginner marathon programs prescribe no speedwork at all. Kairos's beginner marathoner gets VO2 (2-4 mi) every single week of Base through Peak. This is a Q-3 style philosophy question: is Kairos's "beginner marathon" tier the same recreational-upper-end that Q-2 targeted, or genuine novice? Deferred — needs a philosophy discussion + audit against real beginner programs, not an in-session patch.
 
 ### ~~Wk 9 peak jump too steep (int 35/5d)~~ — FIXED 2026-06-19
 - Was: Build cutback Wk 7 = 36 → Wk 8 = 40 → Wk 9 peak = 46 (+11%, +15% jumps)
@@ -437,9 +449,21 @@ All weeks now 32-40%. Wk 10 hits exactly 40% (the cap is allowed to be 40%, not 
 
 **Structural side effect at low volume:** some weeks have an easy run tied with or larger than the LR (Wk 1: lr=7, z2=[7]; Wk 5: lr=10, z2=[10]). The "long run" label loses some weight at low volume — but the training stimulus (continuous endurance) is still distinct from easy runs (recovery), and honoring the 40% safety guideline matters more than the labeling. At higher volume the LR is naturally biggest.
 
+**Decision 2026-06-23:** Keep the LR distinct from Z2 even when lengths tie. Reasoning: the LR is a separate training stimulus (continuous endurance vs recovery), every standard marathon program labels the weekly longest run as "Long Run" regardless of relative size, the LR is a psychological/structural cornerstone of marathon training, and engine scaffolding (peak_lr tracking for Taper, etc.) depends on the LR concept. Cleaner formatting via merging isn't worth losing the LR identity.
+
 **Cap doesn't bite at higher volume.** Adv 40/5d: all weeks 26-36%, well under 40%. The cap is a low-volume safety net.
 
-**Priority order remaining:** ~~M-1~~ ✓, ~~M-2~~ ✓, ~~M-3~~ ✓, ~~M-4~~ ✓, ~~M-6~~ ✓, ~~M-7~~ ✓, ~~M-8~~ ✓, ~~M-9~~ ✓, ~~M-10~~ ✓. **No open marathon-engine bugs.** M-5 is an audit-script false positive — documented, not fixed.
+**Priority order remaining:** ~~M-1~~ ✓, ~~M-2~~ ✓, ~~M-3~~ ✓, ~~M-4~~ ✓, ~~M-6~~ ✓, ~~M-7~~ ✓, ~~M-8~~ ✓, ~~M-9~~ ✓, ~~M-10~~ ✓, ~~M-11~~ ✓. **No open marathon-engine bugs.** M-5 is an audit-script false positive — documented, not fixed.
+
+**~~M-11. Marathon Race week mileage/schedule mismatch~~** — FIXED 2026-07-17.
+
+Random-input diagnostic (bgn 22/5d/14wk) surfaced this: `weekly += [8]` at engineV3.py:252 set Race week total to 8 mi, and `distribute_runs()` at engineV3.py:490 hardcoded `z2_runs=[3, 3, 2]` to match — but `build_week_schedule_v2()` at engineV3.py:638-641 only ever places 2 shakeouts. The "2" was a phantom that never landed on the schedule. Reported `mileage=8`, delivered mileage=6.
+
+The HM engine's test suite already asserts Race week mileage=6 (test_engine.py:58). Marathon was the outlier.
+
+**Fix:** two-line change. Race week total → `6`, z2_runs → `[3, 3]`. Coaching-wise a race week is 2 shakeouts + Race; a third short jog for a recreational marathoner adds fatigue without benefit.
+
+Marathon audit and HM 140-assertion suite both clean after fix.
 
 **~~M-8. Advanced Base LR stagnates at 16-mi cap~~** — FIXED 2026-06-23.
 
