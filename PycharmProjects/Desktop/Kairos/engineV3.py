@@ -793,7 +793,15 @@ def build_plan(
             tempo_flags[i]
         )
 
-        rpw = runs_per_week - 1 if phases[i] == "Taper" else runs_per_week
+        # Taper adds an extra rest day by dropping one run — but only for
+        # 5+ day plans. At 4-day the runner is already at the minimum, so
+        # dropping to 3 doesn't give "extra rest," it just concentrates all
+        # leftover mileage onto one easy day (producing Taper easy runs
+        # longer than the peak-week LR — coaching-nonsense).
+        if phases[i] == "Taper" and runs_per_week >= 5:
+            rpw = runs_per_week - 1
+        else:
+            rpw = runs_per_week
 
         sessions = distribute_runs(
             weekly[i],

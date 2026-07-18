@@ -277,19 +277,23 @@ Run with: `python test_engine.py`
 
 ---
 
-## Where We Left Off (2026-07-17)
+## Where We Left Off (2026-07-18)
 
-Ran a random-input marathon diagnostic (bgn 22/5d/14wk). All prior fixes hold cleanly (ramp, LR-40% cap, Base LR variety, Taper, guardrails). Surfaced and fixed **M-11**: Race week reported `mileage=8` but the schedule only delivered 6 mi (the "2" in the hardcoded `z2_runs=[3, 3, 2]` was never placed). HM engine already used 6 in its test suite — marathon was the outlier.
+Ran random-input diagnostics across three sessions. Two real bugs surfaced and fixed:
+- **M-11** (2026-07-17): Marathon Race week mileage/schedule mismatch — reported 8 mi, delivered 6.
+- **M-12** (2026-07-18): Marathon 4-day Taper concentrated all leftover mileage on a single 18-mi "easy" run (larger than the peak-week LR). Root cause: `rpw -= 1` in Taper unconditionally dropped 4-day plans to 3 runs.
 
-**One observation logged and deferred (see Open Problems):**
-- Beginner marathon gets VO2 every week including Base Wk 1 — arguably too aggressive for the audience (Higdon Novice has no speedwork at all). Needs a philosophy discussion, not a patch.
+Two observations logged and deferred (see Open Problems + Q-3):
+- Beginner marathon gets VO2 every week including Base Wk 1 (aggressive vs Higdon Novice).
+- Q-3: Should beginner tier be MORE conservative on the 70% regression floor? (competitive research confirmed Kairos's guardrail-first approach is a real differentiator vs Runna's injury-prone driver-primary approach)
 
-(Also noticed the Build cutback dipping below Base end — on closer look this is textbook cutback shape per Pfitzinger/Daniels and not a bug. Not logged.)
+(Two false-alarms noticed during diagnostics and NOT logged: Build cutback dipping below Base end — textbook cutback shape per Pfitzinger/Daniels. Wk 1 LR regression from recent — working as designed per M-6 philosophy.)
 
 **State now:**
 - HM all 140 tests pass
 - Marathon audit clean except M-5 false positives (documented audit-script bug)
-- All prior work committed; M-11 fix pending commit
+- No open marathon engine bugs
+- M-12 fix pending commit
 
 **Session log (cumulative across three work days):**
 
@@ -307,7 +311,11 @@ Ran a random-input marathon diagnostic (bgn 22/5d/14wk). All prior fixes hold cl
 9. `ebcae20` — Add 40% LR-to-weekly cap (M-10)
 
 *2026-07-17:*
-10. *(pending commit)* — Marathon Race week mileage/schedule mismatch (M-11)
+10. `e78b4b8` — Marathon Race week mileage/schedule mismatch (M-11)
+11. `5064014` — Log Q-3: beginner-tier regression floor question
+
+*2026-07-18:*
+12. *(pending commit)* — Marathon 4-day Taper concentrates leftover mileage on one huge easy day (M-12)
 
 ---
 
@@ -453,7 +461,25 @@ All weeks now 32-40%. Wk 10 hits exactly 40% (the cap is allowed to be 40%, not 
 
 **Cap doesn't bite at higher volume.** Adv 40/5d: all weeks 26-36%, well under 40%. The cap is a low-volume safety net.
 
-**Priority order remaining:** ~~M-1~~ ✓, ~~M-2~~ ✓, ~~M-3~~ ✓, ~~M-4~~ ✓, ~~M-6~~ ✓, ~~M-7~~ ✓, ~~M-8~~ ✓, ~~M-9~~ ✓, ~~M-10~~ ✓, ~~M-11~~ ✓. **No open marathon-engine bugs.** M-5 is an audit-script false positive — documented, not fixed.
+**Priority order remaining:** ~~M-1~~ ✓, ~~M-2~~ ✓, ~~M-3~~ ✓, ~~M-4~~ ✓, ~~M-6~~ ✓, ~~M-7~~ ✓, ~~M-8~~ ✓, ~~M-9~~ ✓, ~~M-10~~ ✓, ~~M-11~~ ✓, ~~M-12~~ ✓. **No open marathon-engine bugs.** M-5 is an audit-script false positive — documented, not fixed.
+
+**~~M-12. Marathon 4-day Taper concentrates mileage on one huge easy day~~** — FIXED 2026-07-18.
+
+Random-input diagnostic (int 26/6/4d/16w) surfaced a Taper Wk 14 with `z2=[18]` — a single 18-mi "easy" run, larger than the peak-week LR of 16. Investigation showed this was systemic across ALL 4-day marathon Tapers, with Taper max z2 exceeding peak LR by +2 across every tier (bgn +2, int +2, adv +2). M-9 had noted this as "structural" back in 2026-06-23, but the numbers were worse than the M-9 example and the pattern was clearly bug-shaped, not structural.
+
+**Root cause:** engineV3.py:796 `rpw = runs_per_week - 1 if phases[i] == "Taper" else runs_per_week`. The "drop a run for Taper" heuristic gives 5d and 6d plans an extra rest day (5d Taper → 4 runs; 6d Taper → 5 runs). But at 4-day the runner is already at the minimum — dropping to 3 doesn't give extra rest, it just squeezes all leftover mileage onto one easy day after LR + VO2 come out.
+
+**Fix:** Gate the rpw drop on `runs_per_week >= 5`. 4-day Taper keeps 4 runs.
+
+Results across all 4-day marathon cases:
+
+| Tier | Peak LR | T1 z2 before | T1 z2 after |
+|---|---|---|---|
+| Beginner 4d | 12 | [14] | [7, 7] |
+| Intermediate 4d | 16 | [18] | [9, 9] |
+| Advanced 4d | 20 | [22] | [11, 11] |
+
+5-day and 6-day plans unchanged (regression-tested). Marathon audit clean, HM 140/140 pass.
 
 **~~M-11. Marathon Race week mileage/schedule mismatch~~** — FIXED 2026-07-17.
 
