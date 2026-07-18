@@ -534,29 +534,83 @@ Deferred until we have a specific beginner-user complaint or evidence of the cur
 
 ---
 
-## MVP Roadmap
+## Roadmap to Sell (built 2026-07-18)
 
-**Goal:** ship a consumer-facing version of Kairos (HM + marathon plan generators) that's good enough for early users without polishing forever.
+**Goal:** ship a paying-user version of Kairos — web-first, run + strength, coach-defensible, effort-first with pace ranges layered on top.
 
-**Guiding tension:** lots of bug fixes are still ahead, but we don't want to overfit. Every fix should be expressible as a principle — not a special case for one input combo. If a fix can only be stated as "and also when experience=intermediate and frequency=5 and current_mileage in [35, 45]…", that's a signal to step back.
+**Framing:** 3 phases — **Ship (get it live) → Sell (get paid) → Differentiate (why you, not Runna)**. Only Phase 1 is scoped in detail; Phases 2/3 will be re-evaluated when we get there.
 
-**What "MVP" means here (draft — refine as we go):**
-- Both engines produce a coach-defensible plan for the common cases (no obvious shape bugs, sensible quality progression)
-- Frontend renders both race types cleanly
-- Effort-first language present in workout descriptions (per [[project-kairos-effort-philosophy]])
-- Strength training has at least a placeholder hook (the run+strength combo is the strategic wedge per [[project-kairos-vision]])
-- Known edge cases documented, not necessarily fixed
+**Timeline target:** 2-3 months to polished v1, but "when it's ready" beats a hard date. Phase 1 realistically 6-8 weeks given user-configurable strength + adaptive pace prescription scope.
 
-**What MVP does NOT require:**
-- 3-day engine
+**Guiding principles:**
+- **Ship the wedge, not the checklist.** Everything ships together when strength + running + pace-range language are all live. Cutting strength means launching as a Runna clone.
+- **Boring infra choices.** Flask stays, Postgres, Stripe, Render/Fly for hosting. Don't rebuild the stack for v1.
+- **Beta before public.** 5-10 real runners paying discounted rate before opening the doors — protects reputation and covers the training-injury liability risk.
+
+**Audience reminder (decision filter):** Kairos's target is the **recreational advanced runner buying an online plan** — not pros. When in doubt, choose the more conservative, coach-defensible option (see Q-2 reasoning for Base LR cap as the canonical example).
+
+---
+
+### Phase 1 — Core Complete (weeks 1-8)
+
+**Strength engine (user-configurable, resistance-only MVP)** — the wedge, built for real.
+- Inputs: split (PPL / upper-lower / full-body / Olympic-focused / powerlifting-focused), frequency (2-6×/week), experience, equipment (barbell / dumbbell / bodyweight)
+- Lift library with movement pattern tagging (squat / hinge / push / pull / carry / Olympic)
+- Phase-linked periodization: Base = general strength, Build = running-specific power, Peak = maintenance, Taper = deload
+- Schedule coordination: strength days respect hard running days (no back-to-back stress)
+- **Deferred to v2:** cardio-machine work (rower, bike, incline treadmill)
+
+**Pace prescription (three-range, adaptive)** — pace ranges layered on the existing effort-first foundation per [[project-kairos-effort-philosophy]].
+- Input: most recent race result (5K / 10K / HM / marathon)
+- Engine estimates three target ranges for what this plan can achieve:
+  - **Reach (overestimate):** stretch goal, everything going right
+  - **Target (mid):** realistic honest projection
+  - **Floor (underestimate):** conservative hedge for a bad training block
+- Training paces derived from all three (e.g., "Threshold: 7:15-7:30/mi, target 7:22")
+- **Adaptive narrowing:** runner reports completed pace + RPE per workout; after N sessions the model shifts the range toward whichever estimate they're consistently matching. Runna locks paces upfront — Kairos adapts honestly.
+- Effort cue stays primary; pace range is the concrete anchor for runners who struggle with pure effort
+
+**Frontend marathon parity** — workout glossary rendering, plan-level notes, schedule display matching HM.
+
+**Effort-first + pace-range language pass** — unified update through `WORKOUT_GLOSSARY` covering both engines. Do AFTER pace prescription is wired so language matches the new subsystem.
+
+**Audit script cleanup** — recalibrate the "Quality dominates week" check (M-5) so it stops producing false positives on low-mileage marathon weeks. Either remove the check or lower the threshold to 75%+.
+
+**Parallel track: Running coach certification** — RRCA or UESCA (~$450, weekend/online) whenever time allows. No launch dependency. Unlocks "designed by a certified running coach" for marketing copy when it lands.
+
+**Deferred from Phase 1:**
+- Coach review pass (Kevin is becoming the coach)
+- Cardio-machine strength (post-MVP)
+- 3-day engine (not required for MVP)
 - 7-day plans (rejected by both engines as of 2026-06-19)
-- Per-runner pace targets (we're effort-first)
-- Every test case producing a 100% clean shape
 
-**Next likely tasks (ordered):**
-1. **Frontend polish for marathon** — currently the marathon UI rendering may not have full parity with HM (workout glossary, plan-level notes, schedule formatting). Audit and align.
-2. **Strength-training placeholder hook** — per the run+strength wedge in [[project-kairos-vision]], we need at minimum a stub UI/data structure. Doesn't have to be a full strength engine for MVP, just acknowledgement that the feature is coming.
-3. **Audit script cleanup** — recalibrate the "Quality dominates week" check (M-5) so it stops producing false positives on low-mileage marathon weeks. Either remove the check, or lower the threshold to 75%+.
-4. **Coach review pass** — once the engines are stable, get a human coach (or detailed self-review) to look at 4-6 representative plans end-to-end. Catches the qualitative stuff automated audits miss.
+---
 
-**Audience reminder (decision filter):** Kairos's target is the **recreational advanced runner buying an online plan** — not pros chasing sub-2:30. When in doubt, choose the more conservative, coach-defensible option (see Q-2 reasoning for Base LR cap as the canonical example).
+### Phase 2 — Product Layer (weeks 9-12, sketch only)
+
+Turn the engine into a saveable, usable, monetizable app. **To be re-evaluated when we get there.** Rough shape:
+- User accounts (email/password + Google)
+- Plan persistence in Postgres
+- Workout log (mark complete, notes, report pace + RPE — feeds the pace adaptation)
+- Legal: medical waiver, T&Cs, injury liability disclaimer (template + lawyer review — non-negotiable)
+- (Stretch) Basic non-pace adaptive tweaks: mileage / difficulty adjustments based on workout feedback
+
+---
+
+### Phase 3 — Ship-Ready (weeks 13+, sketch only)
+
+Ready to take money. **To be re-evaluated when we get there.** Rough shape:
+- Deployment (staging + prod on Render/Fly, managed Postgres, Sentry)
+- Payment (Stripe subscription, single tier for v1)
+- Marketing site (landing / product / pricing / FAQ — coach-first, injury-safe positioning per Q-3 research)
+- Analytics (Plausible or PostHog)
+- Closed beta (5-10 runners at discounted rate, two-week feedback cycle, ideally including one Runna-injury story for testimonial)
+
+---
+
+### Post-launch backlog (not v1)
+- Mobile app (React Native likely)
+- Cardio-machine strength (rower, bike, incline treadmill)
+- Full adaptive re-planning (not just pace narrowing — mileage / structure adaptation)
+- Integrations (Strava, Garmin, Apple Health)
+- Referral system
