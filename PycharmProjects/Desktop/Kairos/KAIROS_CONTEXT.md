@@ -482,7 +482,23 @@ Audit ISSUES now clear for all advanced cases. Build/Peak phases unaffected.
 
 ---
 
-## Resolved Philosophical Questions
+## Philosophical Questions
+
+### Open
+
+**Q-3. Should the beginner tier be MORE conservative on regression floor than intermediate/advanced?** (opened 2026-07-18)
+
+Current behavior: `recent_long_run` acts as a soft floor at 70% of recent (so a runner with recent LR=11 gets Wk 1 LR floor of 8, allowing up to 30% regression). This is the M-6 "guardrail not driver" pattern applied uniformly across all tiers.
+
+Diagnostic surfacing (bgn 24/11/6d/16w): the 30% regression allowance means beginners on long plans (14-16w) stay below their recent LR for 5-8 weeks. Not a bug — the target-driven structure is doing what M-6 said it should. But it raises the question: is 70% the right floor *for beginners specifically*?
+
+**Competitive positioning research (2026-07-18):** Looked up Runna's methodology. Runna is input-driver-primary with weak guardrails — inputs directly set the starting point. Widely reported outcome: multiple physical therapist injury reports per week (stress fractures, shin splints, Achilles tendinopathy), particularly among beginners who "struggle to accurately self-assess their fitness." Runna added a "dial back intensity" feature *in response to injury reports*.
+
+**Implication:** Kairos should not tighten the 70% floor toward Runna's approach — the regression allowance IS the safety margin, and it's a real product differentiator. If anything, the direction to explore is *more* conservatism for beginners specifically (e.g., 60% floor for beginner tier, keep 70% for int/adv), since beginners are the segment Runna is objectively failing. Positioning: *"Kairos would rather bore you for two weeks than injure you."*
+
+Deferred until we have a specific beginner-user complaint or evidence of the current behavior being wrong. Don't preemptively change without a triggering case.
+
+### Resolved
 
 **~~Q-1. 7-day plans~~** — REMOVED 2026-06-19. Both engines now raise ValueError on `runs_per_week=7`. Frontend dropdown no longer offers 7. Reasoning: running 7 days/week for 14+ weeks without a rest day isn't healthy for Kairos's audience (recreational runners, not pros with coaches). The HM engine already blocked 7-day beginners; we extended the block to all 7-day plans.
 
