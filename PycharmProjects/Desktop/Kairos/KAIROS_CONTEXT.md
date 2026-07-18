@@ -279,21 +279,19 @@ Run with: `python test_engine.py`
 
 ## Where We Left Off (2026-07-18)
 
-Ran random-input diagnostics across three sessions. Two real bugs surfaced and fixed:
-- **M-11** (2026-07-17): Marathon Race week mileage/schedule mismatch — reported 8 mi, delivered 6.
-- **M-12** (2026-07-18): Marathon 4-day Taper concentrated all leftover mileage on a single 18-mi "easy" run (larger than the peak-week LR). Root cause: `rpw -= 1` in Taper unconditionally dropped 4-day plans to 3 runs.
+**Diagnostic work done, roadmap set, next up is the strength engine build.**
 
-Two observations logged and deferred (see Open Problems + Q-3):
-- Beginner marathon gets VO2 every week including Base Wk 1 (aggressive vs Higdon Novice).
-- Q-3: Should beginner tier be MORE conservative on the 70% regression floor? (competitive research confirmed Kairos's guardrail-first approach is a real differentiator vs Runna's injury-prone driver-primary approach)
+Two marathon bug fixes this session cycle: M-11 (Race week mileage/schedule mismatch) and M-12 (4-day Taper concentrating leftover mileage). Q-3 opened as a philosophy question (beginner-tier regression floor) — deferred until a triggering user case. Roadmap to Sell replaced the old MVP roadmap: 3-phase Ship → Sell → Differentiate structure, Phase 1 scoped in detail (~6-8 weeks).
 
-(Two false-alarms noticed during diagnostics and NOT logged: Build cutback dipping below Base end — textbook cutback shape per Pfitzinger/Daniels. Wk 1 LR regression from recent — working as designed per M-6 philosophy.)
+**Then pivoted to strength engine philosophy** (see "Strength Engine Design Notes" below). Locked in: MEV-default with knobs, engine picks exercises with within-pattern swaps, resistance-only MVP. Ready to start building.
 
 **State now:**
 - HM all 140 tests pass
 - Marathon audit clean except M-5 false positives (documented audit-script bug)
 - No open marathon engine bugs
-- M-12 fix pending commit
+- All work committed
+
+**→ Next session: start the strength engine build per the design notes below.**
 
 **Session log (cumulative across three work days):**
 
@@ -315,7 +313,9 @@ Two observations logged and deferred (see Open Problems + Q-3):
 11. `5064014` — Log Q-3: beginner-tier regression floor question
 
 *2026-07-18:*
-12. *(pending commit)* — Marathon 4-day Taper concentrates leftover mileage on one huge easy day (M-12)
+12. `6f032d4` — Marathon 4-day Taper concentrates leftover mileage on one huge easy day (M-12)
+13. `8448371` — Replace MVP roadmap with Roadmap to Sell
+14. *(pending commit)* — Log strength engine design decisions
 
 ---
 
@@ -614,3 +614,93 @@ Ready to take money. **To be re-evaluated when we get there.** Rough shape:
 - Full adaptive re-planning (not just pace narrowing — mileage / structure adaptation)
 - Integrations (Strava, Garmin, Apple Health)
 - Referral system
+
+---
+
+## Strength Engine Design Notes (locked 2026-07-18)
+
+**This is the next active build.** Decisions below are locked; implementation not yet started.
+
+### Training philosophy — MEV-default, opinionated
+
+Kevin's training preference and the engine's default: **modern minimum-effective-volume hypertrophy** (Mike Israetel / RP / Menno Henselmans / Jeff Nippard territory).
+
+- **Low working sets per muscle group per session** (2-4, not 8-12)
+- **High proximity to failure** (RPE 8-10, 0-2 RIR)
+- **Deliberate exercise pairing** — a compound + a stretch-biased isolation covers ~90% of the stimulus
+- **~6-12 hard sets per muscle group per week** total (Schoenfeld meta-analysis range)
+- **Example (chest, one session):** 2×8 incline DB press + 2×failure (6-8 reps) cable flies. That's the whole chest workout, done properly.
+
+**Why this is the right default for a running app:**
+1. Recovery-friendly. Running already spends the recovery budget — high-volume 4×12 programming stacks fatigue that competes with running recovery.
+2. Time-efficient. A 4-lift session done properly at 2-3 sets each is 30-40 min. Realistic for recreational runners.
+3. Modern research-backed. Diminishing returns past ~10 hard sets/muscle/week for most trainees.
+
+**Positioning wedge:** Fitbod / Strong default to higher-volume generic 3-4×8-12 programming. Runna doesn't do strength at all. A running app that ships with proper MEV programming is not something anyone else is doing.
+
+### Engine shape — Option 2: Default with knobs
+
+MEV is the opinionated default, but user can adjust WITHIN the framework:
+
+- **Volume knob** — recovery input scales sets per movement (fast recovery → 4-5 sets, slow recovery → 2-3 sets). Doesn't change the framework, just tunes volume.
+- **Emphasis knob** — user can shift toward strength (lower reps 3-6, longer rest, keep low-volume) or hypertrophy (higher reps 8-15). MEV framework unchanged.
+- **Split choice** — PPL / upper-lower / full-body / Olympic-focused / powerlifting-focused (user picks)
+- **Frequency** — 2-6× per week (user picks)
+- **Equipment** — barbell / dumbbell / bodyweight (user picks)
+- **Experience** — beginner / intermediate / advanced (user picks)
+
+**Rejected alternatives:**
+- Pure single-style engine ("MEV IS the engine") — too risky, ties Kairos to one philosophy being right forever
+- Multi-style menu (5x5 / MEV / Olympic / powerlifting as top-level choice) — scope disaster, each is basically its own engine
+
+### Exercise selection — Option 2: Engine picks, user swaps within pattern
+
+- **Engine prescribes** specific movements per session based on movement pattern coverage, phase, and equipment
+- **User can swap** any exercise for an alternative in the same movement pattern (e.g., "no incline DB press, machine press instead" → engine offers horizontal-press stretch-biased alternatives)
+- **Preserves programming coherence** while respecting gym reality (occupied equipment, preferences)
+
+**Rejected alternatives:**
+- Rigid "engine picks, no swaps" — breaks under gym reality
+- Menu-driven "user builds from patterns" — kills the coaching value prop, lets users build unbalanced programs (all push, no pull; all sagittal, no frontal)
+
+**Potential v2 escape hatch:** advanced-user mode that unlocks pattern-menu selection for people who know what they're doing. Not in MVP.
+
+### Lift library requirements
+
+- Curated (not exhaustive — quality over quantity)
+- Movement pattern tags: squat / hinge / horizontal-push / vertical-push / horizontal-pull / vertical-pull / carry / Olympic / core / accessory
+- Bias tags (for stretch-biased pairing logic): stretch / peak / mid-range
+- Equipment tags: barbell / dumbbell / cable / machine / bodyweight
+- Difficulty tags: beginner-safe / needs-technique / spotter-recommended (for near-failure work on certain lifts)
+
+### Phase-linked periodization
+
+- **Base:** general strength, movement pattern coverage, higher rep ranges (8-15)
+- **Build:** running-specific power, plyometrics enter, moderate reps (6-10)
+- **Peak:** maintenance, reduce volume, protect running load
+- **Taper:** deload, minimal volume, joint/CNS recovery
+- **Race week:** no lifting
+
+### Coordination with running schedule
+
+**Critical constraint:** strength days must not sit next to hard running days (VO2 / tempo / long run).
+
+- Strength engine reads the running plan's schedule
+- Prefers strength on running-easy days OR the same day as a hard run (well-established that same-day priority: run first, lift second)
+- Avoids strength the day before a hard running session (CNS/leg fatigue carries over)
+- If user requests high strength frequency (5-6×) alongside a high running frequency, engine warns and either drops strength frequency or accepts stacked days with a warning
+
+### What's OUT for MVP
+
+- Cardio-machine work (rower, bike, incline treadmill) — post-MVP
+- Full adaptive volume adjustment based on completed session RPE — post-MVP (parallel to pace-range adaptation)
+- Advanced-user pattern-menu mode — post-MVP
+- Specialized programs (pure powerlifting comp prep, Olympic meet cycles) — post-MVP
+
+### Open questions for the next session
+
+- **Lift library size for MVP:** curated to what — 40 lifts? 60? 100? Balance between "enough to feel real" and "enough to test and maintain."
+- **Interaction with running frequency:** if runner does 6-day running + wants 4-day strength, we're stacking. Do we accept and warn, cap strength frequency at (7 - running_freq), or something else?
+- **Movement-pattern-per-session template:** how many patterns per session? PPL vs upper-lower have different pattern-density defaults.
+- **Prescription format:** how do we express "2×failure (6-8)" cleanly in output? Just "2 sets × 6-8 reps to failure"? RPE notation ("2 sets × 6-8 @ RPE 10")? Both?
+- **Progression rules:** when does the engine bump load / reps / sets across weeks? Fixed cadence, RPE-driven, both?
