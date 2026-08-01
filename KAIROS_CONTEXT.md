@@ -17,7 +17,10 @@ Kairos/
 ├── engineV2.py                                 # Marathon engine v2 (old)
 ├── engineV3.py                                 # ★ ACTIVE marathon engine (35-70 mi peak)
 ├── half_marathon_engine_main_4plus_v5_7.py     # ★ ACTIVE half marathon engine
+├── strength_engine.py                          # ★ ACTIVE strength engine v1 (MEV-default, reads running plan)
 ├── test_engine.py                              # HM assertion-based test suite (14 cases × 10 invariants)
+├── test_strength_engine.py                     # Strength engine suite (30 checks: library, Rx, scheduling, knobs, rotation, overrides, rep ranges)
+├── requirements.txt                            # Flask only — everything else is stdlib
 ├── marathon_audit.py                           # Marathon engine diagnostic — generates plans + checks invariants
 ├── engine_tests.txt                            # Generated HM plan output for visual review (gitignored)
 ├── v5_7_fixes_summary.txt                      # Summary of v5.7 development bug fixes
@@ -277,21 +280,86 @@ Run with: `python test_engine.py`
 
 ---
 
-## Where We Left Off (2026-07-18)
+## Where We Left Off (2026-08-01, session 3)
 
-**Diagnostic work done, roadmap set, next up is the strength engine build.**
+**Strength engine v2 — exercise selection overhaul. All shipped, 30/30 tests pass.**
 
-Two marathon bug fixes this session cycle: M-11 (Race week mileage/schedule mismatch) and M-12 (4-day Taper concentrating leftover mileage). Q-3 opened as a philosophy question (beginner-tier regression floor) — deferred until a triggering user case. Roadmap to Sell replaced the old MVP roadmap: 3-phase Ship → Sell → Differentiate structure, Phase 1 scoped in detail (~6-8 weeks).
+Session 3 was entirely about *which* exercises the engine picks and how the user steers that. Four subsystems, layered so each is independent:
 
-**Then pivoted to strength engine philosophy** (see "Strength Engine Design Notes" below). Locked in: MEV-default with knobs, engine picks exercises with within-pattern swaps, resistance-only MVP. Ready to start building.
+### 1. Phase-block exercise rotation (the bug that started it)
 
-**State now:**
-- HM all 140 tests pass
-- Marathon audit clean except M-5 false positives (documented audit-script bug)
-- No open marathon engine bugs
-- All work committed
+`select_lift()` was pure and stateless — same slot + equipment + experience always returned the same lift, so a 16-week plan prescribed the identical exercise every week. Volume (`sets_for_position`) and template cycling (`session_cursor`) already progressed; only exercise identity was frozen.
 
-**→ Next session: start the strength engine build per the design notes below.**
+- `phase_positions()` now returns `(positions, block_indices)` — the block ordinal drives rotation.
+- `select_lift(..., rotation_index)` cycles within the **top tie tier** (candidates matching on unused → difficulty → prefer → equipment). Locked *within* a phase block so double progression has a stable target; rotates *between* blocks.
+- Modeled on RP Hypertrophy App / Juggernaut (fix exercise for a mesocycle, swap at block boundary), deliberately **not** Fitbod (session-to-session shuffling destroys trackability).
+- **Tier widening:** a slot whose best equipment tier holds one lift could never rotate. When `len(top_tier) == 1` and no equipment preference is set, widen to the prefer tier — `accessory` patterns widen fully (dumbbell vs cable vs machine is preference on a rear delt fly), compounds are capped at **±2 equipment tiers** (blocks the four-tier jump that put Pike Push-Ups in a full-gym plan).
+
+### 2. Swap menu (user override per slot)
+
+- `slot_key(session_name, slot_def)` → `"Full Body A|squat|compound|"`.
+- `build_strength_plan(overrides={slot_key: lift_name})` — plan-wide, beats rotation, falls back to auto-pick **with a plan warning** if the lift no longer fits (e.g. equipment changed).
+- Every prescribed lift carries `slot_key` + `alternatives` (from `swap_options()`) for the frontend.
+- Frontend renders a `<select>` under each lift; changing it stores into `currentOverrides` and **regenerates the whole plan** (stateless app — this is what guarantees sets/reps/RIR are recomputed for the new lift). Swap-triggered regens skip `scrollIntoView`; only the initial submit scrolls.
+
+### 3. Per-pattern equipment preference
+
+- `build_strength_plan(pattern_equipment={"squat": "machine", ...})` — 6 intake dropdowns (squat, hinge, horizontal_push, vertical_push, horizontal_pull, vertical_pull).
+- Implemented as a **soft bias**, not a filter: `equipment_score()` returns `-1` for matching lifts so they win ties. Silently no-ops where no candidate matches (e.g. no barbell vertical-pull exists).
+- Setting a preference **suppresses rotation widening** for that slot — an explicit user choice outranks automatic variety.
+
+### 4. Per-region rep ranges
+
+- `build_strength_plan(region_reps={"chest": "6-8", "legs": "vary", ...})`.
+- `lift_region()` maps pattern (and accessory `muscle`) → chest / back / shoulders / arms / legs. Returns `None` for core / carry / olympic / plyo, which keep phase defaults.
+- Precedence: **region → emphasis knob → phase table.** Applies to compounds *and* isolations (Kevin's explicit call — a chest fly at a 6-8 chest setting gets 6-8).
+- **Deload exempt**, mirroring the existing rule that emphasis doesn't touch a deload.
+- `"vary"` walks `LEG_REP_CYCLE = [(12,15), (6,8), (8,12)]` by block index.
+- UI ships pre-selected to Kevin's preference (chest/back/shoulders 6-8, arms 8-12, legs vary) in a **collapsed `<details>`** so form length doesn't grow. Backend default remains `auto` — passing nothing reproduces prior output exactly.
+
+### Library: 78 → 89 lifts
+
+Audited against the project's own stated lineage (RP / Israetel / Nippard) rather than any copyrighted program — exercises aren't IP and the reasoning is published research. Real gaps found and closed:
+
+- **Rear delts had zero coverage** (lateral raises are side-delt only; rows hit them incidentally): Reverse Pec Deck, DB Rear Delt Fly, Face Pull, Prone Y-Raise.
+- **Hip abductors** (glute medius — matters more here than in a general program: weak abductors drive knee valgus / IT band trouble in runners): Machine, Cable, Side-Lying.
+- Cable Triceps Pushdown, Hammer Curl, Incline Barbell Bench Press — these don't win the auto-pick (slots ask for stretch-biased; these are peak/mid) but enrich the **swap menu**.
+- Assisted Nordic Curl — beginner-safe stretch-biased hinge isolation, `regression`-tagged so it doesn't displace real Nordics for advanced.
+- New accessory muscles: `rear_delts`, `abductors`. New slots on **PPL Pull + UL Upper** (rear delts) and **PPL Legs + UL Lower** (abductors).
+- `full_body`, `olympic_focused`, `powerlifting_focused` deliberately left alone — full-body already omits direct arm work, so omitting small-muscle slots is consistent; the specialized splits stay narrow on purpose.
+
+### Known open items (not bugs, but real)
+
+- **The equipment order is a loading proxy that inverts for `vertical_pull`.** Bodyweight is ranked last globally but is the *hardest* pull-up variant. The ±2 band is a heuristic tuned against observed output, not a principle. Honest fix would be per-pattern loading order.
+- **Bodyweight-tier beginner hinge slots are static** (Glute Bridge / Assisted Nordic) — only three usable lifts at that tier for two slots. Library depth, not logic.
+- Generator form UI cleanup — see Open Problems.
+
+### Verification note for future sessions
+
+The Chrome MCP browser tooling was **unreliable all session** (screenshot/script-injection timeouts, unrelated to the app — Flask served 200s throughout). Everything was verified instead via `app.test_client()` hitting the real `/generate-plan` route. That's the faster and more reliable path here regardless; prefer it.
+
+---
+
+**Strength engine v1 (2026-07-18, session 2) — original build.**
+
+Settled the five open design questions (see "Settled decisions" under Strength Engine Design Notes), then built `strength_engine.py` (~70-lift curated library, 5 splits, phase-linked MEV prescriptions, volume/emphasis knobs, double progression, stack/stagger scheduling against both running engines' schedules) and `test_strength_engine.py` (17 checks, all passing).
+
+**Implementation notes:**
+- Reads the running plan from either engine — normalizes HM dict-style schedule entries and marathon string-style entries (`run_day_name()`)
+- Phase mapping: Base→Base, Build→Build, Specific/Peak→Maintenance, Taper→Deload, Race→no lifting
+- Plyometrics enter in Build on leg-heavy sessions only; Olympic slots fall back to jump work on bodyweight-only equipment
+- Leg-heavy sessions are swapped off the LR day / day-before-LR when possible, warned when not
+- "No full rest day" warning fires when every day carries a run or a lift
+
+**Frontend wiring done same session.** `/generate-plan` takes `include_strength` + `strength_*` fields and returns `{strength, strength_error}` for both race types (strength builds on raw schedules before HM label flattening). Frontend has an "Add strength training" toggle (default on) with split/frequency/equipment/lifting-days/recovery/emphasis selectors, a split→min-frequency guard, per-week strength blocks (reps + RIR + cue), and purple day-chips on the schedule grid. Verified end-to-end in headless Chrome (plan generation both race types, PPL guard, Build plyo, race-week empty, strength-off, no JS errors).
+
+**State now (2026-08-01):**
+- Strength suite **30/30** pass (was 17 at end of session 2); HM 140 tests pass; marathon audit clean except documented M-5 false positives
+- No open engine bugs
+- `requirements.txt` added (Flask is the only third-party dep; everything else is stdlib). Run: `.venv\Scripts\python.exe app.py`
+- Pre-existing frontend nits (not from this work): logo 404 (`kpg-logo.png` requested, file is `kpg-logo.png.PNG`), no favicon
+
+**→ Next: pace prescription (the other Phase 1 pillar).** Strength engine is feature-complete for MVP; remaining strength items are the deferred polish listed under Open Problems.
 
 **Session log (cumulative across three work days):**
 
@@ -315,13 +383,33 @@ Two marathon bug fixes this session cycle: M-11 (Race week mileage/schedule mism
 *2026-07-18:*
 12. `6f032d4` — Marathon 4-day Taper concentrates leftover mileage on one huge easy day (M-12)
 13. `8448371` — Replace MVP roadmap with Roadmap to Sell
-14. *(pending commit)* — Log strength engine design decisions
+14. `27dd94f` — Log strength engine design decisions
+
+*2026-07-18 (session 2):*
+15. Settled the five open strength-engine design questions
+16. Built strength_engine.py + test_strength_engine.py (17/17 pass)
+17. `1836591` — Wire strength engine into app.py and frontend
+
+*2026-07-31 → 08-01 (session 3) — exercise selection overhaul, uncommitted:*
+18. Phase-block exercise rotation (`rotation_index`, block indices from `phase_positions`) — fixed same-lift-every-week
+19. Swap menu — `slot_key`, `overrides`, `alternatives` on each lift, frontend `<select>` + regenerate
+20. Per-pattern equipment preference (`pattern_equipment`) — 6 intake dropdowns, soft ranking bias
+21. Per-region rep ranges (`region_reps`) — chest/back/shoulders/arms/legs, `"vary"` cycle, Deload exempt
+22. Library 78 → 89: rear delts, hip abductors, pushdown, hammer curl, incline BB bench, Assisted Nordic Curl
+23. Rotation tier widening + `regression` tag — kept Pike Push-Ups and Assisted Pull-Ups out of advanced plans
+24. Test suite 17 → 30 checks
+
+**Not yet committed** — session 3 work is all working-tree only (repo has no git history in this checkout).
 
 ---
 
 ## Open Problems
 
 Living list. Add items the moment we notice them. Don't archive without resolution or explicit deferral.
+
+### Generator form UI cleanup (raised 2026-07-31, deferred)
+
+The strength section of the generator form has grown organically — split/frequency/equipment/scheduling/recovery/emphasis, then 6 per-pattern equipment preferences, then 5 per-region rep ranges. It works but reads as dense and unconsidered ("slop"). Needs a deliberate layout/IA pass: group related controls, collapse advanced options, reconsider what belongs at intake vs. post-generation. Deferred by explicit decision — feature work first, cleanup pass later.
 
 ### Deferred observations (2026-07-17 diagnostic — bgn 22/5d/14wk)
 
@@ -697,10 +785,11 @@ MEV is the opinionated default, but user can adjust WITHIN the framework:
 - Advanced-user pattern-menu mode — post-MVP
 - Specialized programs (pure powerlifting comp prep, Olympic meet cycles) — post-MVP
 
-### Open questions for the next session
+### Settled decisions (2026-07-18, session 2)
 
-- **Lift library size for MVP:** curated to what — 40 lifts? 60? 100? Balance between "enough to feel real" and "enough to test and maintain."
-- **Interaction with running frequency:** if runner does 6-day running + wants 4-day strength, we're stacking. Do we accept and warn, cap strength frequency at (7 - running_freq), or something else?
-- **Movement-pattern-per-session template:** how many patterns per session? PPL vs upper-lower have different pattern-density defaults.
-- **Prescription format:** how do we express "2×failure (6-8)" cleanly in output? Just "2 sets × 6-8 reps to failure"? RPE notation ("2 sets × 6-8 @ RPE 10")? Both?
-- **Progression rules:** when does the engine bump load / reps / sets across weeks? Fixed cadence, RPE-driven, both?
+- **`regression` lift tag (added 2026-07-31).** Marks assisted/scaled substitutes for a harder version of the same movement — currently Assisted Pull-Up and Assisted Nordic Curl. Such lifts stay out of the widened rotation tier for intermediate/advanced (rotating a capable lifter into the assisted variant of something they can already do is a downgrade, not variety), but are kept for beginners, for whom alternating into the assisted version *is* the progression path. They remain available to everyone via the swap menu. Root cause it addresses: the equipment order (barbell→bodyweight) is used as a loading proxy, and that proxy **inverts for vertical pulls**, where bodyweight is the hardest version rather than the easiest — so Assisted Pull-Up (machine) out-ranked actual Pull-Ups. The rotation-widening equipment band is ±2 tiers, a heuristic tuned against observed output, not a first-principles rule.
+- **Lift library size: ~60 lifts.** Enough for 2-3 options per pattern × equipment tier so swaps always have a real alternative; small enough to hand-curate and test every entry. _(Revised 2026-08-01: now 89. The original target predated per-phase exercise rotation and the user-facing swap menu, both of which need deeper candidate pools per slot to be worth having. Test ceiling raised 80 → 95. Still hand-curated — the constraint that actually matters is "every entry justified," not a headcount.)_
+- **Running × strength scheduling: user preference, not engine mandate.** New `scheduling_style` knob: `"stack"` (hard days hard — strength lands on hard running days, run first / lift second) vs `"stagger"` (strength on easy days, never the day before a hard run). No hard frequency cap. Engine warns when a week ends up with no true rest day — acceptable for experienced runners, flagged for beginners. Rationale: both approaches are legitimate; it depends on experience and preference. Default by experience (beginners → stagger).
+- **Patterns per session: fixed per split template.** PPL ≈ 2-3 patterns/session, upper-lower ≈ 3-4, full-body ≈ 4-5. Coach-defensible, predictable 30-45 min sessions. Rejected uniform counts (splits exist because density differs) and volume-knob-driven coverage (the knob scales sets, not patterns).
+- **Prescription format: reps + RIR + plain-language cue.** e.g., `Incline DB Press — 2 × 6-8 @ 0-1 RIR` / *"Push to the edge: stop when you couldn't do another clean rep."* Mirrors the running side's effort-first philosophy — precise notation for those who know it, effort cue as the primary instruction.
+- **Progression: double progression at fixed cadence.** Work within a rep range at target RIR; when the top of the range is hit on all sets while honoring RIR, add load next session and drop back to the bottom of the range. Sets step up modestly across a phase (e.g., 2→3 by phase end), reset each phase, deload at Taper. RIR is the autoregulator — no logging required. Phase 2 workout logging can later upgrade this to reactive progression. Rejected %-load ramps (needs 1RMs, ignores day-to-day readiness) and static prescriptions (plan feels dead).
