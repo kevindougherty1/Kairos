@@ -6,9 +6,28 @@ I update it after every prompt so we don't lose context. The source brief is
 
 ---
 
-## ▶ START HERE: where we left off (end of day 1, 2026-11-19)
+## ▶ START HERE: where we left off (day 2, Fri 2026-11-20, mid-morning)
 
-**Day 1 was setup only. No portal code exists yet.** We locked the big decisions and installed the
+**Still no portal code.** Day 2 so far (prompts 19–23): restart checks done, all 5 skills tested and
+working, log committed (`b28ea69`), and **dev DB decided: Docker Desktop + Postgres**. Kevin is exiting
+PyCharm (and rebooting for WSL) to fix the stale-environment problem.
+
+### ▶ Resume here (day 2, after the restart)
+1. **Verify the restart fixed the environment.** In a fresh PyCharm terminal → `claude`, check that
+   `node --version`, `playwright-cli --version` and `$env:API_KEY_21ST` all work **without** the PATH
+   workaround, and that `/mcp` shows `21st` connected. If they don't, PyCharm was still running in the
+   background (check Task Manager for `pycharm64.exe`) → reboot.
+2. **Install Docker (Kevin runs these; they need admin rights):**
+   a. Admin PowerShell: `wsl --install` → **reboot** (if it isn't done before exiting PyCharm).
+   b. Install Docker Desktop from docker.com (choose the WSL 2 backend) → start it once and accept the terms.
+   c. Claude checks: `docker --version`, `docker compose version`, `docker run --rm hello-world`.
+3. **Then continue the Friday list:** engine I/O inspection → `portal/ENGINES.md`, then the Django skeleton
+   with a `docker-compose.yml` Postgres service (the Django app itself runs from `.venv`; only Postgres runs in
+   the container to start with).
+
+*(Day 1 summary below is still accurate apart from the items marked done.)*
+
+**Day 1 was setup only.** We locked the big decisions and installed the
 design and testing toolkit. Phase 1 (Django foundations) has not started.
 
 ### Decisions locked (details under "Decisions" below)
@@ -18,6 +37,8 @@ design and testing toolkit. Phase 1 (Django foundations) has not started.
 - **6 v1 plan types:** HM, Marathon (existing engines) + Speed, Base/Economy, Post-race recovery,
   Maintenance (new, so each needs a rules design session with Kevin before code). Plan type is a generic field.
 - **Copy:** Title Case headings and buttons, sentence case body.
+- **Dev database: Docker Desktop + Postgres** (decided 2026-11-20, prompt 23). Matches the brief's
+  "containerized development setup" (`Kairos_Client_Portal_Implementation_Plan.md`, line 37).
 
 ### Toolkit installed (all committed in `6a5d184` and pushed to GitHub)
 | Skill / tool | Role | How it's installed |
@@ -32,7 +53,7 @@ design and testing toolkit. Phase 1 (Django foundations) has not started.
   overflow check → view screenshots → fix → web-design-guidelines review → only then show Kevin.
 - **Removed:** image-to-code (Claude Code can't generate images; replaced by 21st).
 
-### First things to do tomorrow
+### First things to do tomorrow *(day 1 list, all done on day 2)*
 1. **Restart check:** confirm `node --version` and `playwright-cli --version` work from PATH. Confirm the
    `21st` MCP server is connected (Kevin approves it if prompted), then run one test `search`.
 2. **Commit the uncommitted log entries** (prompt 17 + this summary).
@@ -71,8 +92,8 @@ note any slip in the prompt log.
 ### Friday 11/20: Foundations and engine inspection
 - [x] Restart checks: node, playwright-cli, 21st MCP test `search`. Commit the log. *(done prompt 21; PATH caveat in the log)*
 - [ ] Finish any remaining repo imports (Kevin).
-- [ ] **Decision (Kevin): dev database.** Docker Desktop + Postgres (matches the brief's
-      "containerized dev") or a local Postgres install. Check what's installed first.
+- [x] **Decision (Kevin): dev database.** → **Docker Desktop + Postgres** (prompt 23).
+- [ ] **Install WSL + Docker Desktop** (Kevin, admin + reboot), then Claude verifies with `hello-world`.
 - [ ] **Engine I/O inspection** (brief rule: inspect before integrating). For `half_marathon_engine_main_4plus_v5_7.py`
       and `engineV3.py`, document the real inputs, outputs, side effects and determinism. Run `test_engine.py`
       (expect 140/140) and `marathon_audit.py` as the regression baseline. Write it up in `portal/ENGINES.md`.
@@ -198,6 +219,8 @@ production-readiness notes, and a progress summary (done / mocked / missing / re
 - [x] **Design tooling: taste-skill and Vercel web-interface-guidelines, both used** (prompt 7).
   Clones live in `C:\Users\kevin\Downloads\gitlab-imports\`.
 - [x] **Copy: Title Case headings and buttons** (prompt 7).
+- [x] **Dev database: Docker Desktop + Postgres** (prompt 23, 2026-11-20). Postgres runs in a container
+  via `docker-compose.yml`; Django runs from `.venv` at first. Needs WSL 2 (virtualization is already on).
 
 ## Pending
 - Kevin is importing more repos **before website design starts**. Inspect each one as it arrives.
@@ -495,3 +518,28 @@ production-readiness notes, and a progress summary (done / mocked / missing / re
   Test `search` ("workout schedule card") returned 3 components. That used no `get_component` quota.
   The read-only rule in `21st-ui` still applies.
 - Committed the log (prompts 17–21, START HERE, weekend roadmap). Friday checkbox 1 ticked.
+
+### 22 — 2026-11-20 — PATH root cause, skills readiness check, dev DB options explained
+- **Stale PATH root cause:** Claude runs inside PyCharm's terminal (claude.exe → powershell → pycharm64.exe,
+  PyCharm started 11/19 15:34, before Node and the key were installed). New terminal tabs inherit PyCharm's
+  old environment. **Fix:** fully exit PyCharm (File → Exit) and reopen, or reboot.
+- **API key:** no reset needed. 21st is connected through OAuth sign-in. After the PyCharm restart, the key
+  header will be sent too. Rotating it (it was pasted in chat on day 1) is optional.
+- **Skills readiness check, all 5 OK:** each has a SKILL.md; both junctions resolve (taste-skill,
+  design-md library = 84 systems); web-design-guidelines rules.md present; 21st search works.
+  playwright-cli smoke test on a localhost page: page opened in Edge, title read, console log captured.
+  Clones in gitlab-imports: agent-skills, awesome-design-md, magic-mcp, playwright-cli, taste-skill,
+  web-interface-guidelines.
+- **Gotcha:** `Start-Process python` fails (Windows Store alias). Use `.venv\Scripts\python.exe`.
+  The repo already has a `.venv` (Python 3.14.6).
+- **DB machine check:** no Docker, no Postgres, WSL not installed; virtualization is ON (hypervisor
+  running); 15.4 GB RAM, 390 GB free. Explained Docker vs local Postgres to Kevin; waiting on his choice.
+
+### 23 — 2026-11-20 — Save state before PyCharm exit; dev DB = Docker
+- **Decision: Docker Desktop + Postgres** (option A). Added to Decisions + START HERE, Friday box ticked,
+  new box for the WSL + Docker install.
+- Rewrote **START HERE** with a "Resume here" list: verify the env after the restart → Kevin installs WSL
+  (`wsl --install`, reboot) + Docker Desktop → Claude runs `hello-world` → engine inspection → Django skeleton.
+- Explained to Kevin that "the brief" = `Kairos_Client_Portal_Implementation_Plan.md` (the planning
+  handoff from 11/19; "containerized development setup" is on line 37).
+- Committed the log before the restart.
