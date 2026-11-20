@@ -32,9 +32,6 @@
 
             --rest-bg: #e5e7eb;
             --rest-text: #374151;
-
-            --strength-bg: #ede9fe;
-            --strength-text: #5b21b6;
         }
 
         * {
@@ -611,143 +608,275 @@
             color: var(--rest-text);
         }
 
-        .workout.strength {
-            background: var(--strength-bg);
-            color: var(--strength-text);
-            margin-top: 8px;
-        }
-
-        .strength-toggle-row {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .strength-toggle-row input[type="checkbox"] {
-            width: 20px;
-            height: 20px;
-            accent-color: var(--primary);
-            cursor: pointer;
-        }
-
-        .strength-fields {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 18px;
-            grid-column: 1 / -1;
-        }
-
-        .strength-fields.hidden {
-            display: none;
-        }
-
-        .rep-ranges {
+        /* ---- Lifting guide ---- */
+        .guide {
+            margin-top: 40px;
+            background: var(--surface);
             border: 1px solid var(--border);
-            border-radius: 14px;
-            background: #fcfbf8;
-            padding: 12px 16px;
+            border-radius: 24px;
+            padding: 32px;
+            box-shadow: var(--shadow);
         }
 
-        .rep-ranges summary {
-            cursor: pointer;
-            font-size: 0.95rem;
-            font-weight: 700;
-            list-style: revert;
+        .guide-head {
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 22px;
+            margin-bottom: 6px;
         }
 
-        .rep-ranges-note {
-            margin: 8px 0 0;
+        .guide-eyebrow {
+            font-size: 0.78rem;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
             color: var(--muted);
-            font-size: 0.88rem;
+            margin-bottom: 8px;
         }
 
-        .rep-ranges-grid {
+        .guide-head h2 {
+            margin: 0 0 12px;
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(1.9rem, 3.5vw, 2.6rem);
+            letter-spacing: -0.02em;
+        }
+
+        .guide-lead {
+            margin: 0;
+            max-width: 68ch;
+            color: var(--muted);
+            font-size: 1.02rem;
+        }
+
+        .guide-section {
+            padding-top: 26px;
+        }
+
+        .guide-section h3 {
+            margin: 0 0 12px;
+            font-size: 1.25rem;
+            letter-spacing: -0.01em;
+        }
+
+        .guide-section h4 {
+            margin: 0 0 8px;
+            font-size: 1rem;
+        }
+
+        .guide-section p {
+            margin: 0 0 12px;
+            max-width: 72ch;
+        }
+
+        .guide-key {
+            background: #fcfbf8;
+            border-left: 3px solid var(--primary);
+            border-radius: 0 12px 12px 0;
+            padding: 14px 16px;
+            max-width: none !important;
+        }
+
+        .pattern-list,
+        .split-list {
+            margin: 0 0 14px;
+        }
+
+        .pattern-list dt,
+        .split-list dt {
+            font-weight: 800;
+            margin-top: 16px;
+        }
+
+        .pattern-list dd,
+        .split-list dd {
+            margin: 6px 0 0;
+            padding-left: 0;
+            max-width: 72ch;
+            color: var(--muted);
+        }
+
+        .pattern-tag {
+            display: inline-block;
+            margin-left: 8px;
+            padding: 3px 9px;
+            border-radius: 999px;
+            background: var(--surface-alt);
+            color: var(--muted);
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            vertical-align: middle;
+        }
+
+        .eg {
+            display: block;
+            margin-top: 6px;
+            font-size: 0.86rem;
+            font-style: italic;
+            opacity: 0.85;
+        }
+
+        .intent-grid,
+        .days-grid,
+        .approach-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
             gap: 14px;
-            margin-top: 14px;
+            margin: 4px 0 16px;
         }
 
-        .strength-block {
-            margin-top: 18px;
-            background: #faf9ff;
-            border: 1px solid #ddd6fe;
+        .intent-grid { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+        .days-grid { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+        .approach-grid { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+
+        .intent-card,
+        .days-card,
+        .approach-card {
+            background: #fcfbf8;
+            border: 1px solid var(--border);
             border-radius: 16px;
             padding: 16px;
         }
 
-        .strength-title {
-            font-weight: 800;
-            color: var(--strength-text);
-            margin-bottom: 12px;
-            text-transform: uppercase;
-            font-size: 0.85rem;
-            letter-spacing: 0.06em;
-        }
-
-        .strength-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 12px;
-        }
-
-        .strength-session {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 14px;
-            padding: 14px;
-        }
-
-        .strength-session-head {
-            font-weight: 800;
-            margin-bottom: 10px;
-        }
-
-        .lift-row {
-            margin-bottom: 8px;
-            font-size: 0.9rem;
-        }
-
-        .lift-rx {
-            font-weight: 600;
-        }
-
-        .lift-cue {
-            display: block;
+        .intent-card p,
+        .days-card p,
+        .approach-card p {
+            font-size: 0.92rem;
             color: var(--muted);
-            font-size: 0.82rem;
-            font-style: italic;
         }
 
-        .lift-swap {
-            display: block;
-            margin: 4px 0 2px;
-            padding: 4px 8px;
+        .intent-what,
+        .days-split {
+            font-weight: 700;
+            color: var(--text) !important;
+        }
+
+        .intent-verdict,
+        .approach-fit {
+            margin-bottom: 0 !important;
+        }
+
+        .volume-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 4px 0 16px;
+            font-size: 0.93rem;
+        }
+
+        .volume-table th,
+        .volume-table td {
+            text-align: left;
+            padding: 11px 14px;
+            border-bottom: 1px solid var(--border);
+            vertical-align: top;
+        }
+
+        .volume-table th {
+            background: var(--surface-alt);
             font-size: 0.78rem;
-            font-weight: 600;
-            border-radius: 8px;
-            border: 1px solid var(--border);
-            background: #fcfbf8;
-            color: var(--strength-text);
-            cursor: pointer;
-            max-width: 100%;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
         }
 
-        .lift-swap:focus {
-            outline: none;
-            border-color: #999282;
-            box-shadow: 0 0 0 3px rgba(17, 17, 17, 0.06);
+        .volume-table td:first-child {
+            font-weight: 800;
+            white-space: nowrap;
         }
 
-        .strength-warnings {
+        .check-list {
+            margin: 0 0 14px;
+            padding-left: 20px;
+            max-width: 72ch;
+            color: var(--muted);
+        }
+
+        .check-list li { margin-bottom: 8px; }
+
+        .guide-scope {
             margin-top: 12px;
-            color: #9f1239;
-            font-size: 0.88rem;
+            border-top: 1px solid var(--border);
         }
 
-        .strength-warnings ul {
-            margin: 4px 0 0;
-            padding-left: 18px;
+        .guide-scope h3 {
+            font-size: 0.82rem;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--muted);
+        }
+
+        .guide-scope p {
+            font-size: 0.88rem;
+            color: var(--muted);
+        }
+
+        .results-actions {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: -8px;
+        }
+
+        .pdf-btn {
+            padding: 11px 20px;
+            border: 1px solid var(--border);
+            border-radius: 999px;
+            background: var(--surface);
+            color: var(--text);
+            font-weight: 700;
+            font-size: 0.92rem;
+            cursor: pointer;
+            transition: 0.2s ease;
+        }
+
+        .pdf-btn:hover {
+            background: var(--surface-alt);
+            transform: translateY(-1px);
+        }
+
+        /* ---- Print / Save as PDF ---- */
+        @media print {
+            .site-header,
+            .hero,
+            #about-kpg,
+            #founders,
+            .generator-shell,
+            .section-header,
+            .site-footer,
+            .results-actions {
+                display: none !important;
+            }
+
+            body {
+                background: white;
+                font-size: 11pt;
+            }
+
+            .section { padding: 0; }
+
+            .container { width: 100%; }
+
+            .week-card,
+            .guide {
+                box-shadow: none;
+                border-radius: 0;
+                border: none;
+                border-top: 1px solid #ccc;
+                padding: 14px 0;
+                break-inside: avoid;
+            }
+
+            .guide-section,
+            .intent-card,
+            .days-card,
+            .approach-card,
+            .volume-table,
+            .guide-key {
+                break-inside: avoid;
+            }
+
+            .guide { break-before: page; }
+
+            .day-card { min-height: auto; }
+
+            a[href]::after { content: ""; }
         }
 
         .warnings {
@@ -1265,219 +1394,6 @@
                             <input type="text" id="unavailable_days" name="unavailable_days" placeholder="Fri" />
                         </div>
 
-                        <div class="full-span" style="padding-top: 4px;">
-                            <div class="strength-toggle-row">
-                                <input type="checkbox" id="include_strength" checked />
-                                <label for="include_strength" style="margin: 0; font-size: 0.95rem; font-weight: 700; cursor: pointer;">
-                                    Add strength training
-                                </label>
-                            </div>
-                        </div>
-
-                        <div class="strength-fields" id="strengthFields">
-                            <div class="field-group">
-                                <label for="strength_split">Split</label>
-                                <select id="strength_split">
-                                    <option value="full_body" selected>Full Body</option>
-                                    <option value="upper_lower">Upper / Lower</option>
-                                    <option value="ppl">Push / Pull / Legs</option>
-                                    <option value="olympic_focused">Olympic-Focused</option>
-                                    <option value="powerlifting_focused">Powerlifting-Focused</option>
-                                </select>
-                            </div>
-
-                            <div class="field-group">
-                                <label for="strength_frequency">Strength Days Per Week</label>
-                                <select id="strength_frequency">
-                                    <option value="2">2</option>
-                                    <option value="3" selected>3</option>
-                                    <option value="4">4</option>
-                                    <option value="5">5</option>
-                                    <option value="6">6</option>
-                                </select>
-                            </div>
-
-                            <div class="field-group">
-                                <label for="strength_equipment">Equipment</label>
-                                <select id="strength_equipment">
-                                    <option value="barbell">Full gym (barbell)</option>
-                                    <option value="dumbbell" selected>Dumbbells</option>
-                                    <option value="bodyweight">Bodyweight only</option>
-                                </select>
-                            </div>
-
-                            <div class="field-group">
-                                <label for="strength_scheduling_style">Lifting Days</label>
-                                <select id="strength_scheduling_style">
-                                    <option value="auto" selected>Auto (based on experience)</option>
-                                    <option value="stack">Hard days hard — lift on hard run days</option>
-                                    <option value="stagger">Staggered — lift on easy days</option>
-                                </select>
-                            </div>
-
-                            <div class="field-group">
-                                <label for="strength_recovery">Recovery</label>
-                                <select id="strength_recovery">
-                                    <option value="fast">Fast — I bounce back quickly</option>
-                                    <option value="average" selected>Average</option>
-                                    <option value="slow">Slow — I need more rest</option>
-                                </select>
-                            </div>
-
-                            <div class="field-group">
-                                <label for="strength_emphasis">Emphasis</label>
-                                <select id="strength_emphasis">
-                                    <option value="balanced" selected>Balanced</option>
-                                    <option value="strength">Strength — heavier, lower reps</option>
-                                    <option value="hypertrophy">Hypertrophy — higher reps</option>
-                                </select>
-                            </div>
-
-                            <div class="full-span" style="margin-top: 6px;">
-                                <label style="display: block; font-size: 0.95rem; font-weight: 700;">
-                                    Exercise Preferences
-                                </label>
-                                <p style="margin: 4px 0 0; color: var(--muted); font-size: 0.88rem;">
-                                    Not a fan of a movement? Lean the engine toward the equipment you'd rather use — it still trains the same pattern.
-                                </p>
-                            </div>
-
-                            <div class="field-group">
-                                <label for="pref_squat">Squats / Leg Press movements</label>
-                                <select id="pref_squat" class="pattern-pref">
-                                    <option value="" selected>No preference</option>
-                                    <option value="barbell">Barbell</option>
-                                    <option value="dumbbell">Dumbbell</option>
-                                    <option value="cable">Cable</option>
-                                    <option value="machine">Machine</option>
-                                    <option value="bodyweight">Bodyweight</option>
-                                </select>
-                            </div>
-
-                            <div class="field-group">
-                                <label for="pref_hinge">Deadlifts / Hip Hinge movements</label>
-                                <select id="pref_hinge" class="pattern-pref">
-                                    <option value="" selected>No preference</option>
-                                    <option value="barbell">Barbell</option>
-                                    <option value="dumbbell">Dumbbell</option>
-                                    <option value="cable">Cable</option>
-                                    <option value="machine">Machine</option>
-                                    <option value="bodyweight">Bodyweight</option>
-                                </select>
-                            </div>
-
-                            <div class="field-group">
-                                <label for="pref_horizontal_push">Chest Press movements</label>
-                                <select id="pref_horizontal_push" class="pattern-pref">
-                                    <option value="" selected>No preference</option>
-                                    <option value="barbell">Barbell</option>
-                                    <option value="dumbbell">Dumbbell</option>
-                                    <option value="cable">Cable</option>
-                                    <option value="machine">Machine</option>
-                                    <option value="bodyweight">Bodyweight</option>
-                                </select>
-                            </div>
-
-                            <div class="field-group">
-                                <label for="pref_vertical_push">Shoulder Press movements</label>
-                                <select id="pref_vertical_push" class="pattern-pref">
-                                    <option value="" selected>No preference</option>
-                                    <option value="barbell">Barbell</option>
-                                    <option value="dumbbell">Dumbbell</option>
-                                    <option value="cable">Cable</option>
-                                    <option value="machine">Machine</option>
-                                    <option value="bodyweight">Bodyweight</option>
-                                </select>
-                            </div>
-
-                            <div class="field-group">
-                                <label for="pref_horizontal_pull">Rows</label>
-                                <select id="pref_horizontal_pull" class="pattern-pref">
-                                    <option value="" selected>No preference</option>
-                                    <option value="barbell">Barbell</option>
-                                    <option value="dumbbell">Dumbbell</option>
-                                    <option value="cable">Cable</option>
-                                    <option value="machine">Machine</option>
-                                    <option value="bodyweight">Bodyweight</option>
-                                </select>
-                            </div>
-
-                            <div class="field-group">
-                                <label for="pref_vertical_pull">Pull-ups / Lat Pulldowns</label>
-                                <select id="pref_vertical_pull" class="pattern-pref">
-                                    <option value="" selected>No preference</option>
-                                    <option value="barbell">Barbell</option>
-                                    <option value="dumbbell">Dumbbell</option>
-                                    <option value="cable">Cable</option>
-                                    <option value="machine">Machine</option>
-                                    <option value="bodyweight">Bodyweight</option>
-                                </select>
-                            </div>
-
-                            <details class="rep-ranges full-span">
-                                <summary>Rep Ranges</summary>
-                                <p class="rep-ranges-note">
-                                    Sets the rep range per body region. Overrides the phase default — the taper still deloads regardless.
-                                </p>
-                                <div class="rep-ranges-grid">
-                                    <div class="field-group">
-                                        <label for="reps_chest">Chest</label>
-                                        <select id="reps_chest" class="rep-range">
-                                            <option value="auto">Auto (phase-based)</option>
-                                            <option value="6-8" selected>6-8</option>
-                                            <option value="8-12">8-12</option>
-                                            <option value="12-15">12-15</option>
-                                            <option value="vary">Vary by phase</option>
-                                        </select>
-                                    </div>
-
-                                    <div class="field-group">
-                                        <label for="reps_back">Back</label>
-                                        <select id="reps_back" class="rep-range">
-                                            <option value="auto">Auto (phase-based)</option>
-                                            <option value="6-8" selected>6-8</option>
-                                            <option value="8-12">8-12</option>
-                                            <option value="12-15">12-15</option>
-                                            <option value="vary">Vary by phase</option>
-                                        </select>
-                                    </div>
-
-                                    <div class="field-group">
-                                        <label for="reps_shoulders">Shoulders</label>
-                                        <select id="reps_shoulders" class="rep-range">
-                                            <option value="auto">Auto (phase-based)</option>
-                                            <option value="6-8" selected>6-8</option>
-                                            <option value="8-12">8-12</option>
-                                            <option value="12-15">12-15</option>
-                                            <option value="vary">Vary by phase</option>
-                                        </select>
-                                    </div>
-
-                                    <div class="field-group">
-                                        <label for="reps_arms">Arms</label>
-                                        <select id="reps_arms" class="rep-range">
-                                            <option value="auto">Auto (phase-based)</option>
-                                            <option value="6-8">6-8</option>
-                                            <option value="8-12" selected>8-12</option>
-                                            <option value="12-15">12-15</option>
-                                            <option value="vary">Vary by phase</option>
-                                        </select>
-                                    </div>
-
-                                    <div class="field-group">
-                                        <label for="reps_legs">Legs</label>
-                                        <select id="reps_legs" class="rep-range">
-                                            <option value="auto">Auto (phase-based)</option>
-                                            <option value="6-8">6-8</option>
-                                            <option value="8-12">8-12</option>
-                                            <option value="12-15">12-15</option>
-                                            <option value="vary" selected>Vary by phase</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </details>
-                        </div>
-
                         <div class="submit-wrap">
                             <button type="submit" class="submit-btn">Generate Plan</button>
                         </div>
@@ -1485,6 +1401,12 @@
                 </div>
 
                 <div id="results"></div>
+
+                <!-- Static lifting guide. Hidden until a plan exists so the page
+                     doesn't open on a wall of prose; always included in print. -->
+                <div id="guideWrap" style="display: none;">
+                    {% include "strength_guide.html" %}
+                </div>
             </div>
         </section>
     </main>
@@ -1556,29 +1478,6 @@
                 .filter(day => day.length > 0);
         }
 
-        // Strength form behavior
-        const includeStrength = document.getElementById("include_strength");
-        const strengthFields = document.getElementById("strengthFields");
-        const strengthSplit = document.getElementById("strength_split");
-        const strengthFreq = document.getElementById("strength_frequency");
-        const SPLIT_MIN_FREQ = { full_body: 2, upper_lower: 2, ppl: 3, olympic_focused: 2, powerlifting_focused: 3 };
-
-        includeStrength.addEventListener("change", () => {
-            strengthFields.classList.toggle("hidden", !includeStrength.checked);
-        });
-
-        function enforceSplitMinFreq() {
-            const min = SPLIT_MIN_FREQ[strengthSplit.value] || 2;
-            Array.from(strengthFreq.options).forEach(opt => {
-                opt.disabled = parseInt(opt.value) < min;
-            });
-            if (parseInt(strengthFreq.value) < min) {
-                strengthFreq.value = String(min);
-            }
-        }
-        strengthSplit.addEventListener("change", enforceSplitMinFreq);
-        enforceSplitMinFreq();
-
         function getWorkoutClass(workout) {
             if (workout.includes("Long Run") || workout.includes("Half Marathon Race")) return "lr";
             if (workout.includes("Threshold") || workout.includes("HMP")) return "tempo";
@@ -1587,34 +1486,6 @@
             if (workout.includes("Tempo") || workout.includes("MLR")) return "tempo";
             if (workout.includes("Easy") || workout.includes("Z2") || workout.includes("Shakeout")) return "z2";
             return "rest";
-        }
-
-        let currentOverrides = {};
-        const PATTERN_PREF_IDS = [
-            "pref_squat", "pref_hinge", "pref_horizontal_push",
-            "pref_vertical_push", "pref_horizontal_pull", "pref_vertical_pull",
-        ];
-
-        function buildPatternPreferences() {
-            const prefs = {};
-            PATTERN_PREF_IDS.forEach(id => {
-                const pattern = id.replace("pref_", "");
-                const value = document.getElementById(id).value;
-                if (value) prefs[pattern] = value;
-            });
-            return prefs;
-        }
-
-        const REGION_IDS = ["reps_chest", "reps_back", "reps_shoulders", "reps_arms", "reps_legs"];
-
-        function buildRepRanges() {
-            const ranges = {};
-            REGION_IDS.forEach(id => {
-                const region = id.replace("reps_", "");
-                const value = document.getElementById(id).value;
-                if (value && value !== "auto") ranges[region] = value;
-            });
-            return ranges;
         }
 
         function buildPayload() {
@@ -1629,20 +1500,12 @@
                 speed_day: document.getElementById("speed_day").value,
                 preferred_rest_days: parseDays(document.getElementById("preferred_rest_days").value),
                 unavailable_days: parseDays(document.getElementById("unavailable_days").value),
-                include_strength: includeStrength.checked,
-                strength_split: strengthSplit.value,
-                strength_frequency: strengthFreq.value,
-                strength_equipment: document.getElementById("strength_equipment").value,
-                strength_scheduling_style: document.getElementById("strength_scheduling_style").value,
-                strength_recovery: document.getElementById("strength_recovery").value,
-                strength_emphasis: document.getElementById("strength_emphasis").value,
-                lift_overrides: currentOverrides,
-                strength_pattern_equipment: buildPatternPreferences(),
-                strength_rep_ranges: buildRepRanges(),
             };
         }
 
-        async function generateAndRender(shouldScroll) {
+        form.addEventListener("submit", async function(event) {
+            event.preventDefault();
+
             resultsDiv.innerHTML = `
                 <div class="results-header">
                     <h2>Building your plan...</h2>
@@ -1656,18 +1519,7 @@
             });
 
             const data = await response.json();
-            displayPlan(data, shouldScroll);
-        }
-
-        function handleSwap(slotKey, liftName) {
-            currentOverrides[slotKey] = liftName;
-            generateAndRender(false);
-        }
-
-        form.addEventListener("submit", async function(event) {
-            event.preventDefault();
-            currentOverrides = {};
-            await generateAndRender(true);
+            displayPlan(data);
         });
 
         function fmtWorkout(w) {
@@ -1675,12 +1527,16 @@
             return `${w.category} · ${w.miles}mi`;
         }
 
-        function displayPlan(response, shouldScroll = true) {
+        function displayPlan(response) {
             const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
             const isHM = response.race_type === "half_marathon";
             const plan = response.plan;
 
-            let topHtml = `<div class="results-header"><h2>Your KPG Plan</h2>`;
+            let topHtml = `
+                <div class="results-actions">
+                    <button type="button" class="pdf-btn" onclick="window.print()">Save as PDF</button>
+                </div>
+                <div class="results-header"><h2>Your KPG Plan</h2>`;
             if (isHM && response.peak) {
                 topHtml += `<p style="color:var(--muted);margin:6px 0 0;font-size:1rem;">Peak: <strong>${response.peak} mi/week</strong></p>`;
             }
@@ -1696,91 +1552,23 @@
                 `;
             }
 
-            if (response.strength_error) {
-                topHtml += `
-                    <div class="warnings">
-                        <strong>Strength Plan</strong>
-                        <ul><li>Couldn't build the strength plan: ${response.strength_error}</li></ul>
-                    </div>
-                `;
-            }
-
-            if (response.strength?.notes?.length) {
-                topHtml += `
-                    <div class="plan-notes">
-                        <strong>Strength Notes</strong>
-                        <ul>${response.strength.notes.map(n => `<li>${n}</li>`).join("")}</ul>
-                    </div>
-                `;
-            }
-
             resultsDiv.innerHTML = topHtml;
 
             plan.forEach((week, weekIndex) => {
                 const weekDiv = document.createElement("div");
                 weekDiv.className = "week-card";
 
-                const strengthWeek = response.strength?.weeks?.[weekIndex] || null;
-                const strengthByDay = {};
-                if (strengthWeek) {
-                    strengthWeek.sessions.forEach(s => { strengthByDay[s.day] = s; });
-                }
-
                 let scheduleHtml = `<div class="schedule-grid">`;
                 DAYS.forEach(day => {
                     const workout = week.schedule[day] || "Rest";
-                    const strengthChip = strengthByDay[day]
-                        ? `<div class="workout strength">🏋 ${strengthByDay[day].name}</div>`
-                        : "";
                     scheduleHtml += `
                         <div class="day-card">
                             <div class="day-name">${day}</div>
                             <div class="workout ${getWorkoutClass(workout)}">${workout}</div>
-                            ${strengthChip}
                         </div>
                     `;
                 });
                 scheduleHtml += `</div>`;
-
-                let strengthHtml = "";
-                if (strengthWeek) {
-                    if (strengthWeek.sessions.length) {
-                        const sessionsHtml = strengthWeek.sessions.map(s => `
-                            <div class="strength-session">
-                                <div class="strength-session-head">${s.day} · ${s.name}</div>
-                                ${s.lifts.map(rx => `
-                                    <div class="lift-row">
-                                        <span class="lift-rx">${rx.name} — ${rx.sets} × ${rx.reps}${rx.rir ? ` @ ${rx.rir} RIR` : ""}</span>
-                                        ${rx.alternatives && rx.alternatives.length ? `
-                                            <select class="lift-swap" data-slot-key="${rx.slot_key}">
-                                                <option value="${rx.name}" selected>${rx.name} (current)</option>
-                                                ${rx.alternatives.map(alt => `<option value="${alt}">${alt}</option>`).join("")}
-                                            </select>
-                                        ` : ""}
-                                        <span class="lift-cue">${rx.cue}</span>
-                                    </div>
-                                `).join("")}
-                            </div>
-                        `).join("");
-                        const strengthWarnings = strengthWeek.warnings?.length
-                            ? `<div class="strength-warnings"><ul>${strengthWeek.warnings.map(w => `<li>${w}</li>`).join("")}</ul></div>`
-                            : "";
-                        strengthHtml = `
-                            <div class="strength-block">
-                                <div class="strength-title">Strength · ${strengthWeek.strength_phase}</div>
-                                <div class="strength-grid">${sessionsHtml}</div>
-                                ${strengthWarnings}
-                            </div>
-                        `;
-                    } else if (strengthWeek.notes?.length) {
-                        strengthHtml = `
-                            <div class="strength-block">
-                                <div class="strength-title">Strength</div>
-                                <span class="lift-cue">${strengthWeek.notes.join(" ")}</span>
-                            </div>
-                        `;
-                    }
-                }
 
                 let summaryHtml = `<div class="summary-row">`;
                 if (isHM) {
@@ -1849,22 +1637,17 @@
                     </div>
                     ${summaryHtml}
                     ${scheduleHtml}
-                    ${strengthHtml}
                     ${warningsHtml}
                 `;
 
                 resultsDiv.appendChild(weekDiv);
             });
 
-            document.querySelectorAll(".lift-swap").forEach(sel => {
-                sel.addEventListener("change", (e) => {
-                    handleSwap(e.target.dataset.slotKey, e.target.value);
-                });
-            });
+            // The lifting guide ships with every plan — reveal it once there's
+            // a plan for it to sit under.
+            document.getElementById("guideWrap").style.display = "";
 
-            if (shouldScroll) {
-                resultsDiv.scrollIntoView({ behavior: "smooth" });
-            }
+            resultsDiv.scrollIntoView({ behavior: "smooth" });
         }
     </script>
 </body>

@@ -1,57 +1,8 @@
 from flask import Flask, render_template, request, jsonify
 from engineV3 import build_plan as build_marathon_plan
 from half_marathon_engine_main_4plus_v5_7 import build_plan as build_hm_plan
-from strength_engine import build_strength_plan
 
 app = Flask(__name__)
-
-
-def _build_strength(data, running_plan, experience):
-    """Build the strength plan from request data, or None if not requested.
-
-    Must run on the raw running plan (before schedules are flattened to
-    label strings) because the strength engine reads the weekly schedules.
-    """
-    if not data.get("include_strength"):
-        return None, None
-
-    preferences = {}
-    for key, pref in [
-        ("strength_scheduling_style", "scheduling_style"),
-        ("strength_recovery", "recovery"),
-        ("strength_emphasis", "emphasis"),
-    ]:
-        value = data.get(key)
-        if value and value != "auto":
-            preferences[pref] = value
-
-    pattern_equipment = {
-        pattern: eq
-        for pattern, eq in (data.get("strength_pattern_equipment") or {}).items()
-        if eq
-    }
-
-    region_reps = {
-        region: choice
-        for region, choice in (data.get("strength_rep_ranges") or {}).items()
-        if choice and choice != "auto"
-    }
-
-    try:
-        strength = build_strength_plan(
-            running_plan,
-            experience,
-            split=data.get("strength_split", "full_body"),
-            frequency=int(data.get("strength_frequency", 3)),
-            equipment=data.get("strength_equipment", "dumbbell"),
-            preferences=preferences,
-            overrides=data.get("lift_overrides") or {},
-            pattern_equipment=pattern_equipment,
-            region_reps=region_reps,
-        )
-        return strength, None
-    except ValueError as e:
-        return None, str(e)
 
 
 @app.route("/")
@@ -85,13 +36,9 @@ def generate_plan():
             weeks=weeks,
             preferences=preferences,
         )
-        strength, strength_error = _build_strength(data, plan, experience)
         for week in plan:
             week["schedule"] = {day: _hm_label(item) for day, item in week["schedule"].items()}
-        return jsonify({
-            "race_type": "half_marathon", "peak": peak, "plan": plan,
-            "strength": strength, "strength_error": strength_error,
-        })
+        return jsonify({"race_type": "half_marathon", "peak": peak, "plan": plan})
 
     else:
         preferences = {
@@ -108,11 +55,7 @@ def generate_plan():
             weeks=weeks,
             preferences=preferences,
         )
-        strength, strength_error = _build_strength(data, plan, experience)
-        return jsonify({
-            "race_type": "marathon", "plan": plan,
-            "strength": strength, "strength_error": strength_error,
-        })
+        return jsonify({"race_type": "marathon", "plan": plan})
 
 
 def _hm_label(item):

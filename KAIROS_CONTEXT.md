@@ -17,18 +17,22 @@ Kairos/
 ├── engineV2.py                                 # Marathon engine v2 (old)
 ├── engineV3.py                                 # ★ ACTIVE marathon engine (35-70 mi peak)
 ├── half_marathon_engine_main_4plus_v5_7.py     # ★ ACTIVE half marathon engine
-├── strength_engine.py                          # ★ ACTIVE strength engine v1 (MEV-default, reads running plan)
 ├── test_engine.py                              # HM assertion-based test suite (14 cases × 10 invariants)
-├── test_strength_engine.py                     # Strength engine suite (30 checks: library, Rx, scheduling, knobs, rotation, overrides, rep ranges)
 ├── requirements.txt                            # Flask only — everything else is stdlib
 ├── marathon_audit.py                           # Marathon engine diagnostic — generates plans + checks invariants
 ├── engine_tests.txt                            # Generated HM plan output for visual review (gitignored)
 ├── v5_7_fixes_summary.txt                      # Summary of v5.7 development bug fixes
 ├── validation_results_2026-05-17.txt           # Older validation run with red flags and analysis
-├── templates/index.html                        # Frontend — race-type toggle, marathon + HM rendering
-├── static/images/kpg-logo.png.PNG
+├── LiftingSplitDoc.docx                        # Kevin's own current lifting program (reference)
+├── templates/index.html                        # Frontend — race-type toggle, marathon + HM rendering, print/PDF
+├── templates/strength_guide.html               # ★ Lifting guide — static prose appended to every plan
+├── static/images/kpg-logo.png
 └── .gitignore
 ```
+
+**Strength note:** there is no strength *engine*. It existed and was deleted 2026-08-01 —
+see "Strength: Retired the Engine, Kept the Knowledge" below. Lifting ships as written
+education in `templates/strength_guide.html`, not as generated programming.
 
 **Active engines:** `half_marathon_engine_main_4plus_v5_7.py` (HM) and `engineV3.py` (marathon). The rest are old/archived.
 
@@ -280,9 +284,39 @@ Run with: `python test_engine.py`
 
 ---
 
-## Where We Left Off (2026-08-01, session 3)
+## Where We Left Off (2026-08-01, session 4)
 
-**Strength engine v2 — exercise selection overhaul. All shipped, 30/30 tests pass.**
+**Strength generation retired. Kairos is a running generator with a written lifting guide.**
+
+Session 4 reversed session 3's direction after measuring what the engine actually produced.
+Auditing weekly set volume — the engine's own stated organizing principle — found arms at
+**0 sets every week**, chest oscillating 8→6→12→4, hams at 18 against quads at 2. The
+principle lived only in a code comment. Kevin's call: stop generating, start explaining.
+
+**Shipped:**
+- `templates/strength_guide.html` — ~3,000-word guide: why lift as a runner, the movement
+  *types*, training intent, weekly volume as the organizing number, proximity to failure,
+  splits and balance, starting structures by lifting days/week, fitting lifting around the
+  run week, double progression, scope note.
+- Print-to-PDF via `@media print` + a "Save as PDF" button. No new dependency; browser
+  print-to-PDF only. Guide gets `break-before: page` so it starts its own page.
+- `strength_engine.py` and `test_strength_engine.py` **deleted** (recoverable at `5bd4df5`).
+- All strength UI removed from `index.html` — ~213 lines of form markup and 138 lines of CSS.
+  This substantially resolves the "Generator form UI cleanup" Open Problem as a side effect.
+
+**State now:**
+- HM suite **140/140**; marathon audit clean except documented M-5 false positives
+- No open engine bugs. Only Flask as a dependency.
+- Both race types verified end-to-end via `app.test_client()`; response no longer carries
+  `strength` keys; page renders with the guide included and print CSS present.
+
+**→ Next: pace prescription (the other Phase 1 pillar).**
+
+---
+
+### Session 3 (superseded) — strength engine v2, exercise selection overhaul
+
+_Kept for the reasoning; the code it describes no longer exists. All recoverable at `5bd4df5`._
 
 Session 3 was entirely about *which* exercises the engine picks and how the user steers that. Four subsystems, layered so each is independent:
 
@@ -631,7 +665,7 @@ Deferred until we have a specific beginner-user complaint or evidence of the cur
 **Timeline target:** 2-3 months to polished v1, but "when it's ready" beats a hard date. Phase 1 realistically 6-8 weeks given user-configurable strength + adaptive pace prescription scope.
 
 **Guiding principles:**
-- **Ship the wedge, not the checklist.** Everything ships together when strength + running + pace-range language are all live. Cutting strength means launching as a Runna clone.
+- **Ship the wedge, not the checklist.** The wedge is **running generation + lifting education**, not two generators. Kairos generates the run plan; lifting ships as a written guide appended to the plan output that teaches the blueprint and the reasoning. _(Revised 2026-08-01 — previously read "cutting strength means launching as a Runna clone," written when strength meant a generated program. Strength is not cut; it changed form. Runna still does no strength at all, so "a running plan plus real lifting coaching" remains the differentiator — and teaching principles carries far less injury-liability exposure than prescribing loads to strangers.)_
 - **Boring infra choices.** Flask stays, Postgres, Stripe, Render/Fly for hosting. Don't rebuild the stack for v1.
 - **Beta before public.** 5-10 real runners paying discounted rate before opening the doors — protects reputation and covers the training-injury liability risk.
 
@@ -705,91 +739,56 @@ Ready to take money. **To be re-evaluated when we get there.** Rough shape:
 
 ---
 
-## Strength Engine Design Notes (locked 2026-07-18)
+## Strength: Retired the Engine, Kept the Knowledge (2026-08-01)
 
-**This is the next active build.** Decisions below are locked; implementation not yet started.
+**Decision: Kairos generates running. Lifting ships as written education, not a generated program.**
 
-### Training philosophy — MEV-default, opinionated
+`strength_engine.py` and `test_strength_engine.py` were **deleted**. Recoverable in full at commit
+`5bd4df5` (`git show 5bd4df5:strength_engine.py`). What replaced them: `templates/strength_guide.html`,
+a static Jinja partial appended below the plan and included in the printed PDF.
 
-Kevin's training preference and the engine's default: **modern minimum-effective-volume hypertrophy** (Mike Israetel / RP / Menno Henselmans / Jeff Nippard territory).
+### Why it was retired
 
-- **Low working sets per muscle group per session** (2-4, not 8-12)
-- **High proximity to failure** (RPE 8-10, 0-2 RIR)
-- **Deliberate exercise pairing** — a compound + a stretch-biased isolation covers ~90% of the stimulus
-- **~6-12 hard sets per muscle group per week** total (Schoenfeld meta-analysis range)
-- **Example (chest, one session):** 2×8 incline DB press + 2×failure (6-8 reps) cable flies. That's the whole chest workout, done properly.
+1. **It failed its own core principle.** The engine's stated basis was "~6-12 hard sets/muscle/week"
+   (`strength_engine.py:5`) — but that existed only as a *comment*; no code ever measured it.
+   Auditing a real plan found **arms at 0 sets every week** (`upper_lower` and `full_body` had no
+   biceps/triceps slot at all), chest oscillating 8→6→12→4 as the session cursor alternated, hams
+   at 18 while quads sat at 2. Exercise selection had been polished repeatedly while volume
+   distribution — the variable that actually drives results — was never right.
+2. **Prescriptive loading is the highest-liability surface in the product.** The roadmap already
+   flags injury-liability disclaimers as non-negotiable. Teaching how to think about volume is a
+   fundamentally smaller exposure than telling a stranger to squat near failure.
+3. **It read as generated.** Explaining the method is what makes the MEV positioning legible.
 
-**Why this is the right default for a running app:**
-1. Recovery-friendly. Running already spends the recovery budget — high-volume 4×12 programming stacks fatigue that competes with running recovery.
-2. Time-efficient. A 4-lift session done properly at 2-3 sets each is 30-40 min. Realistic for recreational runners.
-3. Modern research-backed. Diminishing returns past ~10 hard sets/muscle/week for most trainees.
+### What the guide covers
 
-**Positioning wedge:** Fitbod / Strong default to higher-volume generic 3-4×8-12 programming. Runna doesn't do strength at all. A running app that ships with proper MEV programming is not something anyone else is doing.
+Why lift as a runner (durability + economy, shared recovery budget) · the movement *types*
+(not exercises) · training intent (strength vs. hypertrophy vs. endurance) · weekly volume as the
+organizing number · proximity to failure · splits and what balance means · starting structures by
+lifting days per week · **fitting lifting around the run week** (the one piece that genuinely needs
+the running schedule — stack vs. stagger, no heavy legs before the long run, run first when
+sharing a day, taper the lifting, nothing race week) · double progression · a scope note.
 
-### Engine shape — Option 2: Default with knobs
+Voice deliberately mirrors `WORKOUT_GLOSSARY` (`half_marathon_engine_main_4plus_v5_7.py:33`) —
+purpose → effort cue → example — so running and lifting read as one product.
 
-MEV is the opinionated default, but user can adjust WITHIN the framework:
+### Constraints that shaped it (locked with Kevin)
 
-- **Volume knob** — recovery input scales sets per movement (fast recovery → 4-5 sets, slow recovery → 2-3 sets). Doesn't change the framework, just tunes volume.
-- **Emphasis knob** — user can shift toward strength (lower reps 3-6, longer rest, keep low-volume) or hypertrophy (higher reps 8-15). MEV framework unchanged.
-- **Split choice** — PPL / upper-lower / full-body / Olympic-focused / powerlifting-focused (user picks)
-- **Frequency** — 2-6× per week (user picks)
-- **Equipment** — barbell / dumbbell / bodyweight (user picks)
-- **Experience** — beginner / intermediate / advanced (user picks)
+No lift library. No exercise selection. No sets/reps/RIR prescription. Explain movement *types*,
+with examples only "here and there." Give the blueprint and the reasoning so the reader can go
+train properly on their own.
 
-**Rejected alternatives:**
-- Pure single-style engine ("MEV IS the engine") — too risky, ties Kairos to one philosophy being right forever
-- Multi-style menu (5x5 / MEV / Olympic / powerlifting as top-level choice) — scope disaster, each is basically its own engine
+### What the retired engine had gotten right (if this is ever revisited)
 
-### Exercise selection — Option 2: Engine picks, user swaps within pattern
+The run-day scheduling logic was the genuinely novel part — reading the running plan's week to
+place lifting away from hard days and off the day before the long run. That knowledge survives as
+prose in section 8 of the guide. The 89-lift tagged library (pattern / bias / equipment /
+difficulty) was solid reference data and is preserved in git if a future feature needs it.
 
-- **Engine prescribes** specific movements per session based on movement pattern coverage, phase, and equipment
-- **User can swap** any exercise for an alternative in the same movement pattern (e.g., "no incline DB press, machine press instead" → engine offers horizontal-press stretch-biased alternatives)
-- **Preserves programming coherence** while respecting gym reality (occupied equipment, preferences)
+### Superseded design notes
 
-**Rejected alternatives:**
-- Rigid "engine picks, no swaps" — breaks under gym reality
-- Menu-driven "user builds from patterns" — kills the coaching value prop, lets users build unbalanced programs (all push, no pull; all sagittal, no frontal)
-
-**Potential v2 escape hatch:** advanced-user mode that unlocks pattern-menu selection for people who know what they're doing. Not in MVP.
-
-### Lift library requirements
-
-- Curated (not exhaustive — quality over quantity)
-- Movement pattern tags: squat / hinge / horizontal-push / vertical-push / horizontal-pull / vertical-pull / carry / Olympic / core / accessory
-- Bias tags (for stretch-biased pairing logic): stretch / peak / mid-range
-- Equipment tags: barbell / dumbbell / cable / machine / bodyweight
-- Difficulty tags: beginner-safe / needs-technique / spotter-recommended (for near-failure work on certain lifts)
-
-### Phase-linked periodization
-
-- **Base:** general strength, movement pattern coverage, higher rep ranges (8-15)
-- **Build:** running-specific power, plyometrics enter, moderate reps (6-10)
-- **Peak:** maintenance, reduce volume, protect running load
-- **Taper:** deload, minimal volume, joint/CNS recovery
-- **Race week:** no lifting
-
-### Coordination with running schedule
-
-**Critical constraint:** strength days must not sit next to hard running days (VO2 / tempo / long run).
-
-- Strength engine reads the running plan's schedule
-- Prefers strength on running-easy days OR the same day as a hard run (well-established that same-day priority: run first, lift second)
-- Avoids strength the day before a hard running session (CNS/leg fatigue carries over)
-- If user requests high strength frequency (5-6×) alongside a high running frequency, engine warns and either drops strength frequency or accepts stacked days with a warning
-
-### What's OUT for MVP
-
-- Cardio-machine work (rower, bike, incline treadmill) — post-MVP
-- Full adaptive volume adjustment based on completed session RPE — post-MVP (parallel to pace-range adaptation)
-- Advanced-user pattern-menu mode — post-MVP
-- Specialized programs (pure powerlifting comp prep, Olympic meet cycles) — post-MVP
-
-### Settled decisions (2026-07-18, session 2)
-
-- **`regression` lift tag (added 2026-07-31).** Marks assisted/scaled substitutes for a harder version of the same movement — currently Assisted Pull-Up and Assisted Nordic Curl. Such lifts stay out of the widened rotation tier for intermediate/advanced (rotating a capable lifter into the assisted variant of something they can already do is a downgrade, not variety), but are kept for beginners, for whom alternating into the assisted version *is* the progression path. They remain available to everyone via the swap menu. Root cause it addresses: the equipment order (barbell→bodyweight) is used as a loading proxy, and that proxy **inverts for vertical pulls**, where bodyweight is the hardest version rather than the easiest — so Assisted Pull-Up (machine) out-ranked actual Pull-Ups. The rotation-widening equipment band is ±2 tiers, a heuristic tuned against observed output, not a first-principles rule.
-- **Lift library size: ~60 lifts.** Enough for 2-3 options per pattern × equipment tier so swaps always have a real alternative; small enough to hand-curate and test every entry. _(Revised 2026-08-01: now 89. The original target predated per-phase exercise rotation and the user-facing swap menu, both of which need deeper candidate pools per slot to be worth having. Test ceiling raised 80 → 95. Still hand-curated — the constraint that actually matters is "every entry justified," not a headcount.)_
-- **Running × strength scheduling: user preference, not engine mandate.** New `scheduling_style` knob: `"stack"` (hard days hard — strength lands on hard running days, run first / lift second) vs `"stagger"` (strength on easy days, never the day before a hard run). No hard frequency cap. Engine warns when a week ends up with no true rest day — acceptable for experienced runners, flagged for beginners. Rationale: both approaches are legitimate; it depends on experience and preference. Default by experience (beginners → stagger).
-- **Patterns per session: fixed per split template.** PPL ≈ 2-3 patterns/session, upper-lower ≈ 3-4, full-body ≈ 4-5. Coach-defensible, predictable 30-45 min sessions. Rejected uniform counts (splits exist because density differs) and volume-knob-driven coverage (the knob scales sets, not patterns).
-- **Prescription format: reps + RIR + plain-language cue.** e.g., `Incline DB Press — 2 × 6-8 @ 0-1 RIR` / *"Push to the edge: stop when you couldn't do another clean rep."* Mirrors the running side's effort-first philosophy — precise notation for those who know it, effort cue as the primary instruction.
-- **Progression: double progression at fixed cadence.** Work within a rep range at target RIR; when the top of the range is hit on all sets while honoring RIR, add load next session and drop back to the bottom of the range. Sets step up modestly across a phase (e.g., 2→3 by phase end), reset each phase, deload at Taper. RIR is the autoregulator — no logging required. Phase 2 workout logging can later upgrade this to reactive progression. Rejected %-load ramps (needs 1RMs, ignores day-to-day readiness) and static prescriptions (plan feels dead).
+The original locked design (2026-07-18) covered MEV philosophy, the knobs, exercise-selection
+strategy, phase-linked periodization, and the settled questions on library size, scheduling style,
+patterns per session, prescription format, and progression. That reasoning informed the guide's
+content and remains readable at `5bd4df5`. It is not reproduced here because none of it is
+implemented any longer.
