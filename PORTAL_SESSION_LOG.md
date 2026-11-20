@@ -6,6 +6,113 @@ I update it after every prompt so we don't lose context. The source brief is
 
 ---
 
+## ▶ START HERE: where we left off (end of day 1, 2026-11-19)
+
+**Day 1 was setup only. No portal code exists yet.** We locked the big decisions and installed the
+design and testing toolkit. Phase 1 (Django foundations) has not started.
+
+### Decisions locked (details under "Decisions" below)
+- **Django** portal in `portal/`, importing the existing HM + marathon engines unchanged. Flask `app.py` stays.
+- **No Wix.** The public site (home/offer, about, inquiry, Client Login) is also Django and ships first.
+  *This overrides the brief, which still says Wix. The brief summary below is out of date on that point.*
+- **6 v1 plan types:** HM, Marathon (existing engines) + Speed, Base/Economy, Post-race recovery,
+  Maintenance (new, so each needs a rules design session with Kevin before code). Plan type is a generic field.
+- **Copy:** Title Case headings and buttons, sentence case body.
+
+### Toolkit installed (all committed in `6a5d184` and pushed to GitHub)
+| Skill / tool | Role | How it's installed |
+|---|---|---|
+| `design-taste-frontend` (taste-skill) | Sets the visual system for public pages and portal | junction → `gitlab-imports\taste-skill` (gitignored) |
+| `design-md` | 84 DESIGN.md reference systems; Kairos tokens will live in `portal/DESIGN.md` | wrapper + junction `library/` → `gitlab-imports\awesome-design-md\design-md` |
+| `web-design-guidelines` | Vercel UI rules: quality gate before any page is "done" | vendored, rules pinned at `434b7f9` |
+| `playwright-cli` | Claude opens pages in headless Edge, screenshots, catches console/network errors and overflow | `npm i -g @playwright/cli` (0.1.25) + version-matched skill; `.playwright/cli.config.json` = msedge |
+| `21st-ui` + 21st MCP | Search React components on 21st.dev, **rebuild them as Django + CSS** (never npm/shadcn) | `.mcp.json` (key from user env var `API_KEY_21ST`, already set) + wrapper skill, read-only tools |
+- **Precedence:** Kevin's decisions > taste-skill > design-md / 21st components > (gate) web-design-guidelines.
+- **"Check my work" routine for every page:** localhost → screenshots at 390 + 1280 → `console` → `requests` →
+  overflow check → view screenshots → fix → web-design-guidelines review → only then show Kevin.
+- **Removed:** image-to-code (Claude Code can't generate images; replaced by 21st).
+
+### First things to do tomorrow
+1. **Restart check:** confirm `node --version` and `playwright-cli --version` work from PATH. Confirm the
+   `21st` MCP server is connected (Kevin approves it if prompted), then run one test `search`.
+2. **Commit the uncommitted log entries** (prompt 17 + this summary).
+3. **Ask Kevin** if more repo imports are coming, then follow the **Weekend roadmap** below (Friday list).
+
+### Gotchas learned
+- Run `playwright-cli` from **PowerShell**, because Git Bash mangles `$APPDATA` paths. It blocks `file://`,
+  so test via `http://localhost`. The network command is `requests`.
+- Delete a junction with `cmd /c rmdir`, never `Remove-Item -Recurse` (that can wipe the target).
+- PowerShell 5.1 `Set-Content -Encoding utf8` adds a BOM, so strip it from files git reads.
+- The taste-skill clone is **shallow**, so its git history is incomplete.
+- 21st free tier allows only **2 `get_component` calls a day**, so search first and retrieve once. AI generation is off.
+- Kevin pasted the 21st key into chat on day 1. He can rotate it at 21st.dev/mcp if he wants.
+
+### Fresh-checkout setup (goes in README during Phase 1)
+Clone taste-skill + awesome-design-md into `C:\Users\kevin\Downloads\gitlab-imports\`, re-create the two
+junctions (commands in each SKILL.md), `npm i -g @playwright/cli`, set `API_KEY_21ST`.
+
+---
+
+## 🗺 Weekend roadmap: Fri 2026-11-20 → Sun 2026-11-22
+
+Drafted at the end of day 1 as a proposal. Kevin can reorder or cut items. Tick boxes as we go and
+note any slip in the prompt log.
+
+### 🎯 Goals by end of Sunday
+1. **Phase 1 done**, measured by the brief's own done-check: a fresh checkout runs from the README; a coach
+   and 2 clients can log in; clients can't see each other's data (proven by tests *and* a playwright-cli walkthrough).
+2. **Kairos design system exists:** `portal/DESIGN.md` (tokens chosen with taste-skill), a base template,
+   and shared CSS used by both the public pages and the portal.
+3. **Public site built locally:** Home/Offer, About, Inquiry form, Client Login. Each one passes the "check
+   my work" routine and the web-design-guidelines review. (Deploying comes later.)
+4. **Stretch:** a Phase 2 head start. The HM engine produces a **draft** plan through the adapter, saved
+   atomically with `generator_version` + `input_snapshot`, visible to the coach only.
+
+### Friday 11/20: Foundations and engine inspection
+- [x] Restart checks: node, playwright-cli, 21st MCP test `search`. Commit the log. *(done prompt 21; PATH caveat in the log)*
+- [ ] Finish any remaining repo imports (Kevin).
+- [ ] **Decision (Kevin): dev database.** Docker Desktop + Postgres (matches the brief's
+      "containerized dev") or a local Postgres install. Check what's installed first.
+- [ ] **Engine I/O inspection** (brief rule: inspect before integrating). For `half_marathon_engine_main_4plus_v5_7.py`
+      and `engineV3.py`, document the real inputs, outputs, side effects and determinism. Run `test_engine.py`
+      (expect 140/140) and `marathon_audit.py` as the regression baseline. Write it up in `portal/ENGINES.md`.
+- [ ] **Django skeleton** in `portal/`: pinned deps, env-var settings, `.env.example`, Postgres
+      connection, the project runs locally.
+
+### Saturday 11/21: Data model, auth, design system
+- [ ] **Models + migrations:** User (role), ClientProfile, TrainingPlan (draft/published/archived,
+      generator_version, input_snapshot, generic `plan_type`), ScheduledWorkout (prescription only),
+      WorkoutResult (one per workout). One internal unit for distances and paces. Register them in Django admin.
+- [ ] **Auth:** login/logout, password reset (console email backend for dev), and server-side
+      role + ownership checks used by every view.
+- [ ] **Synthetic demo data** command: 1 coach + 2 clients, clearly labeled as fixtures.
+- [ ] **Isolation tests:** client A can't read or write client B's plans, workouts or results; clients
+      can't see drafts.
+- [ ] **Design system:** run taste-skill (kind = service, calm, photo-led), look at the oura/nike/cal
+      references in design-md, write `portal/DESIGN.md`, build `base.html` + shared CSS tokens.
+
+### Sunday 11/22: Public pages, Phase 1 sign-off, stretch
+- [ ] **Public pages:** Home/Offer, About, Inquiry (form + email to Kevin), Client Login link. Run the
+      check routine at 390/1280 + web-design-guidelines on each.
+- [ ] **Client home (read-only):** "This Week" schedule from fixture data, mobile-first.
+- [ ] **README:** fresh-checkout steps (incl. skill junctions, playwright-cli, `API_KEY_21ST`).
+- [ ] **Phase 1 sign-off:** fresh clone → README → run → playwright-cli walkthrough as coach, client A
+      and client B. Record the result here.
+- [ ] *Stretch:* HM engine adapter → draft plan in the DB (Phase 2 start).
+- [ ] **Commit + push** at the end of each day.
+
+### Needs Kevin this weekend
+- The dev database decision (Friday).
+- Copy for the public pages: offer, pricing/packages (if shown), about/bio, photos (or OK to use licensed stand-ins).
+- Optional: a **rules design session for one new block** (Speed is the best first candidate). Nothing gets
+  built for the 4 new blocks until their rules are agreed.
+
+### Not this weekend
+Deployment/hosting choice, HTTPS, backups, the API surface (`/api/v1/`), check-ins, notifications,
+the 4 new block engines, and strength workflows.
+
+---
+
 ## Brief summary (ingested 2026-11-19)
 
 **Goal:** a custom client portal for a 1:1 running + strength coaching business (one coach, Kevin,
@@ -94,7 +201,10 @@ production-readiness notes, and a progress summary (done / mocked / missing / re
 
 ## Pending
 - Kevin is importing more repos **before website design starts**. Inspect each one as it arrives.
+  Day 1 imports: taste-skill, Vercel guidelines, awesome-design-md, playwright-cli, 21st MCP
+  (image-to-code was tried and removed).
 - ~~Install Node.js 22+~~ Done: v26.13.1 (prompt 9). Restart Claude Code so PATH picks it up.
+- Restart Claude Code → verify node/playwright-cli on PATH and the 21st MCP connection.
 
 ---
 
@@ -345,3 +455,43 @@ production-readiness notes, and a progress summary (done / mocked / missing / re
   bookmarks, teams). Added a **read-only by default** rule to the `21st-ui` skill.
 - **Still to do:** restart Claude Code so it reads the env var, approve the `21st` MCP server, then
   run a test `search` through MCP.
+
+### 17 — 2026-11-19 — Committed the skills work
+- Commit `6a5d184` on master (local, not pushed): 4 skills (web-design-guidelines, design-md,
+  playwright-cli, 21st-ui), `.mcp.json`, `.playwright/cli.config.json`, `.gitignore`, log prompts 8–16.
+  22 files.
+- Checked first: the 21st key is in no tracked file. Junctions (taste-skill, design-md library) and
+  `.claude/settings.local.json` stay ignored.
+- Fresh checkout needs: the gitlab-imports clones + 2 junctions re-created, `npm i -g @playwright/cli`,
+  and `API_KEY_21ST` set. That goes in the README when Phase 1 creates it.
+
+### 18 — 2026-11-19 — Pushed; end-of-day summary + weekend roadmap
+- Pushed master `5bd4df5..6a5d184` (it also carried the two unpushed prompt-2 commits).
+- Added the **START HERE** summary and the **Weekend roadmap** (Fri–Sun goals and daily checklists) at the
+  top of this file. Saved a Claude memory pointing future sessions here.
+- Log changes since `6a5d184` are not committed yet (first task Friday).
+
+### 19 — 2026-11-20 — "run /mcp" (MCP status check)
+- `/mcp` is a built-in CLI command; Claude can't run it, so Kevin has to type it.
+- Status seen from the session: `claude-in-chrome` and claude.ai **Claude Docs** are connected. **`21st`
+  is not**: it only offers `authenticate` / `complete_authentication`, so the API key wasn't sent.
+- Cause: `API_KEY_21ST` is set in the user registry but **not in the Claude Code process**, so
+  `${API_KEY_21ST}` in `.mcp.json` expanded to empty. The terminal Claude was launched from predates the
+  env var. Fix: close the terminal window completely, open a new one, start `claude` again, then `/mcp`.
+
+### 20 — 2026-11-20 — Day 2 start: Friday plan read back
+- `/mcp` after the terminal restart: **21st connected** (prompt 19 fix worked).
+- Read START HERE + Weekend roadmap and gave Kevin the Friday plan. No code changes yet.
+
+### 21 — 2026-11-20 — Restart checks + commit the log
+- **Tools are installed and work:** node v26.13.1, npm 11.20.0, playwright-cli 0.1.25.
+- **Caveat: this Claude Code process still has the old environment.** `node`/`playwright-cli` aren't on the
+  session PATH, and `API_KEY_21ST` isn't in the process either, although both are saved in the registry
+  (Machine PATH has `C:\Program Files\nodejs\`, User PATH has `%APPDATA%\npm`). Whatever launched Claude
+  was opened before day 1's installs. **Workaround** (until a full sign-out or reboot): start PowerShell
+  commands with
+  `$env:Path = [Environment]::GetEnvironmentVariable('Path','Machine') + ';' + [Environment]::GetEnvironmentVariable('Path','User')`.
+- **21st MCP is connected through OAuth sign-in** (the `/mcp` "Signed in" step), not the API key header.
+  Test `search` ("workout schedule card") returned 3 components. That used no `get_component` quota.
+  The read-only rule in `21st-ui` still applies.
+- Committed the log (prompts 17–21, START HERE, weekend roadmap). Friday checkbox 1 ticked.
