@@ -6,3 +6,10 @@ engine_tests.txt
 
 # Microsoft Office lock/owner files (created while a doc is open)
 ~$*
+# taste-skill is a junction to C:\Users\kevin\Downloads\gitlab-imports\taste-skill (35 MB, not vendored)
+.claude/skills/design-taste-frontend
+.claude/settings.local.json
+# design-md library is a junction to C:\Users\kevin\Downloads\gitlab-imports\awesome-design-md\design-md
+.claude/skills/design-md/library
+# Playwright CLI output (may contain credentials)
+.playwright-cli/
