@@ -146,3 +146,8 @@ contracts; dropped sessions only show up as warnings.
   DB vendor, both engines build a plan from inside Django), HM still **140/140**. playwright-cli at 390px: home +
   admin login render, 0 console errors, no failed requests.
 - Kevin still to do: `createsuperuser` (his password, so he runs it).
+
+### 28 — 2026-11-21 — Pushed; plain-English recap
+- Pushed master to GitHub (`db61278..` → includes `b6e2be6`, `fcc9da7` and this entry).
+- Checked: **no admin account exists yet** (0 users). Kevin still needs to run `createsuperuser`.
+- Gave Kevin a plain-English summary of the day.
