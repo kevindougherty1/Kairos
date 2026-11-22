@@ -82,12 +82,12 @@ can't see each other's data (tests + playwright-cli walkthrough). (2) The design
 - [ ] Any remaining repo imports (Kevin), if there are any
 
 ### Saturday list
-- [ ] **Models + migrations:** User (role), ClientProfile (incl. **target race: name, date, distance**), TrainingPlan
+- [x] **Models + migrations:** User (role), ClientProfile (incl. **target race: name, date, distance**), TrainingPlan
       (draft/published/archived, generator_version, input_snapshot, generic `plan_type`), ScheduledWorkout (prescription
       only), WorkoutResult (one per workout). One internal unit, with decimals. Registered in Django admin.
-- [ ] **Auth:** login/logout, password reset (console email in dev), server-side role + ownership checks on every view.
-- [ ] **Synthetic demo data** command: 1 coach + 2 clients, labeled as fixtures.
-- [ ] **Isolation tests:** client A can't read or write client B's data; clients can't see drafts.
+- [x] **Auth:** login/logout, password reset (console email in dev), server-side role + ownership checks on every view.
+- [x] **Synthetic demo data** command: 1 coach + 2 clients, labeled as fixtures.
+- [x] **Isolation tests:** client A can't read or write client B's data; clients can't see drafts.
 - [ ] **Design system:** taste-skill (kind = service, calm, photo-led) + design-md references → `portal/DESIGN.md`,
       `base.html`, shared CSS tokens.
 
@@ -151,3 +151,25 @@ contracts; dropped sessions only show up as warnings.
 - Pushed master to GitHub (`db61278..` → includes `b6e2be6`, `fcc9da7` and this entry).
 - Checked: **no admin account exists yet** (0 users). Kevin still needs to run `createsuperuser`.
 - Gave Kevin a plain-English summary of the day.
+
+### 29 — 2026-11-22 — Dev server stopped (low memory)
+Claude Code killed the background `runserver` while idle because the PC was low on memory (2.8 GB free of 15.4).
+Nothing was lost. Start it on demand only; Docker reserves about 8 GB.
+
+### 30 — 2026-11-22 — Saturday list items 1–4 (commits `0b45d39`, `aba70ce`)
+- **Data model:** `User.role` (client by default; superusers become coaches). `ClientProfile` (coach, goals, experience,
+  target race, schedule prefs, time zone, units). `TrainingPlan` (status, provenance, `is_fixture`), `PlanWeek` (phase,
+  target, engine warnings), `ScheduledWorkout` (prescription, `version`), `PrescriptionRevision` (audit),
+  `WorkoutResult` (one per workout, records `prescription_version`). Units: metres and seconds. The client is
+  derived from the workout chain, never stored or submitted on results.
+- **DB constraints:** one published plan per client; end ≥ start; published ⇒ `published_at`; RPE 1–10; unique
+  week numbers and workout slots; results PROTECT workouts from deletion.
+- **Access:** `training/access.py` is the single source of who sees what (cross-account requests → 404; wrong role → 403).
+  Pages (plain until the design system): `/coach/`, `/me/`, `/plans/<id>/`, `/workouts/<id>/` (result form).
+  Auth at `/accounts/` (login, logout, password reset via console email).
+- **`seed_demo`** (DEBUG only, re-runnable): `demo_coach`, `demo_client_a` (live plan, hidden draft, 1 result),
+  `demo_client_b`. All plans are labeled fixtures. The password is random per run (printed); re-run to get a new one.
+- **Tests: 35/35** (isolation across clients and coaches, drafts hidden, result upsert, ignored ownership fields,
+  archived = read-only, constraints, login by role, inactive users, password reset email, units, seeding).
+- Not yet: `PrescriptionRevision` writing and the publish/archive service (Phase 2); login rate limiting (Phase 3).
+- Next: design system (Saturday item 5).
