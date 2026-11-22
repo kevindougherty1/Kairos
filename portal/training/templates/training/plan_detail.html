@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% load kairos %}
+{% block title %}{{ plan.title }}{% endblock %}
+{% block content %}
+<h1>{{ plan }}</h1>
+{% if plan.is_fixture %}<p><strong>Demo data:</strong> this is a synthetic plan, not a real training plan.</p>{% endif %}
+<p>
+  {{ plan.client }} · {{ plan.get_plan_type_display }} · {{ plan.start_date|date:"M j" }}–{{ plan.end_date|date:"M j, Y" }}
+  {% if plan.race_name %} · Race: {{ plan.race_name }}{% if plan.race_date %}, {{ plan.race_date|date:"M j, Y" }}{% endif %}{% endif %}
+</p>
+
+{% for week in weeks %}
+  <section>
+    <h2>Week {{ week.number }}{% if week.phase %} · {{ week.phase }}{% endif %}{% if week.target_distance_m %} · {{ week.target_distance_m|distance:units }}{% endif %}</h2>
+    {% if user.is_coach and week.warnings %}
+      <ul role="alert">{% for w in week.warnings %}<li>{{ w }}</li>{% endfor %}</ul>
+    {% endif %}
+    <ul>
+      {% for w in week.workouts.all %}
+        <li>
+          <a href="{% url 'workout_detail' w.pk %}">{{ w.date|date:"D M j" }} · {{ w.title }}</a>
+          {% if w.target_distance_m %} · {{ w.target_distance_m|distance:units }}{% endif %}
+          {% if w.result %} · {{ w.result.get_status_display }}{% endif %}
+        </li>
+      {% empty %}
+        <li>Rest week.</li>
+      {% endfor %}
+    </ul>
+  </section>
+{% endfor %}
+{% endblock %}

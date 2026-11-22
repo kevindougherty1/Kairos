@@ -1,9 +1,17 @@
 from django.contrib import admin
-from django.urls import path
+from django.urls import include, path
 
 from core import views as core_views
+from training import views as training_views
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    # login, logout, password_change, password_reset (templates in portal/templates/registration/)
+    path("accounts/", include("django.contrib.auth.urls")),
     path("", core_views.home, name="home"),
+    path("dashboard/", training_views.dashboard, name="dashboard"),
+    path("coach/", training_views.coach_home, name="coach_home"),
+    path("me/", training_views.client_home, name="client_home"),
+    path("plans/<int:pk>/", training_views.plan_detail, name="plan_detail"),
+    path("workouts/<int:pk>/", training_views.workout_detail, name="workout_detail"),
 ]

@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% load kairos %}
+{% block title %}{{ workout.title }}{% endblock %}
+{% block content %}
+<p><a href="{% url 'plan_detail' workout.week.plan.pk %}">← {{ workout.week.plan.title }}</a></p>
+<h1>{{ workout.title }}</h1>
+<p>{{ workout.date|date:"l, F j" }} · {{ workout.get_workout_type_display }}
+  {% if workout.target_distance_m %} · {{ workout.target_distance_m|distance:units }}{% endif %}
+  {% if workout.target_duration_s %} · {{ workout.target_duration_s|duration }}{% endif %}
+</p>
+{% if workout.prescription %}<h2>Workout</h2><p>{{ workout.prescription|linebreaksbr }}</p>{% endif %}
+{% if workout.coach_notes %}<h2>Coach Notes</h2><p>{{ workout.coach_notes|linebreaksbr }}</p>{% endif %}
+
+<h2>Result</h2>
+{% if result %}
+  <p>
+    {{ result.get_status_display }}
+    {% if result.actual_distance_m %} · {{ result.actual_distance_m|distance:units }}{% endif %}
+    {% if result.actual_duration_s %} · {{ result.actual_duration_s|duration }}{% endif %}
+    {% if result.perceived_effort %} · Effort {{ result.perceived_effort }}/10{% endif %}
+  </p>
+  {% if result.comments %}<p>{{ result.comments|linebreaksbr }}</p>{% endif %}
+  {% if result.prescription_version != workout.version %}
+    <p>Logged against an earlier version of this workout (v{{ result.prescription_version }}).</p>
+  {% endif %}
+{% elif not form %}
+  <p>Not logged yet.</p>
+{% endif %}
+
+{% if form %}
+  <form method="post" novalidate>
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+    {% for field in form %}
+      <p>
+        {{ field.label_tag }} {{ field }}
+        {% if field.help_text %}<small>{{ field.help_text }}</small>{% endif %}
+        {{ field.errors }}
+      </p>
+    {% endfor %}
+    <button type="submit">{% if result %}Update Result{% else %}Log Result{% endif %}</button>
+  </form>
+{% endif %}
+{% endblock %}

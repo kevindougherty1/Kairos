@@ -1,15 +1,7 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Kairos Portal</title>
-</head>
-<body>
-  <main>
-    <h1>Kairos Portal</h1>
-    <p>The skeleton is running. The public pages and portal screens come next.</p>
-    <p><a href="{% url 'admin:index' %}">Open Django Admin</a></p>
-  </main>
-</body>
-</html>
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+{% block content %}
+<h1>Kairos Coaching</h1>
+<p>1:1 running coaching. The full public site is coming soon.</p>
+<p><a href="{% if user.is_authenticated %}{% url 'dashboard' %}{% else %}{% url 'login' %}{% endif %}">Client Login</a></p>
+{% endblock %}

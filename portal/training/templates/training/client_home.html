@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% load kairos %}
+{% block title %}My Training{% endblock %}
+{% block content %}
+<h1>My Training</h1>
+{% if current %}
+  <h2><a href="{% url 'plan_detail' current.pk %}">{{ current }}</a></h2>
+  <h3>Coming Up</h3>
+  <ul>
+    {% for w in upcoming %}
+      <li>
+        <a href="{% url 'workout_detail' w.pk %}">{{ w.date|date:"D M j" }} · {{ w.title }}</a>
+        {% if w.target_distance_m %} · {{ w.target_distance_m|distance:units }}{% endif %}
+        {% if w.result %} · {{ w.result.get_status_display }}{% endif %}
+      </li>
+    {% empty %}
+      <li>No more workouts in this plan.</li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <p>Your coach hasn't published a plan for you yet.</p>
+{% endif %}
+{% if past_plans %}
+  <h2>Past Plans</h2>
+  <ul>{% for p in past_plans %}<li><a href="{% url 'plan_detail' p.pk %}">{{ p }}</a></li>{% endfor %}</ul>
+{% endif %}
+{% endblock %}

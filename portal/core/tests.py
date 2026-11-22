@@ -7,7 +7,8 @@ class SkeletonTests(TestCase):
     def test_home_page_renders(self):
         response = self.client.get(reverse("home"))
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Kairos Portal")
+        self.assertContains(response, "Kairos Coaching")
+        self.assertContains(response, reverse("login"))
 
     def test_admin_login_page_renders(self):
         response = self.client.get(reverse("admin:login"))

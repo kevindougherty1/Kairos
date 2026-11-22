@@ -60,7 +60,8 @@ ROOT_URLCONF = "config.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        # Project templates win over app templates (incl. Django admin's registration/ pages).
+        "DIRS": [BASE_DIR / "templates"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -102,6 +103,10 @@ DATABASES["default"].setdefault("OPTIONS", {})["connect_timeout"] = env.int("POS
 # Custom user model from day one: swapping it after the first migration is painful.
 AUTH_USER_MODEL = "accounts.User"
 
+LOGIN_URL = "login"
+LOGIN_REDIRECT_URL = "dashboard"
+LOGOUT_REDIRECT_URL = "login"
+
 AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
     {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
@@ -125,6 +130,8 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 
 
 # Email: console backend in development (password reset, inquiry form). Real SMTP comes in Phase 3.
+
+DEFAULT_FROM_EMAIL = env("DJANGO_DEFAULT_FROM_EMAIL", default="Kairos <no-reply@localhost>")
 
 MAILERS = {
     "default": {

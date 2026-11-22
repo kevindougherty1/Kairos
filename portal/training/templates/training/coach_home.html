@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Clients{% endblock %}
+{% block content %}
+<h1>Clients</h1>
+{% for client in clients %}
+  <section>
+    <h2>{{ client }}</h2>
+    <p>
+      {% if client.target_race_name %}{{ client.target_race_name }}{% if client.target_race_date %} · {{ client.target_race_date|date:"M j, Y" }}{% endif %}{% else %}No target race set{% endif %}
+    </p>
+    {% if client.plans.all %}
+      <ul>
+        {% for plan in client.plans.all %}
+          <li><a href="{% url 'plan_detail' plan.pk %}">{{ plan }}</a> · {{ plan.start_date|date:"M j" }}–{{ plan.end_date|date:"M j, Y" }}</li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p>No plans yet.</p>
+    {% endif %}
+  </section>
+{% empty %}
+  <p>No clients are assigned to you yet. Add one in <a href="{% url 'admin:accounts_clientprofile_add' %}">Django Admin</a>.</p>
+{% endfor %}
+{% endblock %}
