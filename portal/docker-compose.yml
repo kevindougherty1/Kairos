@@ -1,0 +1,27 @@
+# Development database for the Kairos portal. Django itself runs from the repo's .venv.
+#   Start:  docker compose up -d        (run from portal/; reads portal/.env)
+#   Stop:   docker compose stop
+#   Wipe:   docker compose down -v      (deletes all local data)
+name: kairos
+
+services:
+  db:
+    image: postgres:17.12
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-kairos}
+      POSTGRES_USER: ${POSTGRES_USER:-kairos}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in portal/.env}
+    ports:
+      # Bound to localhost only, so the database isn't reachable from the network.
+      - "127.0.0.1:${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    restart: unless-stopped
+
+volumes:
+  pgdata:

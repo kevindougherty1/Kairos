@@ -9,12 +9,13 @@ Running context for the portal build (started 2026-11-19), updated after every p
 
 ## ▶ START HERE (Sat 2026-11-21, evening)
 
-**Machine is ready and the engines have been inspected. No Django code yet.**
+**Friday list done: the Django skeleton runs on Postgres in Docker.** Phase 1 data model starts next.
 
 ### Resume here
-1. **Start Docker Desktop first.** It's a per-user install: `%LOCALAPPDATA%\Programs\DockerDesktop\Docker Desktop.exe`.
-   If `docker` says it can't find `//./pipe/docker_engine`, it isn't running.
-2. **Next: Django skeleton** (the last Friday item; see the roadmap).
+1. **Start Docker Desktop first** (per-user install: `%LOCALAPPDATA%\Programs\DockerDesktop\Docker Desktop.exe`).
+   Then, from `portal/`: `docker compose up -d` → `..\.venv\Scripts\python.exe manage.py runserver` → http://127.0.0.1:8000/
+2. **Kevin:** create the admin login (once): `.venv\Scripts\python.exe portal\manage.py createsuperuser`.
+3. **Next: Saturday list**, starting with models + migrations (User role, ClientProfile with target race, ...).
 
 ---
 
@@ -26,7 +27,8 @@ Running context for the portal build (started 2026-11-19), updated after every p
 | Public site | **No Wix.** Home/Offer, About, Inquiry, Client Login are Django too, and ship first. |
 | Plan types (v1) | HM + Marathon (existing engines); Speed, Base/Economy, Post-race recovery (2–4 wk), Maintenance (new: rules design session with Kevin before code). `plan_type` is a generic field. Deferred: 10K, return-from-injury. |
 | Copy | Title Case headings and buttons, sentence case body. |
-| Dev database | **Docker Desktop + Postgres** via `docker-compose.yml`. Django runs from `.venv` at first. |
+| Dev database | **Docker Desktop + Postgres 17.12** via `portal/docker-compose.yml`. Django runs from `.venv`. |
+| Stack versions | Django **6.1.3**, psycopg 3.3.9, django-environ 0.14.0, pinned in `portal/requirements.txt` (2026-11-21). |
 | Plan length | HM **8–20** weeks, marathon **12–24** weeks, enforced by the form + adapter (2026-11-21). |
 | Race date | Kevin works out the client's race; the coach enters race name/date/distance. The plan is built backward from the race date, and the race lands on the real date (2026-11-21). |
 | Race-week total | Includes the race: shakeouts + 13.1 / 26.2, so distances need decimals (2026-11-21). |
@@ -52,6 +54,8 @@ Running context for the portal build (started 2026-11-19), updated after every p
 - Run `playwright-cli` from **PowerShell** (Git Bash mangles `$APPDATA` paths). It blocks `file://`, so test via `http://localhost`.
 - Delete a junction with `cmd /c rmdir`, never `Remove-Item -Recurse` (that can wipe the target).
 - PowerShell 5.1 `Set-Content -Encoding utf8` adds a BOM, so strip it from files git reads.
+- Connect to Postgres via **`127.0.0.1`**, not `localhost`: here `localhost` tries IPv6 `::1` first, which Docker
+  doesn't listen on, and the connection stalls. Settings default to 127.0.0.1, with a 5 s connect timeout.
 - If tools or env vars go missing, the terminal predates the install: fully exit PyCharm (File → Exit) or reboot.
 - 21st free tier: **2 `get_component` calls a day**, so search first and retrieve once. AI generation is off.
 - The taste-skill clone is shallow, so its git history is incomplete.
@@ -73,8 +77,8 @@ can't see each other's data (tests + playwright-cli walkthrough). (2) The design
 - [x] Dev database decision → Docker + Postgres
 - [x] Install WSL + Docker Desktop, verify `hello-world`
 - [x] Engine I/O inspection → `portal/ENGINES.md` (baseline: HM 140/140, marathon audit clean except M-5)
-- [ ] **Django skeleton** in `portal/`: pinned deps, env-var settings, `.env.example`, Postgres in
-      `docker-compose.yml`, the project runs locally
+- [x] **Django skeleton** in `portal/`: pinned deps, env-var settings, `.env.example`, Postgres in
+      `docker-compose.yml`, the project runs locally *(prompt 27)*
 - [ ] Any remaining repo imports (Kevin), if there are any
 
 ### Saturday list
@@ -130,3 +134,15 @@ contracts; dropped sessions only show up as warnings.
   later phases).
 - Condensed this log: removed the brief recap, resolved items and the day-1 play-by-play (they're still in git history at `db61278`).
 - Added the target race to the Saturday ClientProfile model item. Next: the Django skeleton.
+
+### 27 — 2026-11-21 — Django skeleton
+- `portal/`: Django 6.1.3 project `config` + apps `accounts` (custom `User`, added before the first migrate so a
+  role can be added later without swapping the model) and `core` (placeholder home page). Settings come entirely from
+  env vars via django-environ (`portal/.env`, gitignored, with generated secrets; `.env.example` committed). The repo root
+  is on `sys.path`, so the engines import unchanged.
+- `portal/docker-compose.yml`: `postgres:17.12`, bound to 127.0.0.1 only, named volume, health check. Migrated.
+- Hit a hang: `localhost` → IPv6 `::1` stalls on this machine. Fixed with host `127.0.0.1` + `connect_timeout` (Gotchas).
+- Verified: `manage.py check` clean, no missing migrations, **5/5 Django tests on Postgres** (home, admin login,
+  DB vendor, both engines build a plan from inside Django), HM still **140/140**. playwright-cli at 390px: home +
+  admin login render, 0 console errors, no failed requests.
+- Kevin still to do: `createsuperuser` (his password, so he runs it).

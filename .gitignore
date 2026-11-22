@@ -13,3 +13,8 @@ engine_tests.txt
 .claude/skills/design-md/library
 # Playwright CLI output (may contain credentials)
 .playwright-cli/
+
+# Kairos portal: local secrets and generated files
+portal/.env
+portal/staticfiles/
+db.sqlite3
