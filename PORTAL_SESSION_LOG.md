@@ -7,15 +7,18 @@ Running context for the portal build (started 2026-11-19), updated after every p
 
 ---
 
-## ▶ START HERE (Sat 2026-11-21, evening)
+## ▶ START HERE (Sun 2026-11-22)
 
-**Friday list done: the Django skeleton runs on Postgres in Docker.** Phase 1 data model starts next.
+**Saturday list done.** The portal has a data model, login, role/ownership rules (35 tests), demo data and its
+design system (`portal/DESIGN.md`, `portal/static/kairos/kairos.css`). Every screen passed the check routine.
 
 ### Resume here
-1. **Start Docker Desktop first** (per-user install: `%LOCALAPPDATA%\Programs\DockerDesktop\Docker Desktop.exe`).
-   Then, from `portal/`: `docker compose up -d` → `..\.venv\Scripts\python.exe manage.py runserver` → http://127.0.0.1:8000/
-2. **Kevin:** create the admin login (once): `.venv\Scripts\python.exe portal\manage.py createsuperuser`.
-3. **Next: Saturday list**, starting with models + migrations (User role, ClientProfile with target race, ...).
+1. **Start Docker Desktop**, then from `portal/`: `docker compose up -d` → `..\.venv\Scripts\python.exe manage.py runserver`.
+   Memory is tight on this PC (~3 GB free), so run the server on demand.
+2. **Kevin:** create the admin login once: `.venv\Scripts\python.exe portal\manage.py createsuperuser`.
+   Demo logins: `demo_coach`, `demo_client_a`, `demo_client_b`. Re-run `manage.py seed_demo` to get a fresh password.
+3. **Next: Sunday list**, starting with the public pages (taste-skill kit, kind = service, on the same tokens).
+   Needs Kevin's copy: offer, about/bio, photos (or OK to use licensed stand-ins).
 
 ---
 
@@ -88,7 +91,7 @@ can't see each other's data (tests + playwright-cli walkthrough). (2) The design
 - [x] **Auth:** login/logout, password reset (console email in dev), server-side role + ownership checks on every view.
 - [x] **Synthetic demo data** command: 1 coach + 2 clients, labeled as fixtures.
 - [x] **Isolation tests:** client A can't read or write client B's data; clients can't see drafts.
-- [ ] **Design system:** taste-skill (kind = service, calm, photo-led) + design-md references → `portal/DESIGN.md`,
+- [x] **Design system:** taste-skill (kind = service, calm, photo-led) + design-md references → `portal/DESIGN.md`,
       `base.html`, shared CSS tokens.
 
 ### Sunday list
@@ -173,3 +176,21 @@ Nothing was lost. Start it on demand only; Docker reserves about 8 GB.
   archived = read-only, constraints, login by role, inactive users, password reset email, units, seeding).
 - Not yet: `PrescriptionRevision` writing and the publish/archive service (Phase 2); login rate limiting (Phase 3).
 - Next: design system (Saturday item 5).
+
+### 31 — 2026-11-22 — Design system (Saturday item 5)
+- **Dealt by taste-skill** (service, wellness/fitness trade), from a scratch folder so its finish gate isn't
+  armed on the project before Sunday's public page exists. Palette **clay-pine** (cream `#efe9e0`, ink
+  `#22261f`, pine `#2e5b44`). The first deal (rose-grey-green) clashed with the KPG logo's cream, so per the skill's
+  rule the next was taken, and it matches the logo. Type **Rethink Sans**. Radius soft.
+- `portal/static/kairos/kairos.css`: kit-compatible tokens (same names and scales as taste-skill's `system.css`)
+  + app components (buttons, cards, split, rows, badges, notices, fields, auth card, fixed header).
+  Contrast checked: ink 12.75:1, muted 5.63:1, action 6.45:1, field border 3.39–4.67:1, warn 6.29:1.
+- Logo resized from 2.1 MB to 13 KB/50 KB (96/192px) + a 32px favicon. All templates restyled; `nav_cta` block hides
+  the header's Client Login button on auth pages.
+- **Check routine:** login walkthrough as client and coach at 390 + 1280 (16 screens): 0 overflow, 0 small tap
+  targets, 0 console/HTTP errors. Fixed after viewing: narrow coach cards, a stretched workout card, label colons,
+  textarea height, "4.20", the field gap, a duplicate primary button, a 42px skip link.
+- **web-design-guidelines review:** 9 findings, all fixed (scroll-padding under the fixed header, touch-action,
+  long-title wrapping, autofocus off on mobile, curly apostrophes, `translate="no"` on the brand,
+  `autocomplete="off"` on result fields, first invalid field focused, a Status error that says what to do).
+- `portal/DESIGN.md` written in design-md format (front-matter tokens + sections). Tests still **35/35**.

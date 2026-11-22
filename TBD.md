@@ -58,4 +58,6 @@ Deployment/hosting choice, HTTPS, backups, the `/api/v1/` API surface, weekly ch
 block engines, and strength workflows.
 
 ## Housekeeping
+- Self-host the Rethink Sans font before launch (privacy/speed); it loads from Google Fonts now.
+- An SVG version of the KPG logo would be sharper than the PNG copies (Kevin, if one exists).
 - Optional: rotate the 21st API key (it was pasted in chat on day 1) at 21st.dev/mcp.

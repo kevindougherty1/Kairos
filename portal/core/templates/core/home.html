@@ -1,7 +1,11 @@
 {% extends "base.html" %}
-{% block title %}Home{% endblock %}
+{% block title %}Running Coaching{% endblock %}
 {% block content %}
-<h1>Kairos Coaching</h1>
-<p>1:1 running coaching. The full public site is coming soon.</p>
-<p><a href="{% if user.is_authenticated %}{% url 'dashboard' %}{% else %}{% url 'login' %}{% endif %}">Client Login</a></p>
+<div class="page-head">
+  <h1>1:1 Running Coaching</h1>
+  <p>Plans built for your race and your week. The full site is on its way.</p>
+</div>
+<div class="btn-row">
+  <a class="btn btn--primary" href="{% if user.is_authenticated %}{% url 'dashboard' %}{% else %}{% url 'login' %}{% endif %}">{% if user.is_authenticated %}Open My Training{% else %}Client Login{% endif %}</a>
+</div>
 {% endblock %}

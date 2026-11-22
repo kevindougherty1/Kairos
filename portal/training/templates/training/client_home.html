@@ -2,26 +2,41 @@
 {% load kairos %}
 {% block title %}My Training{% endblock %}
 {% block content %}
-<h1>My Training</h1>
+<div class="page-head">
+  <h1>My Training</h1>
+  {% if current %}<p>{{ current.title }} · {{ current.start_date|date:"M j" }}–{{ current.end_date|date:"M j, Y" }}</p>{% endif %}
+</div>
+
 {% if current %}
-  <h2><a href="{% url 'plan_detail' current.pk %}">{{ current }}</a></h2>
-  <h3>Coming Up</h3>
-  <ul>
-    {% for w in upcoming %}
-      <li>
-        <a href="{% url 'workout_detail' w.pk %}">{{ w.date|date:"D M j" }} · {{ w.title }}</a>
-        {% if w.target_distance_m %} · {{ w.target_distance_m|distance:units }}{% endif %}
-        {% if w.result %} · {{ w.result.get_status_display }}{% endif %}
-      </li>
-    {% empty %}
-      <li>No more workouts in this plan.</li>
-    {% endfor %}
-  </ul>
+  {% if current.is_fixture %}<p class="notice"><strong>Demo plan.</strong> This is sample data, not a real training plan.</p>{% endif %}
+  <section aria-labelledby="coming-up">
+    <h2 id="coming-up">Coming Up</h2>
+    {% if upcoming %}
+      <ul class="rows">{% for w in upcoming %}{% include "training/_workout_row.html" %}{% endfor %}</ul>
+    {% else %}
+      <p class="muted">No more workouts in this plan.</p>
+    {% endif %}
+    <p class="form__note"><a href="{% url 'plan_detail' current.pk %}">See the Full Plan</a></p>
+  </section>
 {% else %}
-  <p>Your coach hasn't published a plan for you yet.</p>
+  <div class="card">
+    <h2>No Plan Yet</h2>
+    <p>Your coach is putting your plan together. It shows up here as soon as it’s published.</p>
+  </div>
 {% endif %}
+
 {% if past_plans %}
-  <h2>Past Plans</h2>
-  <ul>{% for p in past_plans %}<li><a href="{% url 'plan_detail' p.pk %}">{{ p }}</a></li>{% endfor %}</ul>
+  <section class="section" aria-labelledby="past">
+    <h2 id="past">Past Plans</h2>
+    <ul class="rows">
+      {% for plan in past_plans %}
+        <li><a class="row" href="{% url 'plan_detail' plan.pk %}">
+          <span class="row__date">{{ plan.start_date|date:"M j, Y" }}</span>
+          <span class="row__title">{{ plan.title }}</span>
+          <span></span>
+        </a></li>
+      {% endfor %}
+    </ul>
+  </section>
 {% endif %}
 {% endblock %}

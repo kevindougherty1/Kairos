@@ -32,20 +32,33 @@ class WorkoutResultForm(forms.ModelForm):
         model = WorkoutResult
         fields = ["status", "perceived_effort", "comments"]
         labels = {"perceived_effort": "Effort (1–10)"}
+        widgets = {"comments": forms.Textarea(attrs={"rows": 4})}
+        error_messages = {"status": {"required": "Choose how the run went: completed, partly done or skipped."}}
 
     def __init__(self, *args, units="mi", **kwargs):
+        kwargs.setdefault("label_suffix", "")
         super().__init__(*args, **kwargs)
         self.units = units
         self.fields["distance"].label = f"Distance ({units})"
-        self.fields["perceived_effort"].widget.attrs.update(min=1, max=10)
+        self.fields["perceived_effort"].widget.attrs.update(min=1, max=10, inputmode="numeric")
+        self.fields["distance"].widget.attrs.update(inputmode="decimal")
+        for field in self.fields.values():  # not a login form: keep password managers out
+            field.widget.attrs.setdefault("autocomplete", "off")
         if self.instance.pk:
             per = METRES_PER_KM if units == "km" else METRES_PER_MILE
             if self.instance.actual_distance_m is not None:
-                self.initial["distance"] = round(Decimal(self.instance.actual_distance_m) / Decimal(per), 2)
+                self.initial["distance"] = (Decimal(self.instance.actual_distance_m) / Decimal(per)).quantize(Decimal("0.01")).normalize()
             if self.instance.actual_duration_s is not None:
                 h, rem = divmod(self.instance.actual_duration_s, 3600)
                 m, s = divmod(rem, 60)
                 self.initial["duration"] = f"{h}:{m:02d}:{s:02d}" if h else f"{m}:{s:02d}"
+
+    def focus_first_error(self):
+        """After a failed submit, put the cursor in the first field that needs fixing."""
+        for name in self.fields:
+            if name in self.errors:
+                self.fields[name].widget.attrs["autofocus"] = True
+                break
 
     def clean_duration(self):
         text = self.cleaned_data.get("duration", "")

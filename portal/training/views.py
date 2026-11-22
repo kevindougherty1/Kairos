@@ -42,7 +42,7 @@ def coach_home(request):
     clients = access.clients_for(request.user).prefetch_related(
         Prefetch("plans", queryset=TrainingPlan.objects.order_by("-start_date"))
     )
-    return render(request, "training/coach_home.html", {"clients": clients})
+    return render(request, "training/coach_home.html", {"clients": clients, "nav": "home"})
 
 
 @role_required("client")
@@ -58,7 +58,7 @@ def client_home(request):
         )
     past_plans = plans.filter(status=TrainingPlan.Status.ARCHIVED)
     return render(request, "training/client_home.html", {
-        "current": current, "upcoming": upcoming, "past_plans": past_plans, "units": _units(request.user),
+        "current": current, "upcoming": upcoming, "past_plans": past_plans, "units": _units(request.user), "nav": "home",
     })
 
 
@@ -90,6 +90,7 @@ def workout_detail(request, pk):
             saved.save()
             messages.success(request, "Result saved.")
             return redirect("workout_detail", pk=workout.pk)
+        form.focus_first_error()
     else:
         form = WorkoutResultForm(instance=result, units=units) if can_log else None
 

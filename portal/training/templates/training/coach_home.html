@@ -1,24 +1,49 @@
 {% extends "base.html" %}
+{% load kairos %}
 {% block title %}Clients{% endblock %}
 {% block content %}
-<h1>Clients</h1>
-{% for client in clients %}
-  <section>
-    <h2>{{ client }}</h2>
-    <p>
-      {% if client.target_race_name %}{{ client.target_race_name }}{% if client.target_race_date %} · {{ client.target_race_date|date:"M j, Y" }}{% endif %}{% else %}No target race set{% endif %}
-    </p>
-    {% if client.plans.all %}
-      <ul>
-        {% for plan in client.plans.all %}
-          <li><a href="{% url 'plan_detail' plan.pk %}">{{ plan }}</a> · {{ plan.start_date|date:"M j" }}–{{ plan.end_date|date:"M j, Y" }}</li>
-        {% endfor %}
-      </ul>
-    {% else %}
-      <p>No plans yet.</p>
-    {% endif %}
-  </section>
-{% empty %}
-  <p>No clients are assigned to you yet. Add one in <a href="{% url 'admin:accounts_clientprofile_add' %}">Django Admin</a>.</p>
-{% endfor %}
+<div class="page-head">
+  <h1>Clients</h1>
+  <p>{{ clients|length }} client{{ clients|length|pluralize }} assigned to you.</p>
+</div>
+
+{% if clients %}
+  <div class="cards">
+    {% for client in clients %}
+      <section class="card" aria-labelledby="client-{{ client.pk }}">
+        <h2 id="client-{{ client.pk }}">{{ client }}</h2>
+        <ul class="facts">
+          {% if client.target_race_name %}
+            <li><strong>{{ client.target_race_name }}</strong></li>
+            {% if client.target_race_date %}<li class="num">{{ client.target_race_date|date:"M j, Y" }}</li>{% endif %}
+          {% else %}
+            <li>No target race set</li>
+          {% endif %}
+          {% if client.experience %}<li>{{ client.get_experience_display }}</li>{% endif %}
+        </ul>
+        {% if client.plans.all %}
+          <ul class="rows">
+            {% for plan in client.plans.all %}
+              <li>
+                <a class="row" href="{% url 'plan_detail' plan.pk %}">
+                  <span class="row__date">{{ plan.start_date|date:"M j" }}–{{ plan.end_date|date:"M j" }}</span>
+                  <span class="row__title">{{ plan.title }}</span>
+                  <span class="row__meta">{% include "training/_plan_badge.html" %}</span>
+                </a>
+              </li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <p class="muted">No plans yet.</p>
+        {% endif %}
+      </section>
+    {% endfor %}
+  </div>
+{% else %}
+  <div class="card">
+    <h2>No Clients Yet</h2>
+    <p>Create a client account and profile in Django Admin, and they’ll show up here.</p>
+    <a class="btn btn--primary" href="{% url 'admin:accounts_clientprofile_add' %}">Add a Client</a>
+  </div>
+{% endif %}
 {% endblock %}

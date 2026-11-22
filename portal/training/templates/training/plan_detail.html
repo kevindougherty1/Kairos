@@ -2,30 +2,37 @@
 {% load kairos %}
 {% block title %}{{ plan.title }}{% endblock %}
 {% block content %}
-<h1>{{ plan }}</h1>
-{% if plan.is_fixture %}<p><strong>Demo data:</strong> this is a synthetic plan, not a real training plan.</p>{% endif %}
-<p>
-  {{ plan.client }} · {{ plan.get_plan_type_display }} · {{ plan.start_date|date:"M j" }}–{{ plan.end_date|date:"M j, Y" }}
-  {% if plan.race_name %} · Race: {{ plan.race_name }}{% if plan.race_date %}, {{ plan.race_date|date:"M j, Y" }}{% endif %}{% endif %}
-</p>
+<a class="back" href="{% url 'dashboard' %}">← {% if user.is_coach %}Clients{% else %}My Training{% endif %}</a>
+<div class="page-head">
+  <h1>{{ plan.title }}</h1>
+  <ul class="facts">
+    <li>{% include "training/_plan_badge.html" %}</li>
+    {% if user.is_coach %}<li><strong>{{ plan.client }}</strong></li>{% endif %}
+    <li>{{ plan.get_plan_type_display }}</li>
+    <li class="num">{{ plan.start_date|date:"M j" }}–{{ plan.end_date|date:"M j, Y" }}</li>
+    {% if plan.race_name %}<li>{{ plan.race_name }}{% if plan.race_date %}, <span class="num">{{ plan.race_date|date:"M j" }}</span>{% endif %}</li>{% endif %}
+  </ul>
+</div>
+
+{% if plan.is_fixture %}<p class="notice"><strong>Demo plan.</strong> This is sample data, not a real training plan.</p>{% endif %}
 
 {% for week in weeks %}
-  <section>
-    <h2>Week {{ week.number }}{% if week.phase %} · {{ week.phase }}{% endif %}{% if week.target_distance_m %} · {{ week.target_distance_m|distance:units }}{% endif %}</h2>
+  <section class="week" aria-labelledby="week-{{ week.number }}">
+    <div class="week__head">
+      <h2 id="week-{{ week.number }}">Week {{ week.number }}</h2>
+      <span class="muted">{% if week.phase %}{{ week.phase }}{% endif %}{% if week.phase and week.target_distance_m %} · {% endif %}{% if week.target_distance_m %}<span class="num">{{ week.target_distance_m|distance:units }}</span>{% endif %}</span>
+    </div>
     {% if user.is_coach and week.warnings %}
-      <ul role="alert">{% for w in week.warnings %}<li>{{ w }}</li>{% endfor %}</ul>
+      <div class="notice notice--warn" role="note">
+        <strong>Check this week</strong>
+        <ul>{% for w in week.warnings %}<li>{{ w }}</li>{% endfor %}</ul>
+      </div>
     {% endif %}
-    <ul>
-      {% for w in week.workouts.all %}
-        <li>
-          <a href="{% url 'workout_detail' w.pk %}">{{ w.date|date:"D M j" }} · {{ w.title }}</a>
-          {% if w.target_distance_m %} · {{ w.target_distance_m|distance:units }}{% endif %}
-          {% if w.result %} · {{ w.result.get_status_display }}{% endif %}
-        </li>
-      {% empty %}
-        <li>Rest week.</li>
-      {% endfor %}
-    </ul>
+    {% if week.workouts.all %}
+      <ul class="rows">{% for w in week.workouts.all %}{% include "training/_workout_row.html" %}{% endfor %}</ul>
+    {% else %}
+      <p class="muted">Rest week.</p>
+    {% endif %}
   </section>
 {% endfor %}
 {% endblock %}

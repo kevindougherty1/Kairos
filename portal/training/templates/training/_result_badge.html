@@ -1,0 +1,1 @@
+<span class="badge{% if result.status == 'completed' %} badge--done{% elif result.status == 'skipped' %} badge--muted{% endif %}">{{ result.get_status_display }}</span>

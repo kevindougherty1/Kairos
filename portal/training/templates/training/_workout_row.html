@@ -1,0 +1,10 @@
+{% load kairos %}<li>
+  <a class="row" href="{% url 'workout_detail' w.pk %}">
+    <span class="row__date">{{ w.date|date:"D, M j" }}</span>
+    <span class="row__title">{{ w.title }}</span>
+    <span class="row__meta">
+      {% if w.result %}<span class="badge{% if w.result.status == 'completed' %} badge--done{% elif w.result.status == 'skipped' %} badge--muted{% endif %}">{{ w.result.get_status_display }}</span>
+      {% elif w.target_distance_m %}{{ w.target_distance_m|distance:units }}{% endif %}
+    </span>
+  </a>
+</li>
