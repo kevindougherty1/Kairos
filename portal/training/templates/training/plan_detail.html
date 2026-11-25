@@ -17,6 +17,7 @@
 {% if plan.is_fixture %}<p class="notice"><strong>Demo plan.</strong> This is sample data, not a real training plan.</p>{% endif %}
 
 {% if user.is_coach %}
+  {% if to_write %}<p class="notice"><strong>{{ to_write }} speed session{{ to_write|pluralize }} to write.</strong> Your client sees “Your coach will add the details” until you do. The engine’s pick is under each title as a suggestion.</p>{% endif %}
   <div class="actions">
     {% if plan.can_trash %}
       <form method="post" action="{% url 'plan_trash' plan.pk %}">

@@ -7,71 +7,147 @@
   <h1>{{ workout.title }}</h1>
   <ul class="facts">
     <li class="num">{{ workout.date|date:"l, F j" }}</li>
-    <li>{{ workout.get_workout_type_display }}</li>
+    {% if user.is_coach %}<li>{{ workout.get_workout_type_display }}</li>{% endif %}
     {% if workout.target_distance_m %}<li><strong class="num">{{ workout.target_distance_m|distance:units }}</strong></li>{% endif %}
     {% if workout.target_duration_s %}<li><strong class="num">{{ workout.target_duration_s|duration }}</strong></li>{% endif %}
   </ul>
 </div>
 
-<div class="split">
-  <section class="card" aria-labelledby="the-workout">
-    <h2 id="the-workout">The Workout</h2>
-    {% if workout.prescription %}<p>{{ workout.prescription|linebreaksbr }}</p>{% else %}<p class="muted">Run it at the effort in the title.</p>{% endif %}
-    {% if workout.coach_notes %}
-      <h3>Coach Notes</h3>
-      <p>{{ workout.coach_notes|linebreaksbr }}</p>
-    {% endif %}
-  </section>
+{% if user.is_coach %}
+  {# ---------------- COACH: prescribe it; the engine's idea is only a suggestion ---------------- #}
+  {% if workout.needs_prescription %}
+    <p class="notice notice--warn"><strong>Not written yet.</strong> Until you add the workout, your client sees “Your coach will add the details for this session.”</p>
+  {% endif %}
+  <div class="split">
+    <section class="card" aria-labelledby="prescribe">
+      <h2 id="prescribe">What Your Client Sees</h2>
+      {% if prescription_form %}
+        {% if using_suggestion %}<p class="muted">The engine’s suggestion is filled in below. Edit it, then save.</p>{% endif %}
+        <form method="post" action="{% url 'workout_prescribe' workout.pk %}" class="form" novalidate>
+          {% csrf_token %}
+          {% if prescription_form.non_field_errors %}<div class="notice notice--warn" role="alert">{{ prescription_form.non_field_errors }}</div>{% endif %}
+          <div class="field-row">
+            {% include "training/_field.html" with field=prescription_form.title %}
+            {% include "training/_field.html" with field=prescription_form.distance %}
+          </div>
+          {% include "training/_field.html" with field=prescription_form.prescription %}
+          {% include "training/_field.html" with field=prescription_form.coach_notes %}
+          <button class="btn btn--primary" type="submit">Save Workout</button>
+          {% if workout.week.plan.status == "published" %}<p class="form__note">This plan is live: saving shows your client the new version right away, and the old one is kept.</p>{% endif %}
+        </form>
+      {% else %}
+        {% if workout.prescription %}<p>{{ workout.prescription|linebreaksbr }}</p>{% else %}<p class="muted">Nothing written.</p>{% endif %}
+        {% if workout.coach_notes %}<h3>Notes</h3><p>{{ workout.coach_notes|linebreaksbr }}</p>{% endif %}
+        <p class="muted">This plan is archived, so it can’t be changed.</p>
+      {% endif %}
+      {% if revisions %}
+        <h3>Earlier Versions</h3>
+        <ul class="rows">
+          {% for r in revisions %}
+            <li><div class="row"><span class="row__date">v{{ r.version }} · {{ r.changed_at|date:"M j" }}</span><span class="row__title">{{ r.snapshot.title }}</span><span class="row__meta">{{ r.snapshot.target_distance_m|distance:units }}</span></div></li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    </section>
 
-  <section class="card" aria-labelledby="your-result">
-    <h2 id="your-result">{% if user.is_coach %}Result{% else %}Your Result{% endif %}</h2>
-    {% if result and not form %}
-      <ul class="facts">
-        <li>{% include "training/_result_badge.html" %}</li>
-        {% if result.actual_distance_m %}<li class="num">{{ result.actual_distance_m|distance:units }}</li>{% endif %}
-        {% if result.actual_duration_s %}<li class="num">{{ result.actual_duration_s|duration }}</li>{% endif %}
-        {% if result.perceived_effort %}<li>Effort {{ result.perceived_effort }}/10</li>{% endif %}
-      </ul>
-      {% if result.comments %}<p>{{ result.comments|linebreaksbr }}</p>{% endif %}
-    {% elif not form %}
-      <p class="muted">Not logged yet.</p>
-    {% endif %}
-    {% if result and result.prescription_version != workout.version %}
-      <p class="muted">Logged against an earlier version of this workout (v{{ result.prescription_version }}).</p>
-    {% endif %}
+    <div class="stack">
+      {% if workout.suggestion or workout.engine_detail %}
+        <section class="card" aria-labelledby="suggestion">
+          <span class="label">Only you see this</span>
+          <h2 id="suggestion">Engine Suggestion</h2>
+          {% if workout.engine_detail %}<p><strong>{{ workout.engine_detail }}</strong></p>{% endif %}
+          {% if workout.suggestion %}<p class="muted">{{ workout.suggestion|linebreaksbr }}</p>{% endif %}
+          {% if prescription_form and not workout.prescription and workout.suggestion and not using_suggestion %}
+            <a class="btn btn--secondary" href="?use_suggestion=1">Start From the Suggestion</a>
+          {% endif %}
+        </section>
+      {% endif %}
+      <section class="card" aria-labelledby="client-result">
+        <h2 id="client-result">Result</h2>
+        {% if result %}
+          <ul class="facts">
+            <li>{% include "training/_result_badge.html" %}</li>
+            {% if result.actual_distance_m %}<li class="num">{{ result.actual_distance_m|distance:units }}</li>{% endif %}
+            {% if result.actual_duration_s %}<li class="num">{{ result.actual_duration_s|duration }}</li>{% endif %}
+            {% if result.perceived_effort %}<li>Effort {{ result.perceived_effort }}/10</li>{% endif %}
+          </ul>
+          {% if result.comments %}<p>{{ result.comments|linebreaksbr }}</p>{% endif %}
+          {% if result.prescription_version != workout.version %}<p class="muted">Logged against v{{ result.prescription_version }} (now v{{ workout.version }}).</p>{% endif %}
+        {% else %}
+          <p class="muted">Not logged yet.</p>
+        {% endif %}
+      </section>
+    </div>
+  </div>
 
-    {% if form %}
-      {% if result %}<p class="muted">Logged {{ result.updated_at|date:"M j" }}. Change anything and save again.</p>{% endif %}
-      <form method="post" class="form" novalidate>
-        {% csrf_token %}
-        {% if form.non_field_errors %}<div class="notice notice--warn" role="alert">{{ form.non_field_errors }}</div>{% endif %}
-        <div class="field">
-          {{ form.status.label_tag }} {{ form.status }}
-          {{ form.status.errors }}
-        </div>
-        <div class="field-row">
+{% else %}
+  {# ---------------- CLIENT: only what the coach wrote ---------------- #}
+  <div class="split">
+    <section class="card" aria-labelledby="the-workout">
+      <h2 id="the-workout">The Workout</h2>
+      {% if workout.prescription %}
+        <p>{{ workout.prescription|linebreaksbr }}</p>
+      {% elif workout.needs_prescription %}
+        <p class="muted">Your coach will add the details for this session.</p>
+      {% else %}
+        <p class="muted">Run it at the effort in the title.</p>
+      {% endif %}
+      {% if workout.coach_notes %}
+        <h3>Coach Notes</h3>
+        <p>{{ workout.coach_notes|linebreaksbr }}</p>
+      {% endif %}
+    </section>
+
+    <section class="card" aria-labelledby="your-result">
+      <h2 id="your-result">Your Result</h2>
+      {% if result and not form %}
+        <ul class="facts">
+          <li>{% include "training/_result_badge.html" %}</li>
+          {% if result.actual_distance_m %}<li class="num">{{ result.actual_distance_m|distance:units }}</li>{% endif %}
+          {% if result.actual_duration_s %}<li class="num">{{ result.actual_duration_s|duration }}</li>{% endif %}
+          {% if result.perceived_effort %}<li>Effort {{ result.perceived_effort }}/10</li>{% endif %}
+        </ul>
+        {% if result.comments %}<p>{{ result.comments|linebreaksbr }}</p>{% endif %}
+      {% elif not form %}
+        <p class="muted">Not logged yet.</p>
+      {% endif %}
+      {% if result and result.prescription_version != workout.version %}
+        <p class="muted">Your coach updated this workout after you logged it.</p>
+      {% endif %}
+
+      {% if form %}
+        {% if result %}<p class="muted">Logged {{ result.updated_at|date:"M j" }}. Change anything and save again.</p>{% endif %}
+        <form method="post" class="form" novalidate>
+          {% csrf_token %}
+          {% if form.non_field_errors %}<div class="notice notice--warn" role="alert">{{ form.non_field_errors }}</div>{% endif %}
           <div class="field">
-            {{ form.distance.label_tag }} {{ form.distance }}
-            {{ form.distance.errors }}
+            {{ form.status.label_tag }} {{ form.status }}
+            {{ form.status.errors }}
+          </div>
+          <div class="field-row">
+            <div class="field">
+              {{ form.distance.label_tag }} {{ form.distance }}
+              {{ form.distance.errors }}
+            </div>
+            <div class="field">
+              {{ form.duration.label_tag }} {{ form.duration }}
+              <span class="field__help" id="{{ form.duration.auto_id }}_helptext">{{ form.duration.help_text }}</span>
+              {{ form.duration.errors }}
+            </div>
           </div>
           <div class="field">
-            {{ form.duration.label_tag }} {{ form.duration }}
-            <span class="field__help" id="{{ form.duration.auto_id }}_helptext">{{ form.duration.help_text }}</span>
-            {{ form.duration.errors }}
+            {{ form.perceived_effort.label_tag }} {{ form.perceived_effort }}
+            <span class="field__help">1 is very easy, 10 is an all-out effort.</span>
+            {{ form.perceived_effort.errors }}
           </div>
-        </div>
-        <div class="field">
-          {{ form.perceived_effort.label_tag }} {{ form.perceived_effort }}
-          <span class="field__help">1 is very easy, 10 is an all-out effort.</span>
-          {{ form.perceived_effort.errors }}
-        </div>
-        <div class="field">
-          {{ form.comments.label_tag }} {{ form.comments }}
-          {{ form.comments.errors }}
-        </div>
-        <button class="btn btn--primary" type="submit">{% if result %}Update Result{% else %}Log Result{% endif %}</button>
-      </form>
-    {% endif %}
-  </section>
-</div>
+          <div class="field">
+            {{ form.comments.label_tag }} {{ form.comments }}
+            {{ form.comments.errors }}
+          </div>
+          <button class="btn btn--primary" type="submit">{% if result %}Update Result{% else %}Log Result{% endif %}</button>
+        </form>
+      {% endif %}
+    </section>
+  </div>
+{% endif %}
 {% endblock %}

@@ -8,15 +8,6 @@ we stay on task. Each one has a safe default, so nothing waits on it. When we pi
 
 ## Needs Kevin's Input
 
-### 1. Client-facing workout names
-The engines label workouts in coach shorthand, e.g. `Z2 (6)`, `MLR (12)`, `VO2 (4)`, `HMP Session`, and a phase called
-`Specific`. A client opening the portal sees whatever we display. Show them as-is, or translate to plain names?
-Example translation: Z2 → "Easy Run", MLR → "Medium-Long Run", VO2 → "Intervals", HMP → "Half Marathon Pace",
-Specific → "Race Prep".
-- **Default for now:** show the engine's terms. The adapter keeps all names in one mapping table, so changing
-  them later is a single-file edit.
-- **When it matters:** before the client schedule screen is shown to a real client (Phase 2).
-
 ### 2. Marathon weekly total can be off by a mile or two
 Each marathon week has a target mileage, but the runs the engine schedules can add up to slightly **more**
 (never less). Example: a beginner on 20 mpw and 6 days a week gets a week-1 target of **22 mi**, but the runs add up to **23**
@@ -43,6 +34,10 @@ code. Speed is the best first candidate. The portal treats plan type as a generi
 ---
 
 ## Engine Follow-Ups (don't touch this weekend)
+- **Smarter workout suggestions.** The HM engine picks the workout *type* by phase (real logic), but the *style* by a
+  plain week-number rotation, the same for every runner (lines 818/826/858). Its example sessions aren't sized to the
+  day's miles, and in short Specific phases some HMP styles never appear. Kevin prescribes speed sessions himself
+  (2026-11-25), so the suggestions are coach-only; improving them is an engine change.
 - **Marathon beginner gets VO2 work every week**, including Base week 1. Classic novice programs prescribe none.
   This is a coaching-philosophy question, already logged in `KAIROS_CONTEXT.md`.
 - **`marathon_audit.py` M-5 false positive:** recalibrate or drop the "Quality dominates week" check.
@@ -52,6 +47,10 @@ code. Speed is the best first candidate. The portal treats plan type as a generi
   always sends them.
 
 ---
+
+## Portal Follow-Ups
+- **Publish button (Phase 2):** warn before publishing if any Speed Session is still unwritten (the plan page counts them).
+- Show a created time on drafts so identical titles are easy to tell apart.
 
 ## Later Phases (not this weekend)
 Deployment/hosting choice, HTTPS, backups, the `/api/v1/` API surface, weekly check-ins, notifications, the 4 new

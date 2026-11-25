@@ -185,8 +185,9 @@ needs its own `generate_marathon` (same shape; add the "Math check" warning from
   `weeks[] = {number, phase, phase_label, target_miles, workouts[] = {weekday, kind, miles, style, title}, warnings[]}`.
   `kind` is a portal enum (`long_run`, `easy`, `tempo`, `threshold`, `vo2`, `mlr`, `hmp`, `hills`, `speed`, `economy`,
   `shakeout`, `race`). Rest days are simply missing from the list.
-- **Display names:** one mapping table from engine labels to the names clients see. For now it shows the engine's own
-  terms. Whether to translate them is parked in `TBD.md`.
+- **Display names (decided 2026-11-25):** `HM_WORKOUTS` maps each engine name → (kind, client title, coach label).
+  Clients see "Speed Session" / "Easy Run + Strides"; the engine's pick (`engine_detail`) and glossary text
+  (`suggestion`) are coach-only; the coach writes `prescription`.
 - **Calendar:** anchored on the client's real race date. Race week = the Monday–Sunday week that contains the race date.
   Plan start = Monday of race week − (weeks − 1) × 7 days. Each workout date = week start + weekday index.
 - **Race week:** the engine's `Race` entry moves to the actual race date. The rest of the week is left as the engine

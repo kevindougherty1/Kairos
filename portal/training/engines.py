@@ -29,17 +29,19 @@ WEEK_RANGE = {PlanType.HALF_MARATHON: (8, 20), PlanType.MARATHON: (12, 24)}
 RUNS_PER_WEEK = (4, 6)
 HM_FILE = "half_marathon_engine_main_4plus_v5_7.py"
 
-# Engine workout name → (portal kind, title shown). The one place to rename engine terms (TBD.md #1).
+# Engine workout name → (portal kind, title the CLIENT sees, short label the COACH sees as the engine's pick).
+# The one place to rename engine terms. Decision 2026-11-25: clients see "Speed Session" for all quality work and
+# "Easy Run + Strides" for strides days; the engine's specific pick is a coach-only suggestion.
 HM_WORKOUTS = {
-    "Easy": (WorkoutType.EASY, "Easy Run"),
-    "Long Run": (WorkoutType.LONG_RUN, "Long Run"),
-    "Threshold Session": (WorkoutType.THRESHOLD, "Threshold Session"),
-    "HMP Session": (WorkoutType.RACE_PACE, "HMP Session"),
-    "Hill Strength": (WorkoutType.HILLS, "Hill Strength"),
-    "Speed Support": (WorkoutType.SPEED, "Speed Support"),
-    "Economy Support": (WorkoutType.ECONOMY, "Economy Support"),
-    "Shakeout": (WorkoutType.SHAKEOUT, "Shakeout Run"),
-    "Half Marathon Race": (WorkoutType.RACE, "Half Marathon Race"),
+    "Easy": (WorkoutType.EASY, "Easy Run", ""),
+    "Long Run": (WorkoutType.LONG_RUN, "Long Run", "Long Run"),
+    "Threshold Session": (WorkoutType.THRESHOLD, "Speed Session", "Threshold"),
+    "HMP Session": (WorkoutType.RACE_PACE, "Speed Session", "Half Marathon Pace"),
+    "Hill Strength": (WorkoutType.HILLS, "Speed Session", "Hills"),
+    "Speed Support": (WorkoutType.SPEED, "Speed Session", "Speed Support"),
+    "Economy Support": (WorkoutType.ECONOMY, "Easy Run + Strides", "Strides"),
+    "Shakeout": (WorkoutType.SHAKEOUT, "Shakeout Run", ""),
+    "Half Marathon Race": (WorkoutType.RACE, "Half Marathon Race", ""),
 }
 
 
@@ -166,7 +168,8 @@ def generate_half_marathon(request: PlanRequest):
                 continue
             if item["name"] not in HM_WORKOUTS:
                 raise ValueError(f"Unknown engine workout {item['name']!r}; add it to HM_WORKOUTS.")
-            kind, title = HM_WORKOUTS[item["name"]]
+            kind, title, engine_label = HM_WORKOUTS[item["name"]]
+            style = item.get("style")
             weekday = day
             if kind == WorkoutType.RACE:
                 weekday = race_weekday  # decision: the race lands on the real race date
@@ -175,7 +178,9 @@ def generate_half_marathon(request: PlanRequest):
                 "kind": kind,
                 "title": request.race_name or title if kind == WorkoutType.RACE else title,
                 "distance_m": RaceDistance.HALF_MARATHON if kind == WorkoutType.RACE else miles_to_m(item["miles"] or 0) or None,
-                "prescription": _hm_prescription(item["name"], item.get("style")),
+                "prescription": "",  # written by the coach; clients see only this
+                "suggestion": _hm_prescription(item["name"], style),
+                "engine_detail": f"{engine_label} · {style}" if engine_label and style else engine_label,
                 "engine_label": item["name"],
             })
         if is_race_week:

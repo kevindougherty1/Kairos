@@ -26,7 +26,7 @@ CLIENTS = [("demo_client_a", "Avery", "Demo"), ("demo_client_b", "Blake", "Demo"
 # (weekday offset, type, title, miles, prescription), a generic 2-week fixture pattern.
 WEEK_PATTERN = [
     (0, WorkoutType.EASY, "Easy Run", 4, "Conversational pace."),
-    (1, WorkoutType.THRESHOLD, "Threshold Session", 6, "Warm up, 3 x 10 min at threshold with 2 min jog, cool down."),
+    (1, WorkoutType.THRESHOLD, "Speed Session", 6, "Warm up, 3 x 10 min at threshold with 2 min jog, cool down."),
     (3, WorkoutType.EASY, "Easy Run", 5, "Conversational pace, 6 x 20 sec strides at the end."),
     (5, WorkoutType.LONG_RUN, "Long Run", 10, "Easy effort throughout."),
 ]

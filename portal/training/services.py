@@ -62,6 +62,8 @@ def generate_draft(coach, client: ClientProfile, request: PlanRequest, today=Non
                     workout_type=w["kind"],
                     title=w["title"][:120],
                     prescription=w["prescription"],
+                    suggestion=w.get("suggestion", ""),
+                    engine_detail=w.get("engine_detail", "")[:120],
                     target_distance_m=w["distance_m"],
                 )
     return plan
@@ -112,3 +114,34 @@ def delete_plan_forever(coach, plan: TrainingPlan) -> None:
     with transaction.atomic():
         plan.delete()  # weeks and workouts go with it
 
+
+
+def update_prescription(coach, workout, **changes) -> bool:
+    """Coach edits what the client will see. On a live (published) plan the old version is kept as a
+    PrescriptionRevision and `version` goes up, so results logged earlier stay understandable (brief §6).
+    Returns True if anything changed."""
+    from .models import PrescriptionRevision, ScheduledWorkout
+
+    plan = workout.week.plan
+    if plan.client.coach_id != coach.id:
+        raise PermissionDenied
+    if plan.is_trashed or plan.status == TrainingPlan.Status.ARCHIVED:
+        raise PlanActionError("This plan is archived or in the Trash, so its workouts can’t be changed.")
+    allowed = set(ScheduledWorkout.PRESCRIPTION_FIELDS)
+    unknown = set(changes) - allowed
+    if unknown:
+        raise ValueError(f"Not editable here: {', '.join(sorted(unknown))}")
+    before = workout.prescription_snapshot()
+    after = {**before, **changes}
+    if after == before:
+        return False
+    with transaction.atomic():
+        if plan.status == TrainingPlan.Status.PUBLISHED:
+            PrescriptionRevision.objects.create(
+                workout=workout, version=workout.version, snapshot=before, changed_by=coach
+            )
+            workout.version += 1
+        for field_name, value in changes.items():
+            setattr(workout, field_name, value)
+        workout.save()
+    return True

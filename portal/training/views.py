@@ -15,7 +15,7 @@ from django.core.exceptions import ValidationError
 
 from . import access, services
 from .engines import PlanRequest
-from .forms import GeneratePlanForm, WorkoutResultForm
+from .forms import GeneratePlanForm, PrescriptionForm, WorkoutResultForm
 from .models import ScheduledWorkout, TrainingPlan, WorkoutResult
 
 
@@ -201,7 +201,10 @@ def plan_detail(request, pk):
         Prefetch("workouts", queryset=ScheduledWorkout.objects.select_related("result"))
     )
     units = plan.client.preferred_units
-    return render(request, "training/plan_detail.html", {"plan": plan, "weeks": weeks, "units": units})
+    to_write = 0
+    if request.user.is_coach:
+        to_write = sum(1 for wk in weeks for w in wk.workouts.all() if w.needs_prescription)
+    return render(request, "training/plan_detail.html", {"plan": plan, "weeks": weeks, "units": units, "to_write": to_write})
 
 
 @login_required
@@ -226,6 +229,53 @@ def workout_detail(request, pk):
     else:
         form = WorkoutResultForm(instance=result, units=units) if can_log else None
 
+    return _render_workout(request, workout, result=result, form=form)
+
+
+def _can_prescribe(user, workout):
+    plan = workout.week.plan
+    return user.is_coach and plan.status in (TrainingPlan.Status.DRAFT, TrainingPlan.Status.PUBLISHED)
+
+
+def _render_workout(request, workout, result=None, form=None, prescription_form=None):
+    units = workout.week.plan.client.preferred_units
+    if result is None:
+        result = WorkoutResult.objects.filter(workout=workout).first()
+    if prescription_form is None and _can_prescribe(request.user, workout):
+        prescription_form = PrescriptionForm(
+            initial=PrescriptionForm.initial_for(workout, units, use_suggestion="use_suggestion" in request.GET),
+            units=units,
+        )
     return render(request, "training/workout_detail.html", {
         "workout": workout, "result": result, "form": form, "units": units,
+        "prescription_form": prescription_form,
+        "revisions": workout.revisions.all() if request.user.is_coach else [],
+        "using_suggestion": "use_suggestion" in request.GET,
     })
+
+
+@require_POST
+@role_required("coach")
+def workout_prescribe(request, pk):
+    """Coach saves what the client will see. Live-plan edits keep the old version (services.update_prescription)."""
+    workout = get_object_or_404(access.workouts_for(request.user).select_related("week__plan__client"), pk=pk)
+    if not _can_prescribe(request.user, workout):
+        raise PermissionDenied
+    units = workout.week.plan.client.preferred_units
+    form = PrescriptionForm(request.POST, units=units)
+    if form.is_valid():
+        try:
+            changed = services.update_prescription(request.user, workout, **form.changes())
+        except services.PlanActionError as exc:
+            messages.error(request, str(exc))
+        else:
+            live = workout.week.plan.status == TrainingPlan.Status.PUBLISHED
+            if not changed:
+                messages.success(request, "No changes to save.")
+            elif live:
+                messages.success(request, f"Saved. Your client sees the new version (v{workout.version}) now.")
+            else:
+                messages.success(request, "Saved to the draft.")
+        return redirect("workout_detail", pk=workout.pk)
+    form.focus_first_error()
+    return _render_workout(request, workout, prescription_form=form)

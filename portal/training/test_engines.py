@@ -122,11 +122,23 @@ class HalfMarathonAdapterTests(SimpleTestCase):
         self.assertEqual([w["kind"] for w in on_race_day], ["race"])
         self.assertTrue(any("race day" in m for m in race_week["warnings"]))
 
-    def test_quality_sessions_carry_the_engines_own_guidance(self):
+    def test_engine_guidance_is_a_coach_suggestion_not_the_prescription(self):
         _, _, plan = generate_half_marathon(hm_request())
         threshold = next(w for wk in plan["weeks"] for w in wk["workouts"] if w["kind"] == "threshold")
-        self.assertIn("Suggested style:", threshold["prescription"])
-        self.assertIn("Effort:", threshold["prescription"])
+        self.assertEqual(threshold["title"], "Speed Session")
+        self.assertEqual(threshold["prescription"], "")
+        self.assertIn("Suggested style:", threshold["suggestion"])
+        self.assertIn("Effort:", threshold["suggestion"])
+        self.assertTrue(threshold["engine_detail"].startswith("Threshold · "))
+
+    def test_client_facing_names(self):
+        _, _, plan = generate_half_marathon(hm_request(runs_per_week=5))
+        titles = {w["kind"]: w["title"] for wk in plan["weeks"] for w in wk["workouts"]}
+        for kind in ("threshold", "race_pace", "hills", "speed"):
+            if kind in titles:
+                self.assertEqual(titles[kind], "Speed Session", kind)
+        self.assertEqual(titles.get("economy"), "Easy Run + Strides")
+        self.assertEqual(titles["easy"], "Easy Run")
 
 
 class GenerateDraftTests(TestCase):

@@ -27,6 +27,7 @@ Running context for the portal build (started 2026-11-19), updated after every p
 
 | Area | Decision |
 |---|---|
+| Workout names | Clients see **"Speed Session"** for all quality work (threshold, HMP, hills, VO2/10K) and **"Easy Run + Strides"** for strides days. The engine's pick + guidance are a **coach-only suggestion**; **Kevin writes the prescription** clients see (2026-11-25). |
 | Brand name | **Hard Left** (the hard left turn of track running), **display only** (2026-11-25): site, titles, emails, admin. Code/file names stay `kairos`. Placeholder mark = taste-skill's dealt `dots` until a real logo exists. |
 | Framework | **Django** portal in `portal/`, importing the HM + marathon engines unchanged. Flask `app.py` stays as is. |
 | Public site | **No Wix.** Home/Offer, About, Inquiry, Client Login are Django too, and ship first. |
@@ -269,4 +270,26 @@ Nothing was lost. Start it on demand only; Docker reserves about 8 GB.
   no small targets at 390/1280. Fixed after screenshots: Rethink Sans rendered "(1)" as ①, so the count is a badge and `calt` is off.
 - Noted: several identical draft titles ("Half Marathon: [Demo] City Half Marathon") are hard to tell apart.
   Showing a created time on drafts is a small follow-up.
+
+
+### 38 — 2026-11-25 — "Is the workout choice random?" + wants "Speed Session" on the client side
+- Answered from the HM engine code: deterministic, not random. The phase picks the workout type (Base/Build = Threshold, Specific = HMP, Taper = short Continuous Tempo); the week number picks the style by plain rotation (`styles[(week_num-1) % len]`, lines 818/826; 2nd workout rotation line 858; LR style by week % 3 / % 2, lines 870/873). The examples are the glossary's fixed 3 per style, not sized to the session's miles. Quirk: in short Specific phases some HMP styles never appear (they depend on the week number, not the position in the phase).
+- Kevin wants clients to see "Speed Session" for quality work. Asked: which workouts, client-only or coach too, and keep the style suggestions?
+
+### 39 — 2026-11-25 — "Speed Session" for clients; engine picks become coach-only suggestions
+- Kevin: 1 yes (everything but strides = Speed Session; strides = Easy Run + Strides); 2 yes, the engine detail is only
+  a suggestion and he prescribes the workout himself; 3 = the same thing (hide from clients).
+- `ScheduledWorkout.engine_detail` + `suggestion` (coach only; migration 0003). Migration 0004 converted existing
+  rows (generated plans: engine text moved prescription → suggestion; engine titles → Speed Session / Easy Run +
+  Strides). Adapter `HM_WORKOUTS` now (kind, client title, coach label); new drafts get an empty prescription.
+- **Coach workout page:** "What Your Client Sees" form (title, distance, workout, notes) + "Engine Suggestion" card
+  (only you see this; "Start From the Suggestion" prefills via `?use_suggestion=1`, saves nothing) + Result + Earlier
+  Versions. `services.update_prescription`: on a **live** plan the old version is kept as `PrescriptionRevision` and
+  `version` goes up; drafts save in place; archived/trashed refused. POST `/workouts/<id>/prescribe/`, own coach only.
+- **Client:** "Speed Session", only the coach's text; unwritten → "Your coach will add the details for this session.";
+  the workout type is hidden. Coach plan page: engine pick under each title, a "To Write" badge, and an "N speed sessions to
+  write" notice.
+- TBD #1 resolved (removed). Parked: smarter engine suggestions; a publish warning for unwritten sessions.
+- Tests **81/81** (+9). Browser: coach plan/workout/prefill + client week/workout at 390/1280, 0 overflow, 0 errors; no
+  engine terms in any client text.
 

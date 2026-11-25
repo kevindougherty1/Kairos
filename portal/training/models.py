@@ -138,8 +138,15 @@ class WorkoutType(models.TextChoices):
     OTHER = "other", "Other"
 
 
+QUALITY_TYPES = {"threshold", "tempo", "vo2", "race_pace", "hills", "speed"}  # shown to clients as "Speed Session"
+
+
 class ScheduledWorkout(models.Model):
-    """The prescription. What the client actually did lives in WorkoutResult, never here."""
+    """The prescription. What the client actually did lives in WorkoutResult, never here.
+
+    Clients see `title`, `prescription`, `target_*` and `coach_notes`, which the coach writes or approves.
+    `engine_detail` and `suggestion` are the generator's ideas, shown to the coach only (decision 2026-11-25).
+    """
 
     week = models.ForeignKey(PlanWeek, on_delete=models.CASCADE, related_name="workouts")
     date = models.DateField()
@@ -150,6 +157,10 @@ class ScheduledWorkout(models.Model):
     target_distance_m = models.PositiveIntegerField(null=True, blank=True)
     target_duration_s = models.PositiveIntegerField(null=True, blank=True)
     coach_notes = models.TextField(blank=True)
+    engine_detail = models.CharField(
+        max_length=120, blank=True, help_text="Coach only: the engine's pick, e.g. 'Threshold · Cruise Intervals'."
+    )
+    suggestion = models.TextField(blank=True, help_text="Coach only: the engine's guidance and example sessions.")
     version = models.PositiveIntegerField(default=1, help_text="Bumped on each edit after publishing.")
 
     created_at = models.DateTimeField(auto_now_add=True)
@@ -167,6 +178,20 @@ class ScheduledWorkout(models.Model):
     @property
     def plan(self):
         return self.week.plan
+
+    @property
+    def is_quality(self):
+        return self.workout_type in QUALITY_TYPES
+
+    @property
+    def needs_prescription(self):
+        """A quality session the coach hasn't written up yet."""
+        return self.is_quality and not self.prescription.strip()
+
+    PRESCRIPTION_FIELDS = ("title", "workout_type", "prescription", "target_distance_m", "target_duration_s", "coach_notes")
+
+    def prescription_snapshot(self):
+        return {f: getattr(self, f) for f in self.PRESCRIPTION_FIELDS}
 
     def clean(self):
         if self.week_id and self.date:

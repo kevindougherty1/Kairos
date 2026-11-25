@@ -181,6 +181,7 @@ a.row:hover .row__title { text-decoration: underline; text-underline-offset: 3px
 .row__date { color: var(--muted); font-size: var(--t-small); font-variant-numeric: tabular-nums; }
 .row > * { min-width: 0; }
 .row__title { font-weight: 500; overflow-wrap: anywhere; }
+.row__hint { display: block; font-weight: 400; font-size: var(--t-small); color: var(--muted); }  /* coach-only engine pick */
 .row__meta { display: inline-flex; flex-wrap: wrap; justify-content: flex-end; gap: var(--s-1); color: var(--muted); font-size: var(--t-small); font-variant-numeric: tabular-nums; text-align: right; }
 @media (max-width: 639px) {
   .row { grid-template-columns: 1fr auto; row-gap: 0; }

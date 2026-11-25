@@ -135,3 +135,53 @@ class WorkoutResultForm(forms.ModelForm):
         if commit:
             result.save()
         return result
+
+
+class PrescriptionForm(forms.Form):
+    """Coach: what the client will see for this workout. The engine's suggestion is never copied in unless asked."""
+
+    title = forms.CharField(label="Title", max_length=120, help_text="Clients see this, e.g. Speed Session.")
+    distance = forms.DecimalField(label="Distance", required=False, min_value=Decimal("0"), max_value=Decimal("100"),
+                                  decimal_places=2)
+    prescription = forms.CharField(
+        label="The workout", required=False, widget=forms.Textarea(attrs={"rows": 6}),
+        help_text="What your client should do, e.g. 2 mi easy, 3 x 2 mi at threshold with 2 min jog, 1 mi easy.",
+    )
+    coach_notes = forms.CharField(label="Notes for your client", required=False, widget=forms.Textarea(attrs={"rows": 3}))
+
+    def __init__(self, *args, units="mi", **kwargs):
+        kwargs.setdefault("label_suffix", "")
+        super().__init__(*args, **kwargs)
+        self.units = units
+        self.fields["distance"].label = f"Distance ({units})"
+        self.fields["distance"].widget.attrs["inputmode"] = "decimal"
+        for f in self.fields.values():
+            f.widget.attrs.setdefault("autocomplete", "off")
+
+    @classmethod
+    def initial_for(cls, workout, units="mi", use_suggestion=False):
+        per = METRES_PER_KM if units == "km" else METRES_PER_MILE
+        distance = None
+        if workout.target_distance_m is not None:
+            distance = (Decimal(workout.target_distance_m) / Decimal(per)).quantize(Decimal("0.01")).normalize()
+        prescription = workout.prescription
+        if use_suggestion and workout.suggestion and not prescription:
+            prescription = workout.suggestion
+        return {"title": workout.title, "distance": distance, "prescription": prescription,
+                "coach_notes": workout.coach_notes}
+
+    def changes(self):
+        d = self.cleaned_data
+        per = METRES_PER_KM if self.units == "km" else METRES_PER_MILE
+        return {
+            "title": d["title"].strip(),
+            "target_distance_m": round(float(d["distance"]) * per) if d.get("distance") is not None else None,
+            "prescription": d["prescription"].strip(),
+            "coach_notes": d["coach_notes"].strip(),
+        }
+
+    def focus_first_error(self):
+        for name in self.fields:
+            if name in self.errors:
+                self.fields[name].widget.attrs["autofocus"] = True
+                break
