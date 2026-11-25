@@ -7,18 +7,19 @@ Running context for the portal build (started 2026-11-19), updated after every p
 
 ---
 
-## ▶ START HERE (Sun 2026-11-22)
+## ▶ START HERE (Wed 2026-11-25, catching up on Sunday's list)
 
-**Saturday list done.** The portal has a data model, login, role/ownership rules (35 tests), demo data and its
-design system (`portal/DESIGN.md`, `portal/static/kairos/kairos.css`). Every screen passed the check routine.
+**Phase 1 is signed off** (fresh checkout → README → coach + 2 clients isolated). Brand is now **Hard Left**
+(display only). Sunday items left: the **public pages** (waiting on Kevin's facts) and the stretch adapter.
 
 ### Resume here
 1. **Start Docker Desktop**, then from `portal/`: `docker compose up -d` → `..\.venv\Scripts\python.exe manage.py runserver`.
-   Memory is tight on this PC (~3 GB free), so run the server on demand.
+   WSL/Docker is capped at 3 GB (`%USERPROFILE%\.wslconfig`). Stop the dev server when you're done.
 2. **Kevin:** create the admin login once: `.venv\Scripts\python.exe portal\manage.py createsuperuser`.
-   Demo logins: `demo_coach`, `demo_client_a`, `demo_client_b`. Re-run `manage.py seed_demo` to get a fresh password.
-3. **Next: Sunday list**, starting with the public pages (taste-skill kit, kind = service, on the same tokens).
-   Needs Kevin's copy: offer, about/bio, photos (or OK to use licensed stand-ins).
+3. **Public pages need from Kevin:** the offer (prices shown or "contact me"), location (or online-only), a 2–3 line
+   bio, the inquiry email address. Photos: licensed stand-ins approved (2026-11-25).
+4. Then: the public pages with taste-skill (kind = service; arm its gate in `portal/` once the page exists), then the stretch
+   adapter (golden engine tests first, `portal/ENGINES.md`).
 
 ---
 
@@ -97,9 +98,10 @@ can't see each other's data (tests + playwright-cli walkthrough). (2) The design
 
 ### Sunday list
 - [ ] **Public pages:** Home/Offer, About, Inquiry (form + email to Kevin), Client Login. Check routine + guidelines on each.
-- [ ] **Client home (read-only):** "This Week" from fixture data, mobile-first.
-- [ ] **README:** fresh-checkout steps.
-- [ ] **Phase 1 sign-off:** fresh clone → README → run → walkthrough as coach, client A, client B. Record the result here.
+- [x] **Client home (read-only):** "This Week" from fixture data, mobile-first. *(prompt 34)*
+- [x] **README:** fresh-checkout steps. *(prompt 34, root `README.md`)*
+- [x] **Phase 1 sign-off:** fresh clone → README → run → walkthrough as coach, client A, client B.
+      **PASSED 2026-11-25** (commit `4e91c8e`): see prompt 34.
 - [ ] *Stretch:* HM engine adapter → draft plan in the DB. Golden-output engine tests first (`portal/ENGINES.md`).
 - [ ] **Commit + push** at the end of each day.
 
@@ -218,3 +220,16 @@ Nothing was lost. Start it on demand only; Docker reserves about 8 GB.
 - New test: home and login show "Hard Left" and never "Kairos"/"KPG". **36/36** pass; walkthrough 16/16 screens clean.
 - `DESIGN.md` updated (name, mark, known gaps). TBD: trademark search + a real logo before launch.
 
+### 34 — 2026-11-25 — Sunday items that needed no input: This Week, README, Phase 1 sign-off
+- **This Week** (client home): the live plan's Mon–Sun with rest days, today marked (`aria-current="date"`), a Next Up
+  card (first unlogged run from today), planned vs logged miles, and prev/next week via `?week=` (clamped to the plan;
+  bad values fall back). "Today" uses `ClientProfile.timezone`. 6 tests with a frozen clock, incl. UTC vs Auckland.
+  Visual fixes after screenshots: the Next Up card layout, the today bar moved into the gutter, a wider date column.
+- **README.md** (repo root): 6-step Windows setup, daily start, troubleshooting, docs map, Claude tooling (junction
+  commands), Flask generator. New `portal/scripts/make_env.py` writes `.env` with random secrets.
+- **Phase 1 sign-off PASSED** on a fresh local clone of `4e91c8e` (own Docker project `kairos-signoff`, port 5433):
+  README steps 2–6 ran as written; 42/42 portal tests, HM 140/140; walkthrough 16/16 PASS: coach sees both
+  clients and A's draft; A and B each see only their own week; A gets 404 on A's own draft, on B's plan and workout, and
+  403 on /coach/; B gets 404 on A's plan and draft, and a POSTed result to A's workout → 404. The only failed requests
+  were those 7 deliberate attempts. The test copy (container, volume, folder) was removed afterwards.
+- Not covered by the sign-off: cloning from GitHub itself (cloned locally because today's commits weren't pushed yet).
