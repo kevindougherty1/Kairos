@@ -18,8 +18,8 @@ Running context for the portal build (started 2026-11-19), updated after every p
 2. **Kevin:** create the admin login once: `.venv\Scripts\python.exe portal\manage.py createsuperuser`.
 3. **Public pages need from Kevin:** the offer (prices shown or "contact me"), location (or online-only), a 2–3 line
    bio, the inquiry email address. Photos: licensed stand-ins approved (2026-11-25).
-4. Then: the public pages with taste-skill (kind = service; arm its gate in `portal/` once the page exists).
-   Phase 2 next steps: marathon adapter, coach editing of draft workouts, publish (archives the old plan).
+4. **Stay on Sunday's list:** the public pages are the only open item (taste-skill, kind = service; arm its gate in
+   `portal/` once the page exists). Everything else (marathon generation, Phase 2 walkthrough) is parked in `TBD.md`.
 
 ---
 
@@ -336,4 +336,10 @@ Nothing was lost. Start it on demand only; Docker reserves about 8 GB.
 - Browser: confirmation at 390/1280, 0 overflow/errors; backed out with Not Yet (demo data unchanged).
 - Phase 2 status: generate ✓, edit/prescribe ✓, publish ✓, client schedule ✓, result entry ✓, feedback ✓. Left: marathon
   adapter; the brief's Phase 2 done-check walkthrough.
+
+### 44 — 2026-11-25 — Back to Sunday's plan
+- Kevin asked if marathon generation was on Sunday's list: **no**, it's Phase 2 backlog (as were Trash, Speed Session naming,
+  notes, feedback, draft times and Publish built today on request). Parked it + the Phase 2 walkthrough in `TBD.md` → "Phase 2 Backlog".
+- Sunday status: This Week ✓, README ✓, Phase 1 sign-off ✓, stretch ✓, pushed ✓. **Only the public pages remain**, waiting on
+  Kevin's facts. Focus stays there until he chooses TBD items.
 

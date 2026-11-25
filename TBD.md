@@ -48,6 +48,12 @@ code. Speed is the best first candidate. The portal treats plan type as a generi
 
 ---
 
+## Phase 2 Backlog (not on the weekend lists)
+- **Marathon plan generation.** Add `generate_marathon` to `portal/training/engines.py` (same shape as the half marathon; add
+  the "math check" warning from #2 above) and enable it in the Generate Draft form. Snapshot tests already cover the engine.
+- **Phase 2 done-check walkthrough** (brief): generate → edit → publish to one client → client logs → coach reviews; drafts
+  hidden; no duplicate results; regenerating keeps old plans and results. Most pieces are tested; this is the formal pass.
+
 ## Later Phases (not this weekend)
 Deployment/hosting choice, HTTPS, backups, the `/api/v1/` API surface, weekly check-ins, notifications, the 4 new
 block engines, and strength workflows.
