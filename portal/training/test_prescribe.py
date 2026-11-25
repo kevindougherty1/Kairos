@@ -104,6 +104,51 @@ class PrescribeTests(TestCase):
         self.speed.refresh_from_db()
         self.assertEqual(self.speed.prescription, "")
 
+    def note(self, workout, text):
+        self.client.force_login(self.coach)
+        units_distance = "" if workout.target_distance_m is None else str(round(workout.target_distance_m / 1609.344, 2))
+        return self.client.post(reverse("workout_prescribe", args=[workout.pk]), {
+            "title": workout.title, "distance": units_distance, "prescription": workout.prescription, "coach_notes": text,
+        })
+
+    def test_coach_can_note_every_kind_of_run(self):
+        self.publish()
+        easy = ScheduledWorkout.objects.filter(week__plan=self.plan, workout_type="easy").order_by("date").first()
+        long_run = ScheduledWorkout.objects.filter(week__plan=self.plan, workout_type="long_run").order_by("date").first()
+        self.note(easy, "Keep it truly easy. Walk the hills if you need to.")
+        self.note(long_run, "Practice your race-day breakfast before this one.")
+        easy.refresh_from_db(); long_run.refresh_from_db()
+        self.assertEqual(easy.coach_notes, "Keep it truly easy. Walk the hills if you need to.")
+        self.assertEqual(easy.target_distance_m, ScheduledWorkout.objects.get(pk=easy.pk).target_distance_m)
+        self.assertEqual(long_run.version, 2)  # live plan: the change is versioned like any other
+
+    def test_resaving_an_unchanged_odd_distance_makes_no_new_version(self):
+        self.publish()
+        race = ScheduledWorkout.objects.get(week__plan=self.plan, workout_type="race")  # 21098 m = 13.11 mi shown
+        self.client.force_login(self.coach)
+        form = self.client.get(reverse("workout_detail", args=[race.pk])).context["prescription_form"]
+        self.client.post(reverse("workout_prescribe", args=[race.pk]), {
+            "title": race.title, "distance": str(form.initial["distance"]), "prescription": "", "coach_notes": "",
+        })
+        race.refresh_from_db()
+        self.assertEqual(race.target_distance_m, 21098)
+        self.assertEqual(race.version, 1)
+
+    def test_client_sees_notes_without_opening_the_run(self):
+        self.publish()
+        easy = ScheduledWorkout.objects.filter(week__plan=self.plan, workout_type="easy").order_by("date").first()
+        self.note(easy, "Easy means easy.")
+        self.client.force_login(self.runner)
+        plan_page = self.client.get(reverse("plan_detail", args=[self.plan.pk]))
+        self.assertContains(plan_page, "Coach note:")
+        self.assertContains(plan_page, "Easy means easy.")
+        with mock.patch("training.views.client_today", return_value=easy.date):
+            week = self.client.get(reverse("client_home"))
+        self.assertContains(week, "Easy means easy.")
+        self.assertContains(self.client.get(reverse("workout_detail", args=[easy.pk])), "Easy means easy.")
+        self.client.force_login(self.coach)
+        self.assertContains(self.client.get(reverse("plan_detail", args=[self.plan.pk])), "Your note:")
+
     def test_plan_page_counts_sessions_to_write_for_the_coach_only(self):
         self.client.force_login(self.coach)
         r = self.client.get(reverse("plan_detail", args=[self.plan.pk]))

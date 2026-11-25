@@ -262,7 +262,7 @@ def workout_prescribe(request, pk):
     if not _can_prescribe(request.user, workout):
         raise PermissionDenied
     units = workout.week.plan.client.preferred_units
-    form = PrescriptionForm(request.POST, units=units)
+    form = PrescriptionForm(request.POST, units=units, workout=workout)
     if form.is_valid():
         try:
             changed = services.update_prescription(request.user, workout, **form.changes())

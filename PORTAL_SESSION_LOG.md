@@ -293,3 +293,14 @@ Nothing was lost. Start it on demand only; Docker reserves about 8 GB.
 - Tests **81/81** (+9). Browser: coach plan/workout/prefill + client week/workout at 390/1280, 0 overflow, 0 errors; no
   engine terms in any client text.
 
+### 40 — 2026-11-25 — Coach notes on every run, visible without clicking
+- Kevin wants to note all runs, not just Speed Sessions. Checked first: the notes field already existed on every run
+  (easy, long, shakeout; draft + live). The real gap was discoverability.
+- Notes now show **in the lists**: "Your note: …" under the title on the coach's plan page; "Coach note: …" on the client's
+  This Week, plan list and Next Up card (`.row__note`).
+- Bug caught while testing: re-saving a run re-sent its distance rounded to 0.01 mi; converting back could move it a
+  metre (13.11 mi ≠ 21098 m) and create a needless new version on live plans. `PrescriptionForm` now keeps the exact
+  stored metres when the shown distance is untouched.
+- Tests **84/84** (+3). Browser: wrote a sample note on demo client Avery's Mon Nov 23 easy run (live demo plan → v2);
+  it shows on her This Week at 390/1280, 0 overflow, 0 errors. `seed_demo` resets it.
+

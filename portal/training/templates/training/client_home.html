@@ -17,6 +17,7 @@
     <a class="card next-up" href="{% url 'workout_detail' next_up.pk %}">
       <span class="label">Next Up · {% if next_up.date == today %}Today{% else %}{{ next_up.date|date:"l, M j" }}{% endif %}</span>
       <span class="next-up__title">{{ next_up.title }}</span>
+      {% if next_up.coach_notes %}<span class="next-up__note"><span class="row__note-label">Coach note:</span> {{ next_up.coach_notes|truncatechars:140 }}</span>{% endif %}
       <span class="muted">{% if next_up.target_distance_m %}{{ next_up.target_distance_m|distance:units }} · {% endif %}{% if next_up.date <= today %}Log it when you’re done{% else %}See the details{% endif %}</span>
     </a>
   {% endif %}
@@ -36,7 +37,7 @@
           <li{% if day.is_today %} aria-current="date"{% endif %}>
             <a class="row{% if day.is_today %} row--today{% endif %}" href="{% url 'workout_detail' w.pk %}">
               <span class="row__date">{{ day.date|date:"D, M j" }}{% if day.is_today %} <span class="badge">Today</span>{% endif %}</span>
-              <span class="row__title">{{ w.title }}</span>
+              <span class="row__title">{{ w.title }}{% if w.coach_notes %}<span class="row__note"><span class="row__note-label">Coach note:</span> {{ w.coach_notes|truncatechars:90 }}</span>{% endif %}</span>
               <span class="row__meta">
                 {% if w.result %}{% include "training/_result_badge.html" with result=w.result %}
                 {% elif w.target_distance_m %}{{ w.target_distance_m|distance:units }}{% endif %}

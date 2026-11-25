@@ -1,7 +1,10 @@
 {% load kairos %}<li>
   <a class="row" href="{% url 'workout_detail' w.pk %}">
     <span class="row__date">{{ w.date|date:"D, M j" }}</span>
-    <span class="row__title">{{ w.title }}{% if user.is_coach and w.engine_detail %} <span class="row__hint">{{ w.engine_detail }}</span>{% endif %}</span>
+    <span class="row__title">{{ w.title }}
+      {% if user.is_coach and w.engine_detail %}<span class="row__hint">{{ w.engine_detail }}</span>{% endif %}
+      {% if w.coach_notes %}<span class="row__note"><span class="row__note-label">{% if user.is_coach %}Your note{% else %}Coach note{% endif %}:</span> {{ w.coach_notes|truncatechars:90 }}</span>{% endif %}
+    </span>
     <span class="row__meta">
       {% if user.is_coach and w.needs_prescription %}<span class="badge badge--warn">To Write</span>{% endif %}
       {% if w.result %}<span class="badge{% if w.result.status == 'completed' %} badge--done{% elif w.result.status == 'skipped' %} badge--muted{% endif %}">{{ w.result.get_status_display }}</span>

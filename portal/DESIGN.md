@@ -120,6 +120,7 @@ Radius scale (soft): controls 8px, panels and notices 12px, cards 20px, buttons 
 | Card | `.card` | Surface ground, 20px radius, 24/32px padding. Never a box in a box. |
 | Card grid | `.cards` | Columns at least 480px wide: one column on phones, two on desktop. |
 | Split | `.split` | 5/7 columns from 1024 (reading card + working card), stacked below. |
+| Row note | `.row__note` | The coach's note under a run title, in lists ("Coach note:" for clients, "Your note:" for the coach). |
 | Row hint | `.row__hint` | Coach-only second line under a row title (the engine's pick). Never on client screens. |
 | Row + action | `li.row-with-action` | A row link with its own button beside it (never a button inside the link). |
 | Rows | `.rows` > `li` > `.row` | Hairline-ruled list: date · title · meta. Used for workouts and plans. |

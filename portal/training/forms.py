@@ -149,10 +149,11 @@ class PrescriptionForm(forms.Form):
     )
     coach_notes = forms.CharField(label="Notes for your client", required=False, widget=forms.Textarea(attrs={"rows": 3}))
 
-    def __init__(self, *args, units="mi", **kwargs):
+    def __init__(self, *args, units="mi", workout=None, **kwargs):
         kwargs.setdefault("label_suffix", "")
         super().__init__(*args, **kwargs)
         self.units = units
+        self.workout = workout
         self.fields["distance"].label = f"Distance ({units})"
         self.fields["distance"].widget.attrs["inputmode"] = "decimal"
         for f in self.fields.values():
@@ -160,22 +161,33 @@ class PrescriptionForm(forms.Form):
 
     @classmethod
     def initial_for(cls, workout, units="mi", use_suggestion=False):
-        per = METRES_PER_KM if units == "km" else METRES_PER_MILE
-        distance = None
-        if workout.target_distance_m is not None:
-            distance = (Decimal(workout.target_distance_m) / Decimal(per)).quantize(Decimal("0.01")).normalize()
+        distance = cls.shown_distance(workout.target_distance_m, units)
         prescription = workout.prescription
         if use_suggestion and workout.suggestion and not prescription:
             prescription = workout.suggestion
         return {"title": workout.title, "distance": distance, "prescription": prescription,
                 "coach_notes": workout.coach_notes}
 
+    @staticmethod
+    def shown_distance(metres, units):
+        if metres is None:
+            return None
+        per = METRES_PER_KM if units == "km" else METRES_PER_MILE
+        return (Decimal(metres) / Decimal(per)).quantize(Decimal("0.01")).normalize()
+
     def changes(self):
         d = self.cleaned_data
         per = METRES_PER_KM if self.units == "km" else METRES_PER_MILE
+        distance = d.get("distance")
+        if distance is None:
+            metres = None
+        elif self.workout is not None and self.shown_distance(self.workout.target_distance_m, self.units) == distance.normalize():
+            metres = self.workout.target_distance_m  # untouched: keep the exact stored value (no rounding drift)
+        else:
+            metres = round(float(distance) * per)
         return {
             "title": d["title"].strip(),
-            "target_distance_m": round(float(d["distance"]) * per) if d.get("distance") is not None else None,
+            "target_distance_m": metres,
             "prescription": d["prescription"].strip(),
             "coach_notes": d["coach_notes"].strip(),
         }
