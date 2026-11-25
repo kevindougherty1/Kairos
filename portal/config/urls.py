@@ -15,6 +15,7 @@ urlpatterns = [
     path("", core_views.home, name="home"),
     path("dashboard/", training_views.dashboard, name="dashboard"),
     path("coach/", training_views.coach_home, name="coach_home"),
+    path("coach/clients/<int:client_id>/generate/", training_views.generate_plan, name="generate_plan"),
     path("me/", training_views.client_home, name="client_home"),
     path("plans/<int:pk>/", training_views.plan_detail, name="plan_detail"),
     path("workouts/<int:pk>/", training_views.workout_detail, name="workout_detail"),

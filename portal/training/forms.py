@@ -3,6 +3,7 @@ from decimal import Decimal
 
 from django import forms
 
+from accounts.models import Experience, Weekday
 from core.units import METRES_PER_KM, METRES_PER_MILE
 from .models import WorkoutResult
 
@@ -16,6 +17,67 @@ def parse_duration(text):
         raise forms.ValidationError("Use minutes:seconds (45:00) or hours:minutes:seconds (1:05:30).")
     hours, minutes, seconds = (int(g) if g else 0 for g in match.groups())
     return hours * 3600 + minutes * 60 + seconds
+
+
+class GeneratePlanForm(forms.Form):
+    """Coach-only. Field rules mirror engines.PlanRequest.validate (which runs again in the service)."""
+
+    plan_type = forms.ChoiceField(
+        label="Plan type",
+        choices=[("half_marathon", "Half Marathon (8–20 weeks)")],
+        help_text="Marathon generation comes next.",
+    )
+    race_name = forms.CharField(label="Race name", max_length=120, required=False)
+    race_date = forms.DateField(label="Race date", widget=forms.DateInput(attrs={"type": "date"}))
+    weeks = forms.IntegerField(label="Plan length (weeks)", min_value=8, max_value=20, initial=12)
+    experience = forms.ChoiceField(label="Experience", choices=Experience.choices)
+    current_mileage = forms.IntegerField(label="Current weekly miles", min_value=0, max_value=150)
+    longest_run = forms.IntegerField(label="Longest recent run (mi)", min_value=0, max_value=40)
+    runs_per_week = forms.TypedChoiceField(
+        label="Runs per week", coerce=int, choices=[(n, str(n)) for n in (4, 5, 6)], initial=5
+    )
+    long_run_day = forms.ChoiceField(label="Long run day", choices=Weekday.choices, initial="Sat")
+    quality_day = forms.ChoiceField(label="Workout day", choices=Weekday.choices, initial="Tue")
+    unavailable_days = forms.MultipleChoiceField(
+        label="Can't run on", choices=Weekday.choices, required=False, widget=forms.CheckboxSelectMultiple
+    )
+    preferred_rest_days = forms.MultipleChoiceField(
+        label="Prefers to rest on", choices=Weekday.choices, required=False, widget=forms.CheckboxSelectMultiple
+    )
+
+    def __init__(self, *args, **kwargs):
+        kwargs.setdefault("label_suffix", "")
+        super().__init__(*args, **kwargs)
+        for name in ("current_mileage", "longest_run", "weeks"):
+            self.fields[name].widget.attrs["inputmode"] = "numeric"
+        for f in self.fields.values():
+            f.widget.attrs.setdefault("autocomplete", "off")
+
+    @classmethod
+    def initial_from(cls, profile):
+        initial = {
+            "experience": profile.experience or "intermediate",
+            "runs_per_week": profile.runs_per_week if profile.runs_per_week in (4, 5, 6) else 5,
+            "long_run_day": profile.long_run_day,
+            "quality_day": profile.quality_day,
+            "unavailable_days": profile.unavailable_days,
+            "preferred_rest_days": profile.preferred_rest_days,
+            "race_name": profile.target_race_name,
+            "race_date": profile.target_race_date,
+        }
+        return {k: v for k, v in initial.items() if v not in (None, "")}
+
+    def clean(self):
+        data = super().clean()
+        if data.get("long_run_day") and data.get("long_run_day") == data.get("quality_day"):
+            self.add_error("quality_day", "Pick a different day from the long run.")
+        return data
+
+    def focus_first_error(self):
+        for name in self.fields:
+            if name in self.errors:
+                self.fields[name].widget.attrs["autofocus"] = True
+                break
 
 
 class WorkoutResultForm(forms.ModelForm):

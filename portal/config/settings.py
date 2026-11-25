@@ -11,7 +11,7 @@ from pathlib import Path
 import environ
 
 BASE_DIR = Path(__file__).resolve().parent.parent  # portal/
-REPO_ROOT = BASE_DIR.parent
+REPO_ROOT = BASE_DIR.parent  # where the engines live (training/engines.py hashes them for generator_version)
 
 # The running-plan engines live at the repo root (shared with the Flask app) and are
 # imported unchanged. See portal/ENGINES.md.

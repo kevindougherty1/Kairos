@@ -123,6 +123,8 @@ Radius scale (soft): controls 8px, panels and notices 12px, cards 20px, buttons 
 | Notice | `.notice`, `.notice--warn` | Demo-data label; engine warnings on coach plan views. |
 | Field | `.field` (label above, input, `.field__help`, errors) | Visible label always; errors under the field in warn; first invalid field focused. |
 | Auth card | `.auth` | Centred 440px column for login and password reset. |
+| Fieldset | `.fieldset` > `legend` | A titled group in long forms (Generate Draft): hairline on top, h3-sized legend. |
+| Day picker | `.choices` > `label.choice` | Checkbox + label as one 44px chip; checked = action-coloured border. |
 | Header | `.nav`, `.brand`, `.mark`, `.nav__link` | Dots mark + "Hard Left" (17px on phones, never wraps); current page has a 2px underline (`aria-current`). |
 
 ## Do's and Don'ts

@@ -9,8 +9,11 @@ from django.db.models import Prefetch
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 
-from . import access
-from .forms import WorkoutResultForm
+from django.core.exceptions import ValidationError
+
+from . import access, services
+from .engines import PlanRequest
+from .forms import GeneratePlanForm, WorkoutResultForm
 from .models import ScheduledWorkout, TrainingPlan, WorkoutResult
 
 
@@ -111,6 +114,28 @@ def client_home(request):
         "next_week": monday + timedelta(days=7) if monday < last_monday else None,
     })
     return render(request, "training/client_home.html", context)
+
+
+@role_required("coach")
+def generate_plan(request, client_id):
+    """Coach: run the engine for one of their clients and save the result as a draft."""
+    client = get_object_or_404(access.clients_for(request.user), pk=client_id)
+    if request.method == "POST":
+        form = GeneratePlanForm(request.POST)
+        if form.is_valid():
+            plan_request = PlanRequest(**form.cleaned_data)
+            try:
+                plan = services.generate_draft(request.user, client, plan_request, today=client_today(client))
+            except ValidationError as exc:
+                for field_name, errors in exc.message_dict.items():
+                    form.add_error(field_name if field_name in form.fields else None, errors)
+            else:
+                messages.success(request, "Draft created. Review the weeks below; your client can’t see it yet.")
+                return redirect("plan_detail", pk=plan.pk)
+        form.focus_first_error()
+    else:
+        form = GeneratePlanForm(initial=GeneratePlanForm.initial_from(client))
+    return render(request, "training/generate_plan.html", {"client": client, "form": form})
 
 
 @login_required

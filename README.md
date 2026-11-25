@@ -44,7 +44,12 @@ docker compose up -d                 # Postgres 17 on 127.0.0.1:5432, wait until
 Open http://127.0.0.1:8000/. Log in as `demo_coach`, `demo_client_a` or `demo_client_b` (the password
 `seed_demo` printed), or as your own admin at http://127.0.0.1:8000/admin/.
 
-**Run the tests** (from `portal\`, Docker running): `..\.venv\Scripts\python.exe manage.py test`
+**Run the tests** (from `portal\`, Docker running): `..\.venv\Scripts\python.exe manage.py test`. They include engine
+snapshot tests. If you change an engine on purpose, refresh the snapshots with
+`..\.venv\Scripts\python.exe manage.py engine_golden --update` and commit them with the change.
+
+**Generate a real plan:** log in as a coach → **Clients** → **Generate Draft** on a client. Half marathon for now;
+the draft stays hidden from the client until it's published.
 
 ### Every Day After That
 

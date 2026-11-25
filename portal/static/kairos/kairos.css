@@ -237,6 +237,22 @@ a.card.next-up { display: grid; gap: var(--s-1); margin-bottom: var(--s-7); }
 .field__error, .errorlist { color: var(--warn); font-size: var(--t-small); font-weight: 500; margin: var(--s-2) 0 0; padding: 0; list-style: none; }
 .field-row { display: grid; column-gap: var(--s-4); row-gap: 0; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); }
 .form__note { font-size: var(--t-small); color: var(--muted); margin-top: var(--s-4); }
+.form--wide { max-width: 720px; }
+.fieldset { border: 0; border-top: 1px solid var(--line); margin: 0 0 var(--s-5); padding: var(--s-5) 0 0; min-width: 0; }
+.fieldset > legend { font: 400 var(--t-h3)/1.2 var(--font-display); letter-spacing: var(--display-tracking); padding: 0 var(--s-3) 0 0; }
+/* day pickers: each label + checkbox is one 44px target */
+.choices { border: 0; padding: 0; margin: 0 0 var(--s-5); min-width: 0; display: flex; flex-wrap: wrap; gap: var(--s-2); }
+.choices > legend { padding: 0; margin-bottom: var(--s-2); font-size: var(--t-small); font-weight: 500; }
+.field .choice {  /* beats the generic `.field label` (block, 14px, margin) */
+  margin: 0; display: inline-flex; align-items: center; gap: var(--s-2); min-height: 44px; padding: 0 var(--s-4);
+  border: 1px solid var(--field-line); border-radius: var(--r-sm); background: var(--field-bg); cursor: pointer;
+  font-size: var(--t-small); font-weight: 500;
+}
+.field .choice input {  /* undo the text-field sizing for checkboxes */
+  display: inline-block; width: 18px; height: 18px; min-height: 0; padding: 0; margin: 0; border-radius: 4px; accent-color: var(--action);
+}
+.choice:has(input:checked) { border-color: var(--action); box-shadow: inset 0 0 0 1px var(--action); }
+.choice:has(input:focus-visible) { outline: 2px solid var(--action); outline-offset: 2px; }
 
 /* auth screens: one card, centred on the page */
 .auth { max-width: 440px; margin-inline: auto; }

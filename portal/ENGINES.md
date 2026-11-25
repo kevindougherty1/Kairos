@@ -172,7 +172,12 @@ The engines never raise on preference conflicts. They place what they can and ad
 
 ---
 
-## Adapter Plan (for Phase 2; nothing built yet)
+## Adapter (built 2026-11-25 for the half marathon; marathon next)
+
+**Status:** `portal/training/engines.py` (`PlanRequest` → `generate_half_marathon`) and `training/services.py`
+(`generate_draft`, one transaction) are built and tested. The coach uses **Clients → Generate Draft**. The marathon
+needs its own `generate_marathon` (same shape; add the "Math check" warning from finding 1) and a
+`GENERATORS` entry. The plan below is the design it follows.
 
 - **Location:** the engines stay at the repo root, unchanged, because Flask `app.py` still imports them. The portal adapter
   (e.g. `portal/plans/engines.py`) imports them with the repo root on `sys.path`. The Django skeleton decides how.
@@ -196,6 +201,8 @@ The engines never raise on preference conflicts. They place what they can and ad
   one `transaction.atomic()`.
 
 ### Before the Adapter (brief §4.7: regression tests before changing structure)
+- ✅ **Done 2026-11-25:** `training/golden/{hm,marathon}.json` + `GoldenSnapshotTests` (16 HM + 14 marathon cases,
+  incl. the 8/20 and 12/24-week edges). Refresh after an intended engine change: `manage.py engine_golden --update`.
 - Add **golden-output snapshot tests** for both engines: a fixed input matrix with the JSON output committed, so any
   engine change shows up as a diff.
 - Add **real marathon assertions**, mirroring `test_engine.py`'s invariants, with the M-5 check recalibrated.

@@ -10,7 +10,7 @@ Running context for the portal build (started 2026-11-19), updated after every p
 ## ▶ START HERE (Wed 2026-11-25, catching up on Sunday's list)
 
 **Phase 1 is signed off** (fresh checkout → README → coach + 2 clients isolated). Brand is now **Hard Left**
-(display only). Sunday items left: the **public pages** (waiting on Kevin's facts) and the stretch adapter.
+(display only). Sunday items left: the **public pages** (waiting on Kevin's facts). The stretch adapter is done (HM drafts).
 
 ### Resume here
 1. **Start Docker Desktop**, then from `portal/`: `docker compose up -d` → `..\.venv\Scripts\python.exe manage.py runserver`.
@@ -18,8 +18,8 @@ Running context for the portal build (started 2026-11-19), updated after every p
 2. **Kevin:** create the admin login once: `.venv\Scripts\python.exe portal\manage.py createsuperuser`.
 3. **Public pages need from Kevin:** the offer (prices shown or "contact me"), location (or online-only), a 2–3 line
    bio, the inquiry email address. Photos: licensed stand-ins approved (2026-11-25).
-4. Then: the public pages with taste-skill (kind = service; arm its gate in `portal/` once the page exists), then the stretch
-   adapter (golden engine tests first, `portal/ENGINES.md`).
+4. Then: the public pages with taste-skill (kind = service; arm its gate in `portal/` once the page exists).
+   Phase 2 next steps: marathon adapter, coach editing of draft workouts, publish (archives the old plan).
 
 ---
 
@@ -102,7 +102,7 @@ can't see each other's data (tests + playwright-cli walkthrough). (2) The design
 - [x] **README:** fresh-checkout steps. *(prompt 34, root `README.md`)*
 - [x] **Phase 1 sign-off:** fresh clone → README → run → walkthrough as coach, client A, client B.
       **PASSED 2026-11-25** (commit `4e91c8e`): see prompt 34.
-- [ ] *Stretch:* HM engine adapter → draft plan in the DB. Golden-output engine tests first (`portal/ENGINES.md`).
+- [x] *Stretch:* HM engine adapter → draft plan in the DB. Golden-output engine tests first (`portal/ENGINES.md`). *(prompt 35)*
 - [ ] **Commit + push** at the end of each day.
 
 ### Needs Kevin this weekend
@@ -233,3 +233,22 @@ Nothing was lost. Start it on demand only; Docker reserves about 8 GB.
   403 on /coach/; B gets 404 on A's plan and draft, and a POSTed result to A's workout → 404. The only failed requests
   were those 7 deliberate attempts. The test copy (container, volume, folder) was removed afterwards.
 - Not covered by the sign-off: cloning from GitHub itself (cloned locally because today's commits weren't pushed yet).
+
+### 35 — 2026-11-25 — Stretch done: HM engine → draft plan in the DB (Phase 2 start)
+- **Golden snapshots first** (brief §4.7): `training/golden.py` + `golden/{hm,marathon}.json` (16 + 14 cases incl. range
+  edges); `GoldenSnapshotTests`; `manage.py engine_golden [--update]`.
+- **Adapter** `training/engines.py`: `PlanRequest` validates (HM 8–20 wk, 4–6 runs/wk, 3 tiers, Mon–Sun days, no start in
+  the past, with a "race is only N weeks away" message), counts back from the race week (start = Monday of week 1),
+  maps to the engine's own argument names, normalizes HM output (names → `WorkoutType` via one `HM_WORKOUTS` table;
+  prescription = the engine's `WORKOUT_GLOSSARY` purpose, effort and style options; miles → metres). Race moved to the
+  real race date; a run already on race day is dropped with a warning; race week total = shakeouts + 13.1.
+  `generator_version` = `half_marathon_engine_main_4plus_v5_7@<sha256[:12]>`.
+- **Service** `training/services.py::generate_draft`: own-coach check, engine run *before* the transaction, then the plan +
+  weeks + workouts in one `transaction.atomic()`; `input_snapshot` = request + exact engine kwargs + peak + time.
+- **UI:** Clients → **Generate Draft** (`/coach/clients/<id>/generate/`), prefilled from the profile; fieldsets + day-picker
+  chips (CSS fixed after screenshots: the generic `.field input/label` rules were overriding the checkboxes).
+- **Tests: 64/64** (+22): snapshots, validation, date math, adapter shape, race-day move + clash, glossary text, provenance,
+  **failure midway saves nothing**, older plans/results untouched, only the own coach (others 404, clients 403).
+- **Browser check:** generated a real 12-week draft for demo client Avery (plan #4 in the dev DB, real engine output, not
+  a fixture): race Sun Feb 14 2027 (engine said Sat), race week 19.1 mi, 0 console errors, 0 overflow at 390/1280.
+  The draft stays in the dev DB (`seed_demo` only rebuilds fixtures); delete it in admin if unwanted.

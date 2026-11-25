@@ -1,0 +1,6128 @@
+{
+ "advanced-40mpw-lr14-5d-16wk": [
+  {
+   "mileage": 41,
+   "phase": "Base",
+   "schedule": {
+    "Fri": "Tempo (6)",
+    "Mon": "Z2 (9)",
+    "Sat": "Long Run (12)",
+    "Sun": "Rest",
+    "Thu": "Rest",
+    "Tue": "VO2 (5)",
+    "Wed": "Z2 (9)"
+   },
+   "sessions": {
+    "lr": 12,
+    "mlr": 0,
+    "tempo": 6,
+    "vo2": 5,
+    "z2_runs": [
+     9,
+     9
+    ]
+   },
+   "warnings": [],
+   "week": 1
+  },
+  {
+   "mileage": 43,
+   "phase": "Base",
+   "schedule": {
+    "Fri": "Rest",
+    "Mon": "Z2 (8)",
+    "Sat": "Long Run (14)",
+    "Sun": "Rest",
+    "Thu": "Z2 (8)",
+    "Tue": "VO2 (5)",
+    "Wed": "Z2 (8)"
+   },
+   "sessions": {
+    "lr": 14,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 5,
+    "z2_runs": [
+     8,
+     8,
+     8
+    ]
+   },
+   "warnings": [],
+   "week": 2
+  },
+  {
+   "mileage": 45,
+   "phase": "Base",
+   "schedule": {
+    "Fri": "Tempo (6)",
+    "Mon": "Z2 (11)",
+    "Sat": "Long Run (12)",
+    "Sun": "Rest",
+    "Thu": "Rest",
+    "Tue": "VO2 (5)",
+    "Wed": "Z2 (11)"
+   },
+   "sessions": {
+    "lr": 12,
+    "mlr": 0,
+    "tempo": 6,
+    "vo2": 5,
+    "z2_runs": [
+     11,
+     11
+    ]
+   },
+   "warnings": [],
+   "week": 3
+  },
+  {
+   "mileage": 47,
+   "phase": "Base",
+   "schedule": {
+    "Fri": "Rest",
+    "Mon": "Z2 (10)",
+    "Sat": "Long Run (14)",
+    "Sun": "Rest",
+    "Thu": "Z2 (9)",
+    "Tue": "VO2 (5)",
+    "Wed": "Z2 (9)"
+   },
+   "sessions": {
+    "lr": 14,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 5,
+    "z2_runs": [
+     10,
+     9,
+     9
+    ]
+   },
+   "warnings": [],
+   "week": 4
+  },
+  {
+   "mileage": 49,
+   "phase": "Base",
+   "schedule": {
+    "Fri": "Tempo (6)",
+    "Mon": "Z2 (11)",
+    "Sat": "Long Run (16)",
+    "Sun": "Rest",
+    "Thu": "Rest",
+    "Tue": "VO2 (5)",
+    "Wed": "Z2 (11)"
+   },
+   "sessions": {
+    "lr": 16,
+    "mlr": 0,
+    "tempo": 6,
+    "vo2": 5,
+    "z2_runs": [
+     11,
+     11
+    ]
+   },
+   "warnings": [],
+   "week": 5
+  },
+  {
+   "mileage": 50,
+   "phase": "Build",
+   "schedule": {
+    "Fri": "Rest",
+    "Mon": "Z2 (10)",
+    "Sat": "Long Run (16)",
+    "Sun": "Rest",
+    "Thu": "Z2 (9)",
+    "Tue": "VO2 (6)",
+    "Wed": "Z2 (9)"
+   },
+   "sessions": {
+    "lr": 16,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 6,
+    "z2_runs": [
+     10,
+     9,
+     9
+    ]
+   },
+   "warnings": [],
+   "week": 6
+  },
+  {
+   "mileage": 52,
+   "phase": "Build",
+   "schedule": {
+    "Fri": "Tempo (6)",
+    "Mon": "Z2 (12)",
+    "Sat": "Long Run (16)",
+    "Sun": "Rest",
+    "Thu": "Rest",
+    "Tue": "VO2 (6)",
+    "Wed": "Z2 (12)"
+   },
+   "sessions": {
+    "lr": 16,
+    "mlr": 0,
+    "tempo": 6,
+    "vo2": 6,
+    "z2_runs": [
+     12,
+     12
+    ]
+   },
+   "warnings": [],
+   "week": 7
+  },
+  {
+   "mileage": 53,
+   "phase": "Build",
+   "schedule": {
+    "Fri": "Rest",
+    "Mon": "Z2 (11)",
+    "Sat": "Long Run (16)",
+    "Sun": "Rest",
+    "Thu": "Z2 (10)",
+    "Tue": "VO2 (6)",
+    "Wed": "Z2 (10)"
+   },
+   "sessions": {
+    "lr": 16,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 6,
+    "z2_runs": [
+     11,
+     10,
+     10
+    ]
+   },
+   "warnings": [],
+   "week": 8
+  },
+  {
+   "mileage": 55,
+   "phase": "Build",
+   "schedule": {
+    "Fri": "Tempo (6)",
+    "Mon": "Z2 (13)",
+    "Sat": "Long Run (18)",
+    "Sun": "Rest",
+    "Thu": "Rest",
+    "Tue": "VO2 (6)",
+    "Wed": "Z2 (12)"
+   },
+   "sessions": {
+    "lr": 18,
+    "mlr": 0,
+    "tempo": 6,
+    "vo2": 6,
+    "z2_runs": [
+     13,
+     12
+    ]
+   },
+   "warnings": [],
+   "week": 9
+  },
+  {
+   "mileage": 47,
+   "phase": "Build",
+   "schedule": {
+    "Fri": "Rest",
+    "Mon": "Z2 (9)",
+    "Sat": "Long Run (16)",
+    "Sun": "Rest",
+    "Thu": "Z2 (8)",
+    "Tue": "VO2 (6)",
+    "Wed": "Z2 (8)"
+   },
+   "sessions": {
+    "lr": 16,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 6,
+    "z2_runs": [
+     9,
+     8,
+     8
+    ]
+   },
+   "warnings": [],
+   "week": 10
+  },
+  {
+   "mileage": 51,
+   "phase": "Peak",
+   "schedule": {
+    "Fri": "Rest",
+    "Mon": "Z2 (9)",
+    "Sat": "Long Run (18)",
+    "Sun": "Rest",
+    "Thu": "Z2 (8)",
+    "Tue": "VO2 (7)",
+    "Wed": "Z2 (9)"
+   },
+   "sessions": {
+    "lr": 18,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 7,
+    "z2_runs": [
+     9,
+     9,
+     8
+    ]
+   },
+   "warnings": [],
+   "week": 11
+  },
+  {
+   "mileage": 56,
+   "phase": "Peak",
+   "schedule": {
+    "Fri": "Rest",
+    "Mon": "Z2 (10)",
+    "Sat": "Long Run (20)",
+    "Sun": "Rest",
+    "Thu": "Z2 (9)",
+    "Tue": "VO2 (7)",
+    "Wed": "Z2 (10)"
+   },
+   "sessions": {
+    "lr": 20,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 7,
+    "z2_runs": [
+     10,
+     10,
+     9
+    ]
+   },
+   "warnings": [],
+   "week": 12
+  },
+  {
+   "mileage": 60,
+   "phase": "Peak",
+   "schedule": {
+    "Fri": "Rest",
+    "Mon": "Z2 (11)",
+    "Sat": "Long Run (20)",
+    "Sun": "Rest",
+    "Thu": "Z2 (11)",
+    "Tue": "VO2 (7)",
+    "Wed": "Z2 (11)"
+   },
+   "sessions": {
+    "lr": 20,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 7,
+    "z2_runs": [
+     11,
+     11,
+     11
+    ]
+   },
+   "warnings": [],
+   "week": 13
+  },
+  {
+   "mileage": 45,
+   "phase": "Taper",
+   "schedule": {
+    "Fri": "Rest",
+    "Mon": "Z2 (14)",
+    "Sat": "Long Run (14)",
+    "Sun": "Rest",
+    "Thu": "Rest",
+    "Tue": "VO2 (4)",
+    "Wed": "Z2 (13)"
+   },
+   "sessions": {
+    "lr": 14,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 4,
+    "z2_runs": [
+     14,
+     13
+    ]
+   },
+   "warnings": [],
+   "week": 14
+  },
+  {
+   "mileage": 33,
+   "phase": "Taper",
+   "schedule": {
+    "Fri": "Rest",
+    "Mon": "Z2 (10)",
+    "Sat": "Long Run (10)",
+    "Sun": "Rest",
+    "Thu": "Rest",
+    "Tue": "VO2 (4)",
+    "Wed": "Z2 (9)"
+   },
+   "sessions": {
+    "lr": 10,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 4,
+    "z2_runs": [
+     10,
+     9
+    ]
+   },
+   "warnings": [],
+   "week": 15
+  },
+  {
+   "mileage": 6,
+   "phase": "Race",
+   "schedule": {
+    "Fri": "Rest",
+    "Mon": "Shakeout (3)",
+    "Sat": "Race",
+    "Sun": "Rest",
+    "Thu": "Rest",
+    "Tue": "Rest",
+    "Wed": "Shakeout (3)"
+   },
+   "sessions": {
+    "lr": 0,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 0,
+    "z2_runs": [
+     3,
+     3
+    ]
+   },
+   "warnings": [],
+   "week": 16
+  }
+ ],
+ "advanced-45mpw-lr16-6d-16wk": [
+  {
+   "mileage": 47,
+   "phase": "Base",
+   "schedule": {
+    "Fri": "Tempo (6)",
+    "Mon": "Z2 (8)",
+    "Sat": "Long Run (12)",
+    "Sun": "Rest",
+    "Thu": "Z2 (7)",
+    "Tue": "VO2 (6)",
+    "Wed": "Z2 (8)"
+   },
+   "sessions": {
+    "lr": 12,
+    "mlr": 0,
+    "tempo": 6,
+    "vo2": 6,
+    "z2_runs": [
+     8,
+     8,
+     7
+    ]
+   },
+   "warnings": [],
+   "week": 1
+  },
+  {
+   "mileage": 49,
+   "phase": "Base",
+   "schedule": {
+    "Fri": "Z2 (7)",
+    "Mon": "Z2 (8)",
+    "Sat": "Long Run (14)",
+    "Sun": "Rest",
+    "Thu": "Z2 (7)",
+    "Tue": "VO2 (6)",
+    "Wed": "Z2 (7)"
+   },
+   "sessions": {
+    "lr": 14,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 6,
+    "z2_runs": [
+     8,
+     7,
+     7,
+     7
+    ]
+   },
+   "warnings": [],
+   "week": 2
+  },
+  {
+   "mileage": 51,
+   "phase": "Base",
+   "schedule": {
+    "Fri": "Tempo (6)",
+    "Mon": "Z2 (8)",
+    "Sat": "Long Run (16)",
+    "Sun": "Rest",
+    "Thu": "Z2 (7)",
+    "Tue": "VO2 (6)",
+    "Wed": "Z2 (8)"
+   },
+   "sessions": {
+    "lr": 16,
+    "mlr": 0,
+    "tempo": 6,
+    "vo2": 6,
+    "z2_runs": [
+     8,
+     8,
+     7
+    ]
+   },
+   "warnings": [],
+   "week": 3
+  },
+  {
+   "mileage": 54,
+   "phase": "Base",
+   "schedule": {
+    "Fri": "Z2 (8)",
+    "Mon": "Z2 (9)",
+    "Sat": "Long Run (14)",
+    "Sun": "Rest",
+    "Thu": "Z2 (8)",
+    "Tue": "VO2 (6)",
+    "Wed": "Z2 (9)"
+   },
+   "sessions": {
+    "lr": 14,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 6,
+    "z2_runs": [
+     9,
+     9,
+     8,
+     8
+    ]
+   },
+   "warnings": [],
+   "week": 4
+  },
+  {
+   "mileage": 57,
+   "phase": "Base",
+   "schedule": {
+    "Fri": "Tempo (6)",
+    "Mon": "Z2 (10)",
+    "Sat": "Long Run (16)",
+    "Sun": "Rest",
+    "Thu": "Z2 (9)",
+    "Tue": "VO2 (6)",
+    "Wed": "Z2 (10)"
+   },
+   "sessions": {
+    "lr": 16,
+    "mlr": 0,
+    "tempo": 6,
+    "vo2": 6,
+    "z2_runs": [
+     10,
+     10,
+     9
+    ]
+   },
+   "warnings": [],
+   "week": 5
+  },
+  {
+   "mileage": 58,
+   "phase": "Build",
+   "schedule": {
+    "Fri": "Z2 (6)",
+    "Mon": "Z2 (7)",
+    "Sat": "Long Run (18)",
+    "Sun": "Rest",
+    "Thu": "Z2 (7)",
+    "Tue": "VO2 (7)",
+    "Wed": "MLR (13)"
+   },
+   "sessions": {
+    "lr": 18,
+    "mlr": 13,
+    "tempo": 0,
+    "vo2": 7,
+    "z2_runs": [
+     7,
+     7,
+     6
+    ]
+   },
+   "warnings": [],
+   "week": 6
+  },
+  {
+   "mileage": 60,
+   "phase": "Build",
+   "schedule": {
+    "Fri": "Tempo (6)",
+    "Mon": "Z2 (7)",
+    "Sat": "Long Run (20)",
+    "Sun": "Rest",
+    "Thu": "Z2 (6)",
+    "Tue": "VO2 (7)",
+    "Wed": "MLR (14)"
+   },
+   "sessions": {
+    "lr": 20,
+    "mlr": 14,
+    "tempo": 6,
+    "vo2": 7,
+    "z2_runs": [
+     7,
+     6
+    ]
+   },
+   "warnings": [],
+   "week": 7
+  },
+  {
+   "mileage": 62,
+   "phase": "Build",
+   "schedule": {
+    "Fri": "Z2 (8)",
+    "Mon": "Z2 (8)",
+    "Sat": "Long Run (18)",
+    "Sun": "Rest",
+    "Thu": "Z2 (8)",
+    "Tue": "VO2 (7)",
+    "Wed": "MLR (13)"
+   },
+   "sessions": {
+    "lr": 18,
+    "mlr": 13,
+    "tempo": 0,
+    "vo2": 7,
+    "z2_runs": [
+     8,
+     8,
+     8
+    ]
+   },
+   "warnings": [],
+   "week": 8
+  },
+  {
+   "mileage": 64,
+   "phase": "Build",
+   "schedule": {
+    "Fri": "Tempo (6)",
+    "Mon": "Z2 (9)",
+    "Sat": "Long Run (20)",
+    "Sun": "Rest",
+    "Thu": "Z2 (8)",
+    "Tue": "VO2 (7)",
+    "Wed": "MLR (14)"
+   },
+   "sessions": {
+    "lr": 20,
+    "mlr": 14,
+    "tempo": 6,
+    "vo2": 7,
+    "z2_runs": [
+     9,
+     8
+    ]
+   },
+   "warnings": [],
+   "week": 9
+  },
+  {
+   "mileage": 54,
+   "phase": "Build",
+   "schedule": {
+    "Fri": "Z2 (5)",
+    "Mon": "Z2 (6)",
+    "Sat": "Long Run (18)",
+    "Sun": "Rest",
+    "Thu": "Z2 (5)",
+    "Tue": "VO2 (7)",
+    "Wed": "MLR (13)"
+   },
+   "sessions": {
+    "lr": 18,
+    "mlr": 13,
+    "tempo": 0,
+    "vo2": 7,
+    "z2_runs": [
+     6,
+     5,
+     5
+    ]
+   },
+   "warnings": [],
+   "week": 10
+  },
+  {
+   "mileage": 59,
+   "phase": "Peak",
+   "schedule": {
+    "Fri": "Z2 (5)",
+    "Mon": "Z2 (6)",
+    "Sat": "Long Run (20)",
+    "Sun": "Rest",
+    "Thu": "Z2 (6)",
+    "Tue": "VO2 (8)",
+    "Wed": "MLR (14)"
+   },
+   "sessions": {
+    "lr": 20,
+    "mlr": 14,
+    "tempo": 0,
+    "vo2": 8,
+    "z2_runs": [
+     6,
+     6,
+     5
+    ]
+   },
+   "warnings": [],
+   "week": 11
+  },
+  {
+   "mileage": 65,
+   "phase": "Peak",
+   "schedule": {
+    "Fri": "Z2 (8)",
+    "Mon": "Z2 (9)",
+    "Sat": "Long Run (18)",
+    "Sun": "Rest",
+    "Thu": "Z2 (9)",
+    "Tue": "VO2 (8)",
+    "Wed": "MLR (13)"
+   },
+   "sessions": {
+    "lr": 18,
+    "mlr": 13,
+    "tempo": 0,
+    "vo2": 8,
+    "z2_runs": [
+     9,
+     9,
+     8
+    ]
+   },
+   "warnings": [],
+   "week": 12
+  },
+  {
+   "mileage": 70,
+   "phase": "Peak",
+   "schedule": {
+    "Fri": "Z2 (9)",
+    "Mon": "Z2 (10)",
+    "Sat": "Long Run (20)",
+    "Sun": "Rest",
+    "Thu": "Z2 (9)",
+    "Tue": "VO2 (8)",
+    "Wed": "MLR (14)"
+   },
+   "sessions": {
+    "lr": 20,
+    "mlr": 14,
+    "tempo": 0,
+    "vo2": 8,
+    "z2_runs": [
+     10,
+     9,
+     9
+    ]
+   },
+   "warnings": [],
+   "week": 13
+  },
+  {
+   "mileage": 52,
+   "phase": "Taper",
+   "schedule": {
+    "Fri": "Rest",
+    "Mon": "Z2 (12)",
+    "Sat": "Long Run (14)",
+    "Sun": "Rest",
+    "Thu": "Z2 (11)",
+    "Tue": "VO2 (4)",
+    "Wed": "Z2 (11)"
+   },
+   "sessions": {
+    "lr": 14,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 4,
+    "z2_runs": [
+     12,
+     11,
+     11
+    ]
+   },
+   "warnings": [],
+   "week": 14
+  },
+  {
+   "mileage": 38,
+   "phase": "Taper",
+   "schedule": {
+    "Fri": "Rest",
+    "Mon": "Z2 (8)",
+    "Sat": "Long Run (10)",
+    "Sun": "Rest",
+    "Thu": "Z2 (8)",
+    "Tue": "VO2 (4)",
+    "Wed": "Z2 (8)"
+   },
+   "sessions": {
+    "lr": 10,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 4,
+    "z2_runs": [
+     8,
+     8,
+     8
+    ]
+   },
+   "warnings": [],
+   "week": 15
+  },
+  {
+   "mileage": 6,
+   "phase": "Race",
+   "schedule": {
+    "Fri": "Rest",
+    "Mon": "Shakeout (3)",
+    "Sat": "Race",
+    "Sun": "Rest",
+    "Thu": "Rest",
+    "Tue": "Rest",
+    "Wed": "Shakeout (3)"
+   },
+   "sessions": {
+    "lr": 0,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 0,
+    "z2_runs": [
+     3,
+     3
+    ]
+   },
+   "warnings": [],
+   "week": 16
+  }
+ ],
+ "advanced-50mpw-lr16-6d-18wk": [
+  {
+   "mileage": 51,
+   "phase": "Base",
+   "schedule": {
+    "Fri": "Tempo (6)",
+    "Mon": "Z2 (9)",
+    "Sat": "Long Run (14)",
+    "Sun": "Rest",
+    "Thu": "Z2 (8)",
+    "Tue": "VO2 (6)",
+    "Wed": "Z2 (8)"
+   },
+   "sessions": {
+    "lr": 14,
+    "mlr": 0,
+    "tempo": 6,
+    "vo2": 6,
+    "z2_runs": [
+     9,
+     8,
+     8
+    ]
+   },
+   "warnings": [],
+   "week": 1
+  },
+  {
+   "mileage": 52,
+   "phase": "Base",
+   "schedule": {
+    "Fri": "Z2 (7)",
+    "Mon": "Z2 (8)",
+    "Sat": "Long Run (16)",
+    "Sun": "Rest",
+    "Thu": "Z2 (7)",
+    "Tue": "VO2 (6)",
+    "Wed": "Z2 (8)"
+   },
+   "sessions": {
+    "lr": 16,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 6,
+    "z2_runs": [
+     8,
+     8,
+     7,
+     7
+    ]
+   },
+   "warnings": [],
+   "week": 2
+  },
+  {
+   "mileage": 54,
+   "phase": "Base",
+   "schedule": {
+    "Fri": "Tempo (6)",
+    "Mon": "Z2 (10)",
+    "Sat": "Long Run (14)",
+    "Sun": "Rest",
+    "Thu": "Z2 (9)",
+    "Tue": "VO2 (6)",
+    "Wed": "Z2 (9)"
+   },
+   "sessions": {
+    "lr": 14,
+    "mlr": 0,
+    "tempo": 6,
+    "vo2": 6,
+    "z2_runs": [
+     10,
+     9,
+     9
+    ]
+   },
+   "warnings": [],
+   "week": 3
+  },
+  {
+   "mileage": 55,
+   "phase": "Base",
+   "schedule": {
+    "Fri": "Z2 (8)",
+    "Mon": "Z2 (9)",
+    "Sat": "Long Run (16)",
+    "Sun": "Rest",
+    "Thu": "Z2 (8)",
+    "Tue": "VO2 (6)",
+    "Wed": "Z2 (8)"
+   },
+   "sessions": {
+    "lr": 16,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 6,
+    "z2_runs": [
+     9,
+     8,
+     8,
+     8
+    ]
+   },
+   "warnings": [],
+   "week": 4
+  },
+  {
+   "mileage": 57,
+   "phase": "Base",
+   "schedule": {
+    "Fri": "Tempo (6)",
+    "Mon": "Z2 (11)",
+    "Sat": "Long Run (14)",
+    "Sun": "Rest",
+    "Thu": "Z2 (10)",
+    "Tue": "VO2 (6)",
+    "Wed": "Z2 (10)"
+   },
+   "sessions": {
+    "lr": 14,
+    "mlr": 0,
+    "tempo": 6,
+    "vo2": 6,
+    "z2_runs": [
+     11,
+     10,
+     10
+    ]
+   },
+   "warnings": [],
+   "week": 5
+  },
+  {
+   "mileage": 58,
+   "phase": "Build",
+   "schedule": {
+    "Fri": "Z2 (8)",
+    "Mon": "Z2 (8)",
+    "Sat": "Long Run (16)",
+    "Sun": "Rest",
+    "Thu": "Z2 (8)",
+    "Tue": "VO2 (7)",
+    "Wed": "MLR (11)"
+   },
+   "sessions": {
+    "lr": 16,
+    "mlr": 11,
+    "tempo": 0,
+    "vo2": 7,
+    "z2_runs": [
+     8,
+     8,
+     8
+    ]
+   },
+   "warnings": [],
+   "week": 6
+  },
+  {
+   "mileage": 59,
+   "phase": "Build",
+   "schedule": {
+    "Fri": "Tempo (6)",
+    "Mon": "Z2 (8)",
+    "Sat": "Long Run (18)",
+    "Sun": "Rest",
+    "Thu": "Z2 (7)",
+    "Tue": "VO2 (7)",
+    "Wed": "MLR (13)"
+   },
+   "sessions": {
+    "lr": 18,
+    "mlr": 13,
+    "tempo": 6,
+    "vo2": 7,
+    "z2_runs": [
+     8,
+     7
+    ]
+   },
+   "warnings": [],
+   "week": 7
+  },
+  {
+   "mileage": 61,
+   "phase": "Build",
+   "schedule": {
+    "Fri": "Z2 (6)",
+    "Mon": "Z2 (7)",
+    "Sat": "Long Run (20)",
+    "Sun": "Rest",
+    "Thu": "Z2 (7)",
+    "Tue": "VO2 (7)",
+    "Wed": "MLR (14)"
+   },
+   "sessions": {
+    "lr": 20,
+    "mlr": 14,
+    "tempo": 0,
+    "vo2": 7,
+    "z2_runs": [
+     7,
+     7,
+     6
+    ]
+   },
+   "warnings": [],
+   "week": 8
+  },
+  {
+   "mileage": 62,
+   "phase": "Build",
+   "schedule": {
+    "Fri": "Tempo (6)",
+    "Mon": "Z2 (9)",
+    "Sat": "Long Run (18)",
+    "Sun": "Rest",
+    "Thu": "Z2 (9)",
+    "Tue": "VO2 (7)",
+    "Wed": "MLR (13)"
+   },
+   "sessions": {
+    "lr": 18,
+    "mlr": 13,
+    "tempo": 6,
+    "vo2": 7,
+    "z2_runs": [
+     9,
+     9
+    ]
+   },
+   "warnings": [],
+   "week": 9
+  },
+  {
+   "mileage": 64,
+   "phase": "Build",
+   "schedule": {
+    "Fri": "Z2 (7)",
+    "Mon": "Z2 (8)",
+    "Sat": "Long Run (20)",
+    "Sun": "Rest",
+    "Thu": "Z2 (8)",
+    "Tue": "VO2 (7)",
+    "Wed": "MLR (14)"
+   },
+   "sessions": {
+    "lr": 20,
+    "mlr": 14,
+    "tempo": 0,
+    "vo2": 7,
+    "z2_runs": [
+     8,
+     8,
+     7
+    ]
+   },
+   "warnings": [],
+   "week": 10
+  },
+  {
+   "mileage": 54,
+   "phase": "Build",
+   "schedule": {
+    "Fri": "Tempo (6)",
+    "Mon": "Z2 (5)",
+    "Sat": "Long Run (18)",
+    "Sun": "Rest",
+    "Thu": "Z2 (5)",
+    "Tue": "VO2 (7)",
+    "Wed": "MLR (13)"
+   },
+   "sessions": {
+    "lr": 18,
+    "mlr": 13,
+    "tempo": 6,
+    "vo2": 7,
+    "z2_runs": [
+     5,
+     5
+    ]
+   },
+   "warnings": [],
+   "week": 11
+  },
+  {
+   "mileage": 58,
+   "phase": "Peak",
+   "schedule": {
+    "Fri": "Z2 (5)",
+    "Mon": "Z2 (6)",
+    "Sat": "Long Run (20)",
+    "Sun": "Rest",
+    "Thu": "Z2 (5)",
+    "Tue": "VO2 (8)",
+    "Wed": "MLR (14)"
+   },
+   "sessions": {
+    "lr": 20,
+    "mlr": 14,
+    "tempo": 0,
+    "vo2": 8,
+    "z2_runs": [
+     6,
+     5,
+     5
+    ]
+   },
+   "warnings": [],
+   "week": 12
+  },
+  {
+   "mileage": 62,
+   "phase": "Peak",
+   "schedule": {
+    "Fri": "Z2 (7)",
+    "Mon": "Z2 (8)",
+    "Sat": "Long Run (18)",
+    "Sun": "Rest",
+    "Thu": "Z2 (8)",
+    "Tue": "VO2 (8)",
+    "Wed": "MLR (13)"
+   },
+   "sessions": {
+    "lr": 18,
+    "mlr": 13,
+    "tempo": 0,
+    "vo2": 8,
+    "z2_runs": [
+     8,
+     8,
+     7
+    ]
+   },
+   "warnings": [],
+   "week": 13
+  },
+  {
+   "mileage": 66,
+   "phase": "Peak",
+   "schedule": {
+    "Fri": "Z2 (8)",
+    "Mon": "Z2 (8)",
+    "Sat": "Long Run (20)",
+    "Sun": "Rest",
+    "Thu": "Z2 (8)",
+    "Tue": "VO2 (8)",
+    "Wed": "MLR (14)"
+   },
+   "sessions": {
+    "lr": 20,
+    "mlr": 14,
+    "tempo": 0,
+    "vo2": 8,
+    "z2_runs": [
+     8,
+     8,
+     8
+    ]
+   },
+   "warnings": [],
+   "week": 14
+  },
+  {
+   "mileage": 70,
+   "phase": "Peak",
+   "schedule": {
+    "Fri": "Z2 (9)",
+    "Mon": "Z2 (10)",
+    "Sat": "Long Run (20)",
+    "Sun": "Rest",
+    "Thu": "Z2 (9)",
+    "Tue": "VO2 (8)",
+    "Wed": "MLR (14)"
+   },
+   "sessions": {
+    "lr": 20,
+    "mlr": 14,
+    "tempo": 0,
+    "vo2": 8,
+    "z2_runs": [
+     10,
+     9,
+     9
+    ]
+   },
+   "warnings": [],
+   "week": 15
+  },
+  {
+   "mileage": 52,
+   "phase": "Taper",
+   "schedule": {
+    "Fri": "Rest",
+    "Mon": "Z2 (12)",
+    "Sat": "Long Run (14)",
+    "Sun": "Rest",
+    "Thu": "Z2 (11)",
+    "Tue": "VO2 (4)",
+    "Wed": "Z2 (11)"
+   },
+   "sessions": {
+    "lr": 14,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 4,
+    "z2_runs": [
+     12,
+     11,
+     11
+    ]
+   },
+   "warnings": [],
+   "week": 16
+  },
+  {
+   "mileage": 38,
+   "phase": "Taper",
+   "schedule": {
+    "Fri": "Rest",
+    "Mon": "Z2 (8)",
+    "Sat": "Long Run (10)",
+    "Sun": "Rest",
+    "Thu": "Z2 (8)",
+    "Tue": "VO2 (4)",
+    "Wed": "Z2 (8)"
+   },
+   "sessions": {
+    "lr": 10,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 4,
+    "z2_runs": [
+     8,
+     8,
+     8
+    ]
+   },
+   "warnings": [],
+   "week": 17
+  },
+  {
+   "mileage": 6,
+   "phase": "Race",
+   "schedule": {
+    "Fri": "Rest",
+    "Mon": "Shakeout (3)",
+    "Sat": "Race",
+    "Sun": "Rest",
+    "Thu": "Rest",
+    "Tue": "Rest",
+    "Wed": "Shakeout (3)"
+   },
+   "sessions": {
+    "lr": 0,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 0,
+    "z2_runs": [
+     3,
+     3
+    ]
+   },
+   "warnings": [],
+   "week": 18
+  }
+ ],
+ "advanced-55mpw-lr18-6d-18wk": [
+  {
+   "mileage": 55,
+   "phase": "Base",
+   "schedule": {
+    "Fri": "Tempo (6)",
+    "Mon": "Z2 (9)",
+    "Sat": "Long Run (16)",
+    "Sun": "Rest",
+    "Thu": "Z2 (9)",
+    "Tue": "VO2 (6)",
+    "Wed": "Z2 (9)"
+   },
+   "sessions": {
+    "lr": 16,
+    "mlr": 0,
+    "tempo": 6,
+    "vo2": 6,
+    "z2_runs": [
+     9,
+     9,
+     9
+    ]
+   },
+   "warnings": [],
+   "week": 1
+  },
+  {
+   "mileage": 56,
+   "phase": "Base",
+   "schedule": {
+    "Fri": "Z2 (9)",
+    "Mon": "Z2 (9)",
+    "Sat": "Long Run (14)",
+    "Sun": "Rest",
+    "Thu": "Z2 (9)",
+    "Tue": "VO2 (6)",
+    "Wed": "Z2 (9)"
+   },
+   "sessions": {
+    "lr": 14,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 6,
+    "z2_runs": [
+     9,
+     9,
+     9,
+     9
+    ]
+   },
+   "warnings": [],
+   "week": 2
+  },
+  {
+   "mileage": 56,
+   "phase": "Base",
+   "schedule": {
+    "Fri": "Tempo (6)",
+    "Mon": "Z2 (10)",
+    "Sat": "Long Run (16)",
+    "Sun": "Rest",
+    "Thu": "Z2 (9)",
+    "Tue": "VO2 (6)",
+    "Wed": "Z2 (9)"
+   },
+   "sessions": {
+    "lr": 16,
+    "mlr": 0,
+    "tempo": 6,
+    "vo2": 6,
+    "z2_runs": [
+     10,
+     9,
+     9
+    ]
+   },
+   "warnings": [],
+   "week": 3
+  },
+  {
+   "mileage": 57,
+   "phase": "Base",
+   "schedule": {
+    "Fri": "Z2 (9)",
+    "Mon": "Z2 (10)",
+    "Sat": "Long Run (14)",
+    "Sun": "Rest",
+    "Thu": "Z2 (9)",
+    "Tue": "VO2 (6)",
+    "Wed": "Z2 (9)"
+   },
+   "sessions": {
+    "lr": 14,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 6,
+    "z2_runs": [
+     10,
+     9,
+     9,
+     9
+    ]
+   },
+   "warnings": [],
+   "week": 4
+  },
+  {
+   "mileage": 57,
+   "phase": "Base",
+   "schedule": {
+    "Fri": "Tempo (6)",
+    "Mon": "Z2 (10)",
+    "Sat": "Long Run (16)",
+    "Sun": "Rest",
+    "Thu": "Z2 (9)",
+    "Tue": "VO2 (6)",
+    "Wed": "Z2 (10)"
+   },
+   "sessions": {
+    "lr": 16,
+    "mlr": 0,
+    "tempo": 6,
+    "vo2": 6,
+    "z2_runs": [
+     10,
+     10,
+     9
+    ]
+   },
+   "warnings": [],
+   "week": 5
+  },
+  {
+   "mileage": 58,
+   "phase": "Build",
+   "schedule": {
+    "Fri": "Z2 (6)",
+    "Mon": "Z2 (7)",
+    "Sat": "Long Run (18)",
+    "Sun": "Rest",
+    "Thu": "Z2 (7)",
+    "Tue": "VO2 (7)",
+    "Wed": "MLR (13)"
+   },
+   "sessions": {
+    "lr": 18,
+    "mlr": 13,
+    "tempo": 0,
+    "vo2": 7,
+    "z2_runs": [
+     7,
+     7,
+     6
+    ]
+   },
+   "warnings": [],
+   "week": 6
+  },
+  {
+   "mileage": 59,
+   "phase": "Build",
+   "schedule": {
+    "Fri": "Tempo (6)",
+    "Mon": "Z2 (6)",
+    "Sat": "Long Run (20)",
+    "Sun": "Rest",
+    "Thu": "Z2 (6)",
+    "Tue": "VO2 (7)",
+    "Wed": "MLR (14)"
+   },
+   "sessions": {
+    "lr": 20,
+    "mlr": 14,
+    "tempo": 6,
+    "vo2": 7,
+    "z2_runs": [
+     6,
+     6
+    ]
+   },
+   "warnings": [],
+   "week": 7
+  },
+  {
+   "mileage": 61,
+   "phase": "Build",
+   "schedule": {
+    "Fri": "Z2 (7)",
+    "Mon": "Z2 (8)",
+    "Sat": "Long Run (18)",
+    "Sun": "Rest",
+    "Thu": "Z2 (8)",
+    "Tue": "VO2 (7)",
+    "Wed": "MLR (13)"
+   },
+   "sessions": {
+    "lr": 18,
+    "mlr": 13,
+    "tempo": 0,
+    "vo2": 7,
+    "z2_runs": [
+     8,
+     8,
+     7
+    ]
+   },
+   "warnings": [],
+   "week": 8
+  },
+  {
+   "mileage": 62,
+   "phase": "Build",
+   "schedule": {
+    "Fri": "Tempo (6)",
+    "Mon": "Z2 (8)",
+    "Sat": "Long Run (20)",
+    "Sun": "Rest",
+    "Thu": "Z2 (7)",
+    "Tue": "VO2 (7)",
+    "Wed": "MLR (14)"
+   },
+   "sessions": {
+    "lr": 20,
+    "mlr": 14,
+    "tempo": 6,
+    "vo2": 7,
+    "z2_runs": [
+     8,
+     7
+    ]
+   },
+   "warnings": [],
+   "week": 9
+  },
+  {
+   "mileage": 64,
+   "phase": "Build",
+   "schedule": {
+    "Fri": "Z2 (8)",
+    "Mon": "Z2 (9)",
+    "Sat": "Long Run (18)",
+    "Sun": "Rest",
+    "Thu": "Z2 (9)",
+    "Tue": "VO2 (7)",
+    "Wed": "MLR (13)"
+   },
+   "sessions": {
+    "lr": 18,
+    "mlr": 13,
+    "tempo": 0,
+    "vo2": 7,
+    "z2_runs": [
+     9,
+     9,
+     8
+    ]
+   },
+   "warnings": [],
+   "week": 10
+  },
+  {
+   "mileage": 54,
+   "phase": "Build",
+   "schedule": {
+    "Fri": "Tempo (6)",
+    "Mon": "Z2 (7)",
+    "Sat": "Long Run (16)",
+    "Sun": "Rest",
+    "Thu": "Z2 (7)",
+    "Tue": "VO2 (7)",
+    "Wed": "MLR (11)"
+   },
+   "sessions": {
+    "lr": 16,
+    "mlr": 11,
+    "tempo": 6,
+    "vo2": 7,
+    "z2_runs": [
+     7,
+     7
+    ]
+   },
+   "warnings": [],
+   "week": 11
+  },
+  {
+   "mileage": 58,
+   "phase": "Peak",
+   "schedule": {
+    "Fri": "Z2 (6)",
+    "Mon": "Z2 (7)",
+    "Sat": "Long Run (18)",
+    "Sun": "Rest",
+    "Thu": "Z2 (6)",
+    "Tue": "VO2 (8)",
+    "Wed": "MLR (13)"
+   },
+   "sessions": {
+    "lr": 18,
+    "mlr": 13,
+    "tempo": 0,
+    "vo2": 8,
+    "z2_runs": [
+     7,
+     6,
+     6
+    ]
+   },
+   "warnings": [],
+   "week": 12
+  },
+  {
+   "mileage": 62,
+   "phase": "Peak",
+   "schedule": {
+    "Fri": "Z2 (6)",
+    "Mon": "Z2 (7)",
+    "Sat": "Long Run (20)",
+    "Sun": "Rest",
+    "Thu": "Z2 (7)",
+    "Tue": "VO2 (8)",
+    "Wed": "MLR (14)"
+   },
+   "sessions": {
+    "lr": 20,
+    "mlr": 14,
+    "tempo": 0,
+    "vo2": 8,
+    "z2_runs": [
+     7,
+     7,
+     6
+    ]
+   },
+   "warnings": [],
+   "week": 13
+  },
+  {
+   "mileage": 66,
+   "phase": "Peak",
+   "schedule": {
+    "Fri": "Z2 (9)",
+    "Mon": "Z2 (9)",
+    "Sat": "Long Run (18)",
+    "Sun": "Rest",
+    "Thu": "Z2 (9)",
+    "Tue": "VO2 (8)",
+    "Wed": "MLR (13)"
+   },
+   "sessions": {
+    "lr": 18,
+    "mlr": 13,
+    "tempo": 0,
+    "vo2": 8,
+    "z2_runs": [
+     9,
+     9,
+     9
+    ]
+   },
+   "warnings": [],
+   "week": 14
+  },
+  {
+   "mileage": 70,
+   "phase": "Peak",
+   "schedule": {
+    "Fri": "Z2 (9)",
+    "Mon": "Z2 (10)",
+    "Sat": "Long Run (20)",
+    "Sun": "Rest",
+    "Thu": "Z2 (9)",
+    "Tue": "VO2 (8)",
+    "Wed": "MLR (14)"
+   },
+   "sessions": {
+    "lr": 20,
+    "mlr": 14,
+    "tempo": 0,
+    "vo2": 8,
+    "z2_runs": [
+     10,
+     9,
+     9
+    ]
+   },
+   "warnings": [],
+   "week": 15
+  },
+  {
+   "mileage": 52,
+   "phase": "Taper",
+   "schedule": {
+    "Fri": "Rest",
+    "Mon": "Z2 (12)",
+    "Sat": "Long Run (14)",
+    "Sun": "Rest",
+    "Thu": "Z2 (11)",
+    "Tue": "VO2 (4)",
+    "Wed": "Z2 (11)"
+   },
+   "sessions": {
+    "lr": 14,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 4,
+    "z2_runs": [
+     12,
+     11,
+     11
+    ]
+   },
+   "warnings": [],
+   "week": 16
+  },
+  {
+   "mileage": 38,
+   "phase": "Taper",
+   "schedule": {
+    "Fri": "Rest",
+    "Mon": "Z2 (8)",
+    "Sat": "Long Run (10)",
+    "Sun": "Rest",
+    "Thu": "Z2 (8)",
+    "Tue": "VO2 (4)",
+    "Wed": "Z2 (8)"
+   },
+   "sessions": {
+    "lr": 10,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 4,
+    "z2_runs": [
+     8,
+     8,
+     8
+    ]
+   },
+   "warnings": [],
+   "week": 17
+  },
+  {
+   "mileage": 6,
+   "phase": "Race",
+   "schedule": {
+    "Fri": "Rest",
+    "Mon": "Shakeout (3)",
+    "Sat": "Race",
+    "Sun": "Rest",
+    "Thu": "Rest",
+    "Tue": "Rest",
+    "Wed": "Shakeout (3)"
+   },
+   "sessions": {
+    "lr": 0,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 0,
+    "z2_runs": [
+     3,
+     3
+    ]
+   },
+   "warnings": [],
+   "week": 18
+  }
+ ],
+ "advanced-60mpw-lr18-6d-18wk": [
+  {
+   "mileage": 60,
+   "phase": "Base",
+   "schedule": {
+    "Fri": "Tempo (6)",
+    "Mon": "Z2 (11)",
+    "Sat": "Long Run (16)",
+    "Sun": "Rest",
+    "Thu": "Z2 (10)",
+    "Tue": "VO2 (6)",
+    "Wed": "Z2 (11)"
+   },
+   "sessions": {
+    "lr": 16,
+    "mlr": 0,
+    "tempo": 6,
+    "vo2": 6,
+    "z2_runs": [
+     11,
+     11,
+     10
+    ]
+   },
+   "warnings": [],
+   "week": 1
+  },
+  {
+   "mileage": 59,
+   "phase": "Base",
+   "schedule": {
+    "Fri": "Z2 (9)",
+    "Mon": "Z2 (10)",
+    "Sat": "Long Run (14)",
+    "Sun": "Rest",
+    "Thu": "Z2 (10)",
+    "Tue": "VO2 (6)",
+    "Wed": "Z2 (10)"
+   },
+   "sessions": {
+    "lr": 14,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 6,
+    "z2_runs": [
+     10,
+     10,
+     10,
+     9
+    ]
+   },
+   "warnings": [],
+   "week": 2
+  },
+  {
+   "mileage": 58,
+   "phase": "Base",
+   "schedule": {
+    "Fri": "Tempo (6)",
+    "Mon": "Z2 (10)",
+    "Sat": "Long Run (16)",
+    "Sun": "Rest",
+    "Thu": "Z2 (10)",
+    "Tue": "VO2 (6)",
+    "Wed": "Z2 (10)"
+   },
+   "sessions": {
+    "lr": 16,
+    "mlr": 0,
+    "tempo": 6,
+    "vo2": 6,
+    "z2_runs": [
+     10,
+     10,
+     10
+    ]
+   },
+   "warnings": [],
+   "week": 3
+  },
+  {
+   "mileage": 58,
+   "phase": "Base",
+   "schedule": {
+    "Fri": "Z2 (9)",
+    "Mon": "Z2 (10)",
+    "Sat": "Long Run (14)",
+    "Sun": "Rest",
+    "Thu": "Z2 (9)",
+    "Tue": "VO2 (6)",
+    "Wed": "Z2 (10)"
+   },
+   "sessions": {
+    "lr": 14,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 6,
+    "z2_runs": [
+     10,
+     10,
+     9,
+     9
+    ]
+   },
+   "warnings": [],
+   "week": 4
+  },
+  {
+   "mileage": 57,
+   "phase": "Base",
+   "schedule": {
+    "Fri": "Tempo (6)",
+    "Mon": "Z2 (10)",
+    "Sat": "Long Run (16)",
+    "Sun": "Rest",
+    "Thu": "Z2 (9)",
+    "Tue": "VO2 (6)",
+    "Wed": "Z2 (10)"
+   },
+   "sessions": {
+    "lr": 16,
+    "mlr": 0,
+    "tempo": 6,
+    "vo2": 6,
+    "z2_runs": [
+     10,
+     10,
+     9
+    ]
+   },
+   "warnings": [],
+   "week": 5
+  },
+  {
+   "mileage": 58,
+   "phase": "Build",
+   "schedule": {
+    "Fri": "Z2 (6)",
+    "Mon": "Z2 (7)",
+    "Sat": "Long Run (18)",
+    "Sun": "Rest",
+    "Thu": "Z2 (7)",
+    "Tue": "VO2 (7)",
+    "Wed": "MLR (13)"
+   },
+   "sessions": {
+    "lr": 18,
+    "mlr": 13,
+    "tempo": 0,
+    "vo2": 7,
+    "z2_runs": [
+     7,
+     7,
+     6
+    ]
+   },
+   "warnings": [],
+   "week": 6
+  },
+  {
+   "mileage": 59,
+   "phase": "Build",
+   "schedule": {
+    "Fri": "Tempo (6)",
+    "Mon": "Z2 (6)",
+    "Sat": "Long Run (20)",
+    "Sun": "Rest",
+    "Thu": "Z2 (6)",
+    "Tue": "VO2 (7)",
+    "Wed": "MLR (14)"
+   },
+   "sessions": {
+    "lr": 20,
+    "mlr": 14,
+    "tempo": 6,
+    "vo2": 7,
+    "z2_runs": [
+     6,
+     6
+    ]
+   },
+   "warnings": [],
+   "week": 7
+  },
+  {
+   "mileage": 61,
+   "phase": "Build",
+   "schedule": {
+    "Fri": "Z2 (7)",
+    "Mon": "Z2 (8)",
+    "Sat": "Long Run (18)",
+    "Sun": "Rest",
+    "Thu": "Z2 (8)",
+    "Tue": "VO2 (7)",
+    "Wed": "MLR (13)"
+   },
+   "sessions": {
+    "lr": 18,
+    "mlr": 13,
+    "tempo": 0,
+    "vo2": 7,
+    "z2_runs": [
+     8,
+     8,
+     7
+    ]
+   },
+   "warnings": [],
+   "week": 8
+  },
+  {
+   "mileage": 62,
+   "phase": "Build",
+   "schedule": {
+    "Fri": "Tempo (6)",
+    "Mon": "Z2 (8)",
+    "Sat": "Long Run (20)",
+    "Sun": "Rest",
+    "Thu": "Z2 (7)",
+    "Tue": "VO2 (7)",
+    "Wed": "MLR (14)"
+   },
+   "sessions": {
+    "lr": 20,
+    "mlr": 14,
+    "tempo": 6,
+    "vo2": 7,
+    "z2_runs": [
+     8,
+     7
+    ]
+   },
+   "warnings": [],
+   "week": 9
+  },
+  {
+   "mileage": 64,
+   "phase": "Build",
+   "schedule": {
+    "Fri": "Z2 (8)",
+    "Mon": "Z2 (9)",
+    "Sat": "Long Run (18)",
+    "Sun": "Rest",
+    "Thu": "Z2 (9)",
+    "Tue": "VO2 (7)",
+    "Wed": "MLR (13)"
+   },
+   "sessions": {
+    "lr": 18,
+    "mlr": 13,
+    "tempo": 0,
+    "vo2": 7,
+    "z2_runs": [
+     9,
+     9,
+     8
+    ]
+   },
+   "warnings": [],
+   "week": 10
+  },
+  {
+   "mileage": 54,
+   "phase": "Build",
+   "schedule": {
+    "Fri": "Tempo (6)",
+    "Mon": "Z2 (7)",
+    "Sat": "Long Run (16)",
+    "Sun": "Rest",
+    "Thu": "Z2 (7)",
+    "Tue": "VO2 (7)",
+    "Wed": "MLR (11)"
+   },
+   "sessions": {
+    "lr": 16,
+    "mlr": 11,
+    "tempo": 6,
+    "vo2": 7,
+    "z2_runs": [
+     7,
+     7
+    ]
+   },
+   "warnings": [],
+   "week": 11
+  },
+  {
+   "mileage": 58,
+   "phase": "Peak",
+   "schedule": {
+    "Fri": "Z2 (6)",
+    "Mon": "Z2 (7)",
+    "Sat": "Long Run (18)",
+    "Sun": "Rest",
+    "Thu": "Z2 (6)",
+    "Tue": "VO2 (8)",
+    "Wed": "MLR (13)"
+   },
+   "sessions": {
+    "lr": 18,
+    "mlr": 13,
+    "tempo": 0,
+    "vo2": 8,
+    "z2_runs": [
+     7,
+     6,
+     6
+    ]
+   },
+   "warnings": [],
+   "week": 12
+  },
+  {
+   "mileage": 62,
+   "phase": "Peak",
+   "schedule": {
+    "Fri": "Z2 (6)",
+    "Mon": "Z2 (7)",
+    "Sat": "Long Run (20)",
+    "Sun": "Rest",
+    "Thu": "Z2 (7)",
+    "Tue": "VO2 (8)",
+    "Wed": "MLR (14)"
+   },
+   "sessions": {
+    "lr": 20,
+    "mlr": 14,
+    "tempo": 0,
+    "vo2": 8,
+    "z2_runs": [
+     7,
+     7,
+     6
+    ]
+   },
+   "warnings": [],
+   "week": 13
+  },
+  {
+   "mileage": 66,
+   "phase": "Peak",
+   "schedule": {
+    "Fri": "Z2 (9)",
+    "Mon": "Z2 (9)",
+    "Sat": "Long Run (18)",
+    "Sun": "Rest",
+    "Thu": "Z2 (9)",
+    "Tue": "VO2 (8)",
+    "Wed": "MLR (13)"
+   },
+   "sessions": {
+    "lr": 18,
+    "mlr": 13,
+    "tempo": 0,
+    "vo2": 8,
+    "z2_runs": [
+     9,
+     9,
+     9
+    ]
+   },
+   "warnings": [],
+   "week": 14
+  },
+  {
+   "mileage": 70,
+   "phase": "Peak",
+   "schedule": {
+    "Fri": "Z2 (9)",
+    "Mon": "Z2 (10)",
+    "Sat": "Long Run (20)",
+    "Sun": "Rest",
+    "Thu": "Z2 (9)",
+    "Tue": "VO2 (8)",
+    "Wed": "MLR (14)"
+   },
+   "sessions": {
+    "lr": 20,
+    "mlr": 14,
+    "tempo": 0,
+    "vo2": 8,
+    "z2_runs": [
+     10,
+     9,
+     9
+    ]
+   },
+   "warnings": [],
+   "week": 15
+  },
+  {
+   "mileage": 52,
+   "phase": "Taper",
+   "schedule": {
+    "Fri": "Rest",
+    "Mon": "Z2 (12)",
+    "Sat": "Long Run (14)",
+    "Sun": "Rest",
+    "Thu": "Z2 (11)",
+    "Tue": "VO2 (4)",
+    "Wed": "Z2 (11)"
+   },
+   "sessions": {
+    "lr": 14,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 4,
+    "z2_runs": [
+     12,
+     11,
+     11
+    ]
+   },
+   "warnings": [],
+   "week": 16
+  },
+  {
+   "mileage": 38,
+   "phase": "Taper",
+   "schedule": {
+    "Fri": "Rest",
+    "Mon": "Z2 (8)",
+    "Sat": "Long Run (10)",
+    "Sun": "Rest",
+    "Thu": "Z2 (8)",
+    "Tue": "VO2 (4)",
+    "Wed": "Z2 (8)"
+   },
+   "sessions": {
+    "lr": 10,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 4,
+    "z2_runs": [
+     8,
+     8,
+     8
+    ]
+   },
+   "warnings": [],
+   "week": 17
+  },
+  {
+   "mileage": 6,
+   "phase": "Race",
+   "schedule": {
+    "Fri": "Rest",
+    "Mon": "Shakeout (3)",
+    "Sat": "Race",
+    "Sun": "Rest",
+    "Thu": "Rest",
+    "Tue": "Rest",
+    "Wed": "Shakeout (3)"
+   },
+   "sessions": {
+    "lr": 0,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 0,
+    "z2_runs": [
+     3,
+     3
+    ]
+   },
+   "warnings": [],
+   "week": 18
+  }
+ ],
+ "beginner-20mpw-lr8-4d-16wk": [
+  {
+   "mileage": 21,
+   "phase": "Base",
+   "schedule": {
+    "Fri": "Tempo (3)",
+    "Mon": "Z2 (8)",
+    "Sat": "Long Run (8)",
+    "Sun": "Rest",
+    "Thu": "Rest",
+    "Tue": "VO2 (2)",
+    "Wed": "Rest"
+   },
+   "sessions": {
+    "lr": 8,
+    "mlr": 0,
+    "tempo": 3,
+    "vo2": 2,
+    "z2_runs": [
+     8
+    ]
+   },
+   "warnings": [],
+   "week": 1
+  },
+  {
+   "mileage": 22,
+   "phase": "Base",
+   "schedule": {
+    "Fri": "Rest",
+    "Mon": "Z2 (6)",
+    "Sat": "Long Run (8)",
+    "Sun": "Rest",
+    "Thu": "Rest",
+    "Tue": "VO2 (2)",
+    "Wed": "Z2 (6)"
+   },
+   "sessions": {
+    "lr": 8,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 2,
+    "z2_runs": [
+     6,
+     6
+    ]
+   },
+   "warnings": [],
+   "week": 2
+  },
+  {
+   "mileage": 23,
+   "phase": "Base",
+   "schedule": {
+    "Fri": "Tempo (3)",
+    "Mon": "Z2 (9)",
+    "Sat": "Long Run (9)",
+    "Sun": "Rest",
+    "Thu": "Rest",
+    "Tue": "VO2 (2)",
+    "Wed": "Rest"
+   },
+   "sessions": {
+    "lr": 9,
+    "mlr": 0,
+    "tempo": 3,
+    "vo2": 2,
+    "z2_runs": [
+     9
+    ]
+   },
+   "warnings": [],
+   "week": 3
+  },
+  {
+   "mileage": 25,
+   "phase": "Base",
+   "schedule": {
+    "Fri": "Rest",
+    "Mon": "Z2 (7)",
+    "Sat": "Long Run (9)",
+    "Sun": "Rest",
+    "Thu": "Rest",
+    "Tue": "VO2 (2)",
+    "Wed": "Z2 (7)"
+   },
+   "sessions": {
+    "lr": 9,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 2,
+    "z2_runs": [
+     7,
+     7
+    ]
+   },
+   "warnings": [],
+   "week": 4
+  },
+  {
+   "mileage": 26,
+   "phase": "Base",
+   "schedule": {
+    "Fri": "Tempo (4)",
+    "Mon": "Z2 (10)",
+    "Sat": "Long Run (10)",
+    "Sun": "Rest",
+    "Thu": "Rest",
+    "Tue": "VO2 (2)",
+    "Wed": "Rest"
+   },
+   "sessions": {
+    "lr": 10,
+    "mlr": 0,
+    "tempo": 4,
+    "vo2": 2,
+    "z2_runs": [
+     10
+    ]
+   },
+   "warnings": [],
+   "week": 5
+  },
+  {
+   "mileage": 27,
+   "phase": "Build",
+   "schedule": {
+    "Fri": "Rest",
+    "Mon": "Z2 (7)",
+    "Sat": "Long Run (10)",
+    "Sun": "Rest",
+    "Thu": "Rest",
+    "Tue": "VO2 (3)",
+    "Wed": "Z2 (7)"
+   },
+   "sessions": {
+    "lr": 10,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 3,
+    "z2_runs": [
+     7,
+     7
+    ]
+   },
+   "warnings": [],
+   "week": 6
+  },
+  {
+   "mileage": 27,
+   "phase": "Build",
+   "schedule": {
+    "Fri": "Tempo (4)",
+    "Mon": "Z2 (10)",
+    "Sat": "Long Run (10)",
+    "Sun": "Rest",
+    "Thu": "Rest",
+    "Tue": "VO2 (3)",
+    "Wed": "Rest"
+   },
+   "sessions": {
+    "lr": 10,
+    "mlr": 0,
+    "tempo": 4,
+    "vo2": 3,
+    "z2_runs": [
+     10
+    ]
+   },
+   "warnings": [],
+   "week": 7
+  },
+  {
+   "mileage": 28,
+   "phase": "Build",
+   "schedule": {
+    "Fri": "Rest",
+    "Mon": "Z2 (8)",
+    "Sat": "Long Run (10)",
+    "Sun": "Rest",
+    "Thu": "Rest",
+    "Tue": "VO2 (3)",
+    "Wed": "Z2 (7)"
+   },
+   "sessions": {
+    "lr": 10,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 3,
+    "z2_runs": [
+     8,
+     7
+    ]
+   },
+   "warnings": [],
+   "week": 8
+  },
+  {
+   "mileage": 29,
+   "phase": "Build",
+   "schedule": {
+    "Fri": "Tempo (4)",
+    "Mon": "Z2 (11)",
+    "Sat": "Long Run (11)",
+    "Sun": "Rest",
+    "Thu": "Rest",
+    "Tue": "VO2 (3)",
+    "Wed": "Rest"
+   },
+   "sessions": {
+    "lr": 11,
+    "mlr": 0,
+    "tempo": 4,
+    "vo2": 3,
+    "z2_runs": [
+     11
+    ]
+   },
+   "warnings": [],
+   "week": 9
+  },
+  {
+   "mileage": 25,
+   "phase": "Build",
+   "schedule": {
+    "Fri": "Rest",
+    "Mon": "Z2 (7)",
+    "Sat": "Long Run (8)",
+    "Sun": "Rest",
+    "Thu": "Rest",
+    "Tue": "VO2 (3)",
+    "Wed": "Z2 (7)"
+   },
+   "sessions": {
+    "lr": 8,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 3,
+    "z2_runs": [
+     7,
+     7
+    ]
+   },
+   "warnings": [],
+   "week": 10
+  },
+  {
+   "mileage": 27,
+   "phase": "Peak",
+   "schedule": {
+    "Fri": "Rest",
+    "Mon": "Z2 (7)",
+    "Sat": "Long Run (10)",
+    "Sun": "Rest",
+    "Thu": "Rest",
+    "Tue": "VO2 (3)",
+    "Wed": "Z2 (7)"
+   },
+   "sessions": {
+    "lr": 10,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 3,
+    "z2_runs": [
+     7,
+     7
+    ]
+   },
+   "warnings": [],
+   "week": 11
+  },
+  {
+   "mileage": 30,
+   "phase": "Peak",
+   "schedule": {
+    "Fri": "Rest",
+    "Mon": "Z2 (8)",
+    "Sat": "Long Run (12)",
+    "Sun": "Rest",
+    "Thu": "Rest",
+    "Tue": "VO2 (3)",
+    "Wed": "Z2 (7)"
+   },
+   "sessions": {
+    "lr": 12,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 3,
+    "z2_runs": [
+     8,
+     7
+    ]
+   },
+   "warnings": [],
+   "week": 12
+  },
+  {
+   "mileage": 32,
+   "phase": "Peak",
+   "schedule": {
+    "Fri": "Rest",
+    "Mon": "Z2 (9)",
+    "Sat": "Long Run (12)",
+    "Sun": "Rest",
+    "Thu": "Rest",
+    "Tue": "VO2 (3)",
+    "Wed": "Z2 (8)"
+   },
+   "sessions": {
+    "lr": 12,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 3,
+    "z2_runs": [
+     9,
+     8
+    ]
+   },
+   "warnings": [],
+   "week": 13
+  },
+  {
+   "mileage": 24,
+   "phase": "Taper",
+   "schedule": {
+    "Fri": "Rest",
+    "Mon": "Z2 (7)",
+    "Sat": "Long Run (8)",
+    "Sun": "Rest",
+    "Thu": "Rest",
+    "Tue": "VO2 (2)",
+    "Wed": "Z2 (7)"
+   },
+   "sessions": {
+    "lr": 8,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 2,
+    "z2_runs": [
+     7,
+     7
+    ]
+   },
+   "warnings": [],
+   "week": 14
+  },
+  {
+   "mileage": 18,
+   "phase": "Taper",
+   "schedule": {
+    "Fri": "Rest",
+    "Mon": "Z2 (5)",
+    "Sat": "Long Run (6)",
+    "Sun": "Rest",
+    "Thu": "Rest",
+    "Tue": "VO2 (2)",
+    "Wed": "Z2 (5)"
+   },
+   "sessions": {
+    "lr": 6,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 2,
+    "z2_runs": [
+     5,
+     5
+    ]
+   },
+   "warnings": [],
+   "week": 15
+  },
+  {
+   "mileage": 6,
+   "phase": "Race",
+   "schedule": {
+    "Fri": "Rest",
+    "Mon": "Shakeout (3)",
+    "Sat": "Race",
+    "Sun": "Rest",
+    "Thu": "Rest",
+    "Tue": "Rest",
+    "Wed": "Shakeout (3)"
+   },
+   "sessions": {
+    "lr": 0,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 0,
+    "z2_runs": [
+     3,
+     3
+    ]
+   },
+   "warnings": [],
+   "week": 16
+  }
+ ],
+ "beginner-25mpw-lr10-5d-16wk": [
+  {
+   "mileage": 26,
+   "phase": "Base",
+   "schedule": {
+    "Fri": "Tempo (4)",
+    "Mon": "Z2 (6)",
+    "Sat": "Long Run (8)",
+    "Sun": "Rest",
+    "Thu": "Rest",
+    "Tue": "VO2 (3)",
+    "Wed": "Z2 (5)"
+   },
+   "sessions": {
+    "lr": 8,
+    "mlr": 0,
+    "tempo": 4,
+    "vo2": 3,
+    "z2_runs": [
+     6,
+     5
+    ]
+   },
+   "warnings": [],
+   "week": 1
+  },
+  {
+   "mileage": 27,
+   "phase": "Base",
+   "schedule": {
+    "Fri": "Rest",
+    "Mon": "Z2 (5)",
+    "Sat": "Long Run (10)",
+    "Sun": "Rest",
+    "Thu": "Z2 (4)",
+    "Tue": "VO2 (3)",
+    "Wed": "Z2 (5)"
+   },
+   "sessions": {
+    "lr": 10,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 3,
+    "z2_runs": [
+     5,
+     5,
+     4
+    ]
+   },
+   "warnings": [],
+   "week": 2
+  },
+  {
+   "mileage": 28,
+   "phase": "Base",
+   "schedule": {
+    "Fri": "Tempo (4)",
+    "Mon": "Z2 (7)",
+    "Sat": "Long Run (8)",
+    "Sun": "Rest",
+    "Thu": "Rest",
+    "Tue": "VO2 (3)",
+    "Wed": "Z2 (6)"
+   },
+   "sessions": {
+    "lr": 8,
+    "mlr": 0,
+    "tempo": 4,
+    "vo2": 3,
+    "z2_runs": [
+     7,
+     6
+    ]
+   },
+   "warnings": [],
+   "week": 3
+  },
+  {
+   "mileage": 30,
+   "phase": "Base",
+   "schedule": {
+    "Fri": "Rest",
+    "Mon": "Z2 (6)",
+    "Sat": "Long Run (10)",
+    "Sun": "Rest",
+    "Thu": "Z2 (5)",
+    "Tue": "VO2 (3)",
+    "Wed": "Z2 (6)"
+   },
+   "sessions": {
+    "lr": 10,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 3,
+    "z2_runs": [
+     6,
+     6,
+     5
+    ]
+   },
+   "warnings": [],
+   "week": 4
+  },
+  {
+   "mileage": 31,
+   "phase": "Base",
+   "schedule": {
+    "Fri": "Tempo (5)",
+    "Mon": "Z2 (6)",
+    "Sat": "Long Run (12)",
+    "Sun": "Rest",
+    "Thu": "Rest",
+    "Tue": "VO2 (3)",
+    "Wed": "Z2 (5)"
+   },
+   "sessions": {
+    "lr": 12,
+    "mlr": 0,
+    "tempo": 5,
+    "vo2": 3,
+    "z2_runs": [
+     6,
+     5
+    ]
+   },
+   "warnings": [],
+   "week": 5
+  },
+  {
+   "mileage": 32,
+   "phase": "Build",
+   "schedule": {
+    "Fri": "Rest",
+    "Mon": "Z2 (6)",
+    "Sat": "Long Run (12)",
+    "Sun": "Rest",
+    "Thu": "Z2 (5)",
+    "Tue": "VO2 (4)",
+    "Wed": "Z2 (5)"
+   },
+   "sessions": {
+    "lr": 12,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 4,
+    "z2_runs": [
+     6,
+     5,
+     5
+    ]
+   },
+   "warnings": [],
+   "week": 6
+  },
+  {
+   "mileage": 33,
+   "phase": "Build",
+   "schedule": {
+    "Fri": "Tempo (5)",
+    "Mon": "Z2 (6)",
+    "Sat": "Long Run (12)",
+    "Sun": "Rest",
+    "Thu": "Rest",
+    "Tue": "VO2 (4)",
+    "Wed": "Z2 (6)"
+   },
+   "sessions": {
+    "lr": 12,
+    "mlr": 0,
+    "tempo": 5,
+    "vo2": 4,
+    "z2_runs": [
+     6,
+     6
+    ]
+   },
+   "warnings": [],
+   "week": 7
+  },
+  {
+   "mileage": 34,
+   "phase": "Build",
+   "schedule": {
+    "Fri": "Rest",
+    "Mon": "Z2 (6)",
+    "Sat": "Long Run (12)",
+    "Sun": "Rest",
+    "Thu": "Z2 (6)",
+    "Tue": "VO2 (4)",
+    "Wed": "Z2 (6)"
+   },
+   "sessions": {
+    "lr": 12,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 4,
+    "z2_runs": [
+     6,
+     6,
+     6
+    ]
+   },
+   "warnings": [],
+   "week": 8
+  },
+  {
+   "mileage": 35,
+   "phase": "Build",
+   "schedule": {
+    "Fri": "Tempo (5)",
+    "Mon": "Z2 (7)",
+    "Sat": "Long Run (12)",
+    "Sun": "Rest",
+    "Thu": "Rest",
+    "Tue": "VO2 (4)",
+    "Wed": "Z2 (7)"
+   },
+   "sessions": {
+    "lr": 12,
+    "mlr": 0,
+    "tempo": 5,
+    "vo2": 4,
+    "z2_runs": [
+     7,
+     7
+    ]
+   },
+   "warnings": [],
+   "week": 9
+  },
+  {
+   "mileage": 30,
+   "phase": "Build",
+   "schedule": {
+    "Fri": "Rest",
+    "Mon": "Z2 (6)",
+    "Sat": "Long Run (10)",
+    "Sun": "Rest",
+    "Thu": "Z2 (5)",
+    "Tue": "VO2 (4)",
+    "Wed": "Z2 (5)"
+   },
+   "sessions": {
+    "lr": 10,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 4,
+    "z2_runs": [
+     6,
+     5,
+     5
+    ]
+   },
+   "warnings": [],
+   "week": 10
+  },
+  {
+   "mileage": 33,
+   "phase": "Peak",
+   "schedule": {
+    "Fri": "Rest",
+    "Mon": "Z2 (6)",
+    "Sat": "Long Run (12)",
+    "Sun": "Rest",
+    "Thu": "Z2 (5)",
+    "Tue": "VO2 (4)",
+    "Wed": "Z2 (6)"
+   },
+   "sessions": {
+    "lr": 12,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 4,
+    "z2_runs": [
+     6,
+     6,
+     5
+    ]
+   },
+   "warnings": [],
+   "week": 11
+  },
+  {
+   "mileage": 35,
+   "phase": "Peak",
+   "schedule": {
+    "Fri": "Rest",
+    "Mon": "Z2 (6)",
+    "Sat": "Long Run (14)",
+    "Sun": "Rest",
+    "Thu": "Z2 (5)",
+    "Tue": "VO2 (4)",
+    "Wed": "Z2 (6)"
+   },
+   "sessions": {
+    "lr": 14,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 4,
+    "z2_runs": [
+     6,
+     6,
+     5
+    ]
+   },
+   "warnings": [],
+   "week": 12
+  },
+  {
+   "mileage": 38,
+   "phase": "Peak",
+   "schedule": {
+    "Fri": "Rest",
+    "Mon": "Z2 (7)",
+    "Sat": "Long Run (14)",
+    "Sun": "Rest",
+    "Thu": "Z2 (6)",
+    "Tue": "VO2 (4)",
+    "Wed": "Z2 (7)"
+   },
+   "sessions": {
+    "lr": 14,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 4,
+    "z2_runs": [
+     7,
+     7,
+     6
+    ]
+   },
+   "warnings": [],
+   "week": 13
+  },
+  {
+   "mileage": 28,
+   "phase": "Taper",
+   "schedule": {
+    "Fri": "Rest",
+    "Mon": "Z2 (8)",
+    "Sat": "Long Run (10)",
+    "Sun": "Rest",
+    "Thu": "Rest",
+    "Tue": "VO2 (2)",
+    "Wed": "Z2 (8)"
+   },
+   "sessions": {
+    "lr": 10,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 2,
+    "z2_runs": [
+     8,
+     8
+    ]
+   },
+   "warnings": [],
+   "week": 14
+  },
+  {
+   "mileage": 21,
+   "phase": "Taper",
+   "schedule": {
+    "Fri": "Rest",
+    "Mon": "Z2 (6)",
+    "Sat": "Long Run (8)",
+    "Sun": "Rest",
+    "Thu": "Rest",
+    "Tue": "VO2 (2)",
+    "Wed": "Z2 (5)"
+   },
+   "sessions": {
+    "lr": 8,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 2,
+    "z2_runs": [
+     6,
+     5
+    ]
+   },
+   "warnings": [],
+   "week": 15
+  },
+  {
+   "mileage": 6,
+   "phase": "Race",
+   "schedule": {
+    "Fri": "Rest",
+    "Mon": "Shakeout (3)",
+    "Sat": "Race",
+    "Sun": "Rest",
+    "Thu": "Rest",
+    "Tue": "Rest",
+    "Wed": "Shakeout (3)"
+   },
+   "sessions": {
+    "lr": 0,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 0,
+    "z2_runs": [
+     3,
+     3
+    ]
+   },
+   "warnings": [],
+   "week": 16
+  }
+ ],
+ "beginner-30mpw-lr10-5d-18wk": [
+  {
+   "mileage": 30,
+   "phase": "Base",
+   "schedule": {
+    "Fri": "Tempo (4)",
+    "Mon": "Z2 (7)",
+    "Sat": "Long Run (10)",
+    "Sun": "Rest",
+    "Thu": "Rest",
+    "Tue": "VO2 (3)",
+    "Wed": "Z2 (6)"
+   },
+   "sessions": {
+    "lr": 10,
+    "mlr": 0,
+    "tempo": 4,
+    "vo2": 3,
+    "z2_runs": [
+     7,
+     6
+    ]
+   },
+   "warnings": [],
+   "week": 1
+  },
+  {
+   "mileage": 30,
+   "phase": "Base",
+   "schedule": {
+    "Fri": "Rest",
+    "Mon": "Z2 (5)",
+    "Sat": "Long Run (12)",
+    "Sun": "Rest",
+    "Thu": "Z2 (5)",
+    "Tue": "VO2 (3)",
+    "Wed": "Z2 (5)"
+   },
+   "sessions": {
+    "lr": 12,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 3,
+    "z2_runs": [
+     5,
+     5,
+     5
+    ]
+   },
+   "warnings": [],
+   "week": 2
+  },
+  {
+   "mileage": 31,
+   "phase": "Base",
+   "schedule": {
+    "Fri": "Tempo (5)",
+    "Mon": "Z2 (7)",
+    "Sat": "Long Run (10)",
+    "Sun": "Rest",
+    "Thu": "Rest",
+    "Tue": "VO2 (3)",
+    "Wed": "Z2 (6)"
+   },
+   "sessions": {
+    "lr": 10,
+    "mlr": 0,
+    "tempo": 5,
+    "vo2": 3,
+    "z2_runs": [
+     7,
+     6
+    ]
+   },
+   "warnings": [],
+   "week": 3
+  },
+  {
+   "mileage": 31,
+   "phase": "Base",
+   "schedule": {
+    "Fri": "Rest",
+    "Mon": "Z2 (6)",
+    "Sat": "Long Run (12)",
+    "Sun": "Rest",
+    "Thu": "Z2 (5)",
+    "Tue": "VO2 (3)",
+    "Wed": "Z2 (5)"
+   },
+   "sessions": {
+    "lr": 12,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 3,
+    "z2_runs": [
+     6,
+     5,
+     5
+    ]
+   },
+   "warnings": [],
+   "week": 4
+  },
+  {
+   "mileage": 31,
+   "phase": "Base",
+   "schedule": {
+    "Fri": "Tempo (5)",
+    "Mon": "Z2 (7)",
+    "Sat": "Long Run (10)",
+    "Sun": "Rest",
+    "Thu": "Rest",
+    "Tue": "VO2 (3)",
+    "Wed": "Z2 (6)"
+   },
+   "sessions": {
+    "lr": 10,
+    "mlr": 0,
+    "tempo": 5,
+    "vo2": 3,
+    "z2_runs": [
+     7,
+     6
+    ]
+   },
+   "warnings": [],
+   "week": 5
+  },
+  {
+   "mileage": 32,
+   "phase": "Build",
+   "schedule": {
+    "Fri": "Rest",
+    "Mon": "Z2 (6)",
+    "Sat": "Long Run (12)",
+    "Sun": "Rest",
+    "Thu": "Z2 (5)",
+    "Tue": "VO2 (4)",
+    "Wed": "Z2 (5)"
+   },
+   "sessions": {
+    "lr": 12,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 4,
+    "z2_runs": [
+     6,
+     5,
+     5
+    ]
+   },
+   "warnings": [],
+   "week": 6
+  },
+  {
+   "mileage": 32,
+   "phase": "Build",
+   "schedule": {
+    "Fri": "Tempo (5)",
+    "Mon": "Z2 (6)",
+    "Sat": "Long Run (12)",
+    "Sun": "Rest",
+    "Thu": "Rest",
+    "Tue": "VO2 (4)",
+    "Wed": "Z2 (5)"
+   },
+   "sessions": {
+    "lr": 12,
+    "mlr": 0,
+    "tempo": 5,
+    "vo2": 4,
+    "z2_runs": [
+     6,
+     5
+    ]
+   },
+   "warnings": [],
+   "week": 7
+  },
+  {
+   "mileage": 33,
+   "phase": "Build",
+   "schedule": {
+    "Fri": "Rest",
+    "Mon": "Z2 (6)",
+    "Sat": "Long Run (12)",
+    "Sun": "Rest",
+    "Thu": "Z2 (5)",
+    "Tue": "VO2 (4)",
+    "Wed": "Z2 (6)"
+   },
+   "sessions": {
+    "lr": 12,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 4,
+    "z2_runs": [
+     6,
+     6,
+     5
+    ]
+   },
+   "warnings": [],
+   "week": 8
+  },
+  {
+   "mileage": 34,
+   "phase": "Build",
+   "schedule": {
+    "Fri": "Tempo (5)",
+    "Mon": "Z2 (7)",
+    "Sat": "Long Run (12)",
+    "Sun": "Rest",
+    "Thu": "Rest",
+    "Tue": "VO2 (4)",
+    "Wed": "Z2 (6)"
+   },
+   "sessions": {
+    "lr": 12,
+    "mlr": 0,
+    "tempo": 5,
+    "vo2": 4,
+    "z2_runs": [
+     7,
+     6
+    ]
+   },
+   "warnings": [],
+   "week": 9
+  },
+  {
+   "mileage": 35,
+   "phase": "Build",
+   "schedule": {
+    "Fri": "Rest",
+    "Mon": "Z2 (7)",
+    "Sat": "Long Run (12)",
+    "Sun": "Rest",
+    "Thu": "Z2 (6)",
+    "Tue": "VO2 (4)",
+    "Wed": "Z2 (6)"
+   },
+   "sessions": {
+    "lr": 12,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 4,
+    "z2_runs": [
+     7,
+     6,
+     6
+    ]
+   },
+   "warnings": [],
+   "week": 10
+  },
+  {
+   "mileage": 30,
+   "phase": "Build",
+   "schedule": {
+    "Fri": "Tempo (4)",
+    "Mon": "Z2 (6)",
+    "Sat": "Long Run (10)",
+    "Sun": "Rest",
+    "Thu": "Rest",
+    "Tue": "VO2 (4)",
+    "Wed": "Z2 (6)"
+   },
+   "sessions": {
+    "lr": 10,
+    "mlr": 0,
+    "tempo": 4,
+    "vo2": 4,
+    "z2_runs": [
+     6,
+     6
+    ]
+   },
+   "warnings": [],
+   "week": 11
+  },
+  {
+   "mileage": 32,
+   "phase": "Peak",
+   "schedule": {
+    "Fri": "Rest",
+    "Mon": "Z2 (6)",
+    "Sat": "Long Run (12)",
+    "Sun": "Rest",
+    "Thu": "Z2 (5)",
+    "Tue": "VO2 (4)",
+    "Wed": "Z2 (5)"
+   },
+   "sessions": {
+    "lr": 12,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 4,
+    "z2_runs": [
+     6,
+     5,
+     5
+    ]
+   },
+   "warnings": [],
+   "week": 12
+  },
+  {
+   "mileage": 34,
+   "phase": "Peak",
+   "schedule": {
+    "Fri": "Rest",
+    "Mon": "Z2 (6)",
+    "Sat": "Long Run (13)",
+    "Sun": "Rest",
+    "Thu": "Z2 (5)",
+    "Tue": "VO2 (4)",
+    "Wed": "Z2 (6)"
+   },
+   "sessions": {
+    "lr": 13,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 4,
+    "z2_runs": [
+     6,
+     6,
+     5
+    ]
+   },
+   "warnings": [],
+   "week": 13
+  },
+  {
+   "mileage": 36,
+   "phase": "Peak",
+   "schedule": {
+    "Fri": "Rest",
+    "Mon": "Z2 (6)",
+    "Sat": "Long Run (14)",
+    "Sun": "Rest",
+    "Thu": "Z2 (6)",
+    "Tue": "VO2 (4)",
+    "Wed": "Z2 (6)"
+   },
+   "sessions": {
+    "lr": 14,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 4,
+    "z2_runs": [
+     6,
+     6,
+     6
+    ]
+   },
+   "warnings": [],
+   "week": 14
+  },
+  {
+   "mileage": 38,
+   "phase": "Peak",
+   "schedule": {
+    "Fri": "Rest",
+    "Mon": "Z2 (7)",
+    "Sat": "Long Run (14)",
+    "Sun": "Rest",
+    "Thu": "Z2 (6)",
+    "Tue": "VO2 (4)",
+    "Wed": "Z2 (7)"
+   },
+   "sessions": {
+    "lr": 14,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 4,
+    "z2_runs": [
+     7,
+     7,
+     6
+    ]
+   },
+   "warnings": [],
+   "week": 15
+  },
+  {
+   "mileage": 28,
+   "phase": "Taper",
+   "schedule": {
+    "Fri": "Rest",
+    "Mon": "Z2 (8)",
+    "Sat": "Long Run (10)",
+    "Sun": "Rest",
+    "Thu": "Rest",
+    "Tue": "VO2 (2)",
+    "Wed": "Z2 (8)"
+   },
+   "sessions": {
+    "lr": 10,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 2,
+    "z2_runs": [
+     8,
+     8
+    ]
+   },
+   "warnings": [],
+   "week": 16
+  },
+  {
+   "mileage": 21,
+   "phase": "Taper",
+   "schedule": {
+    "Fri": "Rest",
+    "Mon": "Z2 (6)",
+    "Sat": "Long Run (8)",
+    "Sun": "Rest",
+    "Thu": "Rest",
+    "Tue": "VO2 (2)",
+    "Wed": "Z2 (5)"
+   },
+   "sessions": {
+    "lr": 8,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 2,
+    "z2_runs": [
+     6,
+     5
+    ]
+   },
+   "warnings": [],
+   "week": 17
+  },
+  {
+   "mileage": 6,
+   "phase": "Race",
+   "schedule": {
+    "Fri": "Rest",
+    "Mon": "Shakeout (3)",
+    "Sat": "Race",
+    "Sun": "Rest",
+    "Thu": "Rest",
+    "Tue": "Rest",
+    "Wed": "Shakeout (3)"
+   },
+   "sessions": {
+    "lr": 0,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 0,
+    "z2_runs": [
+     3,
+     3
+    ]
+   },
+   "warnings": [],
+   "week": 18
+  }
+ ],
+ "intermediate-25mpw-lr10-5d-16wk": [
+  {
+   "mileage": 27,
+   "phase": "Base",
+   "schedule": {
+    "Fri": "Tempo (4)",
+    "Mon": "Z2 (6)",
+    "Sat": "Long Run (8)",
+    "Sun": "Rest",
+    "Thu": "Rest",
+    "Tue": "VO2 (4)",
+    "Wed": "Z2 (5)"
+   },
+   "sessions": {
+    "lr": 8,
+    "mlr": 0,
+    "tempo": 4,
+    "vo2": 4,
+    "z2_runs": [
+     6,
+     5
+    ]
+   },
+   "warnings": [],
+   "week": 1
+  },
+  {
+   "mileage": 30,
+   "phase": "Base",
+   "schedule": {
+    "Fri": "Rest",
+    "Mon": "Z2 (6)",
+    "Sat": "Long Run (10)",
+    "Sun": "Rest",
+    "Thu": "Z2 (5)",
+    "Tue": "VO2 (4)",
+    "Wed": "Z2 (5)"
+   },
+   "sessions": {
+    "lr": 10,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 4,
+    "z2_runs": [
+     6,
+     5,
+     5
+    ]
+   },
+   "warnings": [],
+   "week": 2
+  },
+  {
+   "mileage": 33,
+   "phase": "Base",
+   "schedule": {
+    "Fri": "Tempo (5)",
+    "Mon": "Z2 (6)",
+    "Sat": "Long Run (12)",
+    "Sun": "Rest",
+    "Thu": "Rest",
+    "Tue": "VO2 (4)",
+    "Wed": "Z2 (6)"
+   },
+   "sessions": {
+    "lr": 12,
+    "mlr": 0,
+    "tempo": 5,
+    "vo2": 4,
+    "z2_runs": [
+     6,
+     6
+    ]
+   },
+   "warnings": [],
+   "week": 3
+  },
+  {
+   "mileage": 37,
+   "phase": "Base",
+   "schedule": {
+    "Fri": "Rest",
+    "Mon": "Z2 (7)",
+    "Sat": "Long Run (14)",
+    "Sun": "Rest",
+    "Thu": "Z2 (6)",
+    "Tue": "VO2 (4)",
+    "Wed": "Z2 (6)"
+   },
+   "sessions": {
+    "lr": 14,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 4,
+    "z2_runs": [
+     7,
+     6,
+     6
+    ]
+   },
+   "warnings": [],
+   "week": 4
+  },
+  {
+   "mileage": 41,
+   "phase": "Base",
+   "schedule": {
+    "Fri": "Tempo (6)",
+    "Mon": "Z2 (10)",
+    "Sat": "Long Run (12)",
+    "Sun": "Rest",
+    "Thu": "Rest",
+    "Tue": "VO2 (4)",
+    "Wed": "Z2 (9)"
+   },
+   "sessions": {
+    "lr": 12,
+    "mlr": 0,
+    "tempo": 6,
+    "vo2": 4,
+    "z2_runs": [
+     10,
+     9
+    ]
+   },
+   "warnings": [],
+   "week": 5
+  },
+  {
+   "mileage": 42,
+   "phase": "Build",
+   "schedule": {
+    "Fri": "Rest",
+    "Mon": "Z2 (8)",
+    "Sat": "Long Run (14)",
+    "Sun": "Rest",
+    "Thu": "Z2 (7)",
+    "Tue": "VO2 (5)",
+    "Wed": "Z2 (8)"
+   },
+   "sessions": {
+    "lr": 14,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 5,
+    "z2_runs": [
+     8,
+     8,
+     7
+    ]
+   },
+   "warnings": [],
+   "week": 6
+  },
+  {
+   "mileage": 43,
+   "phase": "Build",
+   "schedule": {
+    "Fri": "Tempo (6)",
+    "Mon": "Z2 (8)",
+    "Sat": "Long Run (16)",
+    "Sun": "Rest",
+    "Thu": "Rest",
+    "Tue": "VO2 (5)",
+    "Wed": "Z2 (8)"
+   },
+   "sessions": {
+    "lr": 16,
+    "mlr": 0,
+    "tempo": 6,
+    "vo2": 5,
+    "z2_runs": [
+     8,
+     8
+    ]
+   },
+   "warnings": [],
+   "week": 7
+  },
+  {
+   "mileage": 45,
+   "phase": "Build",
+   "schedule": {
+    "Fri": "Rest",
+    "Mon": "Z2 (8)",
+    "Sat": "Long Run (16)",
+    "Sun": "Rest",
+    "Thu": "Z2 (8)",
+    "Tue": "VO2 (5)",
+    "Wed": "Z2 (8)"
+   },
+   "sessions": {
+    "lr": 16,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 5,
+    "z2_runs": [
+     8,
+     8,
+     8
+    ]
+   },
+   "warnings": [],
+   "week": 8
+  },
+  {
+   "mileage": 46,
+   "phase": "Build",
+   "schedule": {
+    "Fri": "Tempo (6)",
+    "Mon": "Z2 (10)",
+    "Sat": "Long Run (16)",
+    "Sun": "Rest",
+    "Thu": "Rest",
+    "Tue": "VO2 (5)",
+    "Wed": "Z2 (9)"
+   },
+   "sessions": {
+    "lr": 16,
+    "mlr": 0,
+    "tempo": 6,
+    "vo2": 5,
+    "z2_runs": [
+     10,
+     9
+    ]
+   },
+   "warnings": [],
+   "week": 9
+  },
+  {
+   "mileage": 39,
+   "phase": "Build",
+   "schedule": {
+    "Fri": "Rest",
+    "Mon": "Z2 (7)",
+    "Sat": "Long Run (14)",
+    "Sun": "Rest",
+    "Thu": "Z2 (6)",
+    "Tue": "VO2 (5)",
+    "Wed": "Z2 (7)"
+   },
+   "sessions": {
+    "lr": 14,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 5,
+    "z2_runs": [
+     7,
+     7,
+     6
+    ]
+   },
+   "warnings": [],
+   "week": 10
+  },
+  {
+   "mileage": 43,
+   "phase": "Peak",
+   "schedule": {
+    "Fri": "Rest",
+    "Mon": "Z2 (7)",
+    "Sat": "Long Run (16)",
+    "Sun": "Rest",
+    "Thu": "Z2 (7)",
+    "Tue": "VO2 (6)",
+    "Wed": "Z2 (7)"
+   },
+   "sessions": {
+    "lr": 16,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 6,
+    "z2_runs": [
+     7,
+     7,
+     7
+    ]
+   },
+   "warnings": [],
+   "week": 11
+  },
+  {
+   "mileage": 46,
+   "phase": "Peak",
+   "schedule": {
+    "Fri": "Rest",
+    "Mon": "Z2 (8)",
+    "Sat": "Long Run (18)",
+    "Sun": "Rest",
+    "Thu": "Z2 (7)",
+    "Tue": "VO2 (6)",
+    "Wed": "Z2 (7)"
+   },
+   "sessions": {
+    "lr": 18,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 6,
+    "z2_runs": [
+     8,
+     7,
+     7
+    ]
+   },
+   "warnings": [],
+   "week": 12
+  },
+  {
+   "mileage": 50,
+   "phase": "Peak",
+   "schedule": {
+    "Fri": "Rest",
+    "Mon": "Z2 (9)",
+    "Sat": "Long Run (18)",
+    "Sun": "Rest",
+    "Thu": "Z2 (8)",
+    "Tue": "VO2 (6)",
+    "Wed": "Z2 (9)"
+   },
+   "sessions": {
+    "lr": 18,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 6,
+    "z2_runs": [
+     9,
+     9,
+     8
+    ]
+   },
+   "warnings": [],
+   "week": 13
+  },
+  {
+   "mileage": 38,
+   "phase": "Taper",
+   "schedule": {
+    "Fri": "Rest",
+    "Mon": "Z2 (12)",
+    "Sat": "Long Run (12)",
+    "Sun": "Rest",
+    "Thu": "Rest",
+    "Tue": "VO2 (3)",
+    "Wed": "Z2 (11)"
+   },
+   "sessions": {
+    "lr": 12,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 3,
+    "z2_runs": [
+     12,
+     11
+    ]
+   },
+   "warnings": [],
+   "week": 14
+  },
+  {
+   "mileage": 28,
+   "phase": "Taper",
+   "schedule": {
+    "Fri": "Rest",
+    "Mon": "Z2 (9)",
+    "Sat": "Long Run (8)",
+    "Sun": "Rest",
+    "Thu": "Rest",
+    "Tue": "VO2 (3)",
+    "Wed": "Z2 (8)"
+   },
+   "sessions": {
+    "lr": 8,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 3,
+    "z2_runs": [
+     9,
+     8
+    ]
+   },
+   "warnings": [],
+   "week": 15
+  },
+  {
+   "mileage": 6,
+   "phase": "Race",
+   "schedule": {
+    "Fri": "Rest",
+    "Mon": "Shakeout (3)",
+    "Sat": "Race",
+    "Sun": "Rest",
+    "Thu": "Rest",
+    "Tue": "Rest",
+    "Wed": "Shakeout (3)"
+   },
+   "sessions": {
+    "lr": 0,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 0,
+    "z2_runs": [
+     3,
+     3
+    ]
+   },
+   "warnings": [],
+   "week": 16
+  }
+ ],
+ "intermediate-30mpw-lr12-5d-12wk": [
+  {
+   "mileage": 33,
+   "phase": "Base",
+   "schedule": {
+    "Fri": "Tempo (5)",
+    "Mon": "Z2 (6)",
+    "Sat": "Long Run (12)",
+    "Sun": "Rest",
+    "Thu": "Rest",
+    "Tue": "VO2 (4)",
+    "Wed": "Z2 (6)"
+   },
+   "sessions": {
+    "lr": 12,
+    "mlr": 0,
+    "tempo": 5,
+    "vo2": 4,
+    "z2_runs": [
+     6,
+     6
+    ]
+   },
+   "warnings": [],
+   "week": 1
+  },
+  {
+   "mileage": 37,
+   "phase": "Base",
+   "schedule": {
+    "Fri": "Rest",
+    "Mon": "Z2 (7)",
+    "Sat": "Long Run (14)",
+    "Sun": "Rest",
+    "Thu": "Z2 (6)",
+    "Tue": "VO2 (4)",
+    "Wed": "Z2 (6)"
+   },
+   "sessions": {
+    "lr": 14,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 4,
+    "z2_runs": [
+     7,
+     6,
+     6
+    ]
+   },
+   "warnings": [],
+   "week": 2
+  },
+  {
+   "mileage": 41,
+   "phase": "Base",
+   "schedule": {
+    "Fri": "Tempo (6)",
+    "Mon": "Z2 (10)",
+    "Sat": "Long Run (12)",
+    "Sun": "Rest",
+    "Thu": "Rest",
+    "Tue": "VO2 (4)",
+    "Wed": "Z2 (9)"
+   },
+   "sessions": {
+    "lr": 12,
+    "mlr": 0,
+    "tempo": 6,
+    "vo2": 4,
+    "z2_runs": [
+     10,
+     9
+    ]
+   },
+   "warnings": [],
+   "week": 3
+  },
+  {
+   "mileage": 42,
+   "phase": "Build",
+   "schedule": {
+    "Fri": "Rest",
+    "Mon": "Z2 (8)",
+    "Sat": "Long Run (14)",
+    "Sun": "Rest",
+    "Thu": "Z2 (7)",
+    "Tue": "VO2 (5)",
+    "Wed": "Z2 (8)"
+   },
+   "sessions": {
+    "lr": 14,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 5,
+    "z2_runs": [
+     8,
+     8,
+     7
+    ]
+   },
+   "warnings": [],
+   "week": 4
+  },
+  {
+   "mileage": 44,
+   "phase": "Build",
+   "schedule": {
+    "Fri": "Tempo (6)",
+    "Mon": "Z2 (9)",
+    "Sat": "Long Run (16)",
+    "Sun": "Rest",
+    "Thu": "Rest",
+    "Tue": "VO2 (5)",
+    "Wed": "Z2 (8)"
+   },
+   "sessions": {
+    "lr": 16,
+    "mlr": 0,
+    "tempo": 6,
+    "vo2": 5,
+    "z2_runs": [
+     9,
+     8
+    ]
+   },
+   "warnings": [],
+   "week": 5
+  },
+  {
+   "mileage": 46,
+   "phase": "Build",
+   "schedule": {
+    "Fri": "Rest",
+    "Mon": "Z2 (9)",
+    "Sat": "Long Run (16)",
+    "Sun": "Rest",
+    "Thu": "Z2 (8)",
+    "Tue": "VO2 (5)",
+    "Wed": "Z2 (8)"
+   },
+   "sessions": {
+    "lr": 16,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 5,
+    "z2_runs": [
+     9,
+     8,
+     8
+    ]
+   },
+   "warnings": [],
+   "week": 6
+  },
+  {
+   "mileage": 42,
+   "phase": "Build",
+   "schedule": {
+    "Fri": "Tempo (6)",
+    "Mon": "Z2 (9)",
+    "Sat": "Long Run (14)",
+    "Sun": "Rest",
+    "Thu": "Rest",
+    "Tue": "VO2 (5)",
+    "Wed": "Z2 (8)"
+   },
+   "sessions": {
+    "lr": 14,
+    "mlr": 0,
+    "tempo": 6,
+    "vo2": 5,
+    "z2_runs": [
+     9,
+     8
+    ]
+   },
+   "warnings": [],
+   "week": 7
+  },
+  {
+   "mileage": 46,
+   "phase": "Peak",
+   "schedule": {
+    "Fri": "Rest",
+    "Mon": "Z2 (8)",
+    "Sat": "Long Run (16)",
+    "Sun": "Rest",
+    "Thu": "Z2 (8)",
+    "Tue": "VO2 (6)",
+    "Wed": "Z2 (8)"
+   },
+   "sessions": {
+    "lr": 16,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 6,
+    "z2_runs": [
+     8,
+     8,
+     8
+    ]
+   },
+   "warnings": [],
+   "week": 8
+  },
+  {
+   "mileage": 50,
+   "phase": "Peak",
+   "schedule": {
+    "Fri": "Rest",
+    "Mon": "Z2 (9)",
+    "Sat": "Long Run (18)",
+    "Sun": "Rest",
+    "Thu": "Z2 (8)",
+    "Tue": "VO2 (6)",
+    "Wed": "Z2 (9)"
+   },
+   "sessions": {
+    "lr": 18,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 6,
+    "z2_runs": [
+     9,
+     9,
+     8
+    ]
+   },
+   "warnings": [],
+   "week": 9
+  },
+  {
+   "mileage": 38,
+   "phase": "Taper",
+   "schedule": {
+    "Fri": "Rest",
+    "Mon": "Z2 (12)",
+    "Sat": "Long Run (12)",
+    "Sun": "Rest",
+    "Thu": "Rest",
+    "Tue": "VO2 (3)",
+    "Wed": "Z2 (11)"
+   },
+   "sessions": {
+    "lr": 12,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 3,
+    "z2_runs": [
+     12,
+     11
+    ]
+   },
+   "warnings": [],
+   "week": 10
+  },
+  {
+   "mileage": 28,
+   "phase": "Taper",
+   "schedule": {
+    "Fri": "Rest",
+    "Mon": "Z2 (9)",
+    "Sat": "Long Run (8)",
+    "Sun": "Rest",
+    "Thu": "Rest",
+    "Tue": "VO2 (3)",
+    "Wed": "Z2 (8)"
+   },
+   "sessions": {
+    "lr": 8,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 3,
+    "z2_runs": [
+     9,
+     8
+    ]
+   },
+   "warnings": [],
+   "week": 11
+  },
+  {
+   "mileage": 6,
+   "phase": "Race",
+   "schedule": {
+    "Fri": "Rest",
+    "Mon": "Shakeout (3)",
+    "Sat": "Race",
+    "Sun": "Rest",
+    "Thu": "Rest",
+    "Tue": "Rest",
+    "Wed": "Shakeout (3)"
+   },
+   "sessions": {
+    "lr": 0,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 0,
+    "z2_runs": [
+     3,
+     3
+    ]
+   },
+   "warnings": [],
+   "week": 12
+  }
+ ],
+ "intermediate-30mpw-lr12-5d-16wk": [
+  {
+   "mileage": 31,
+   "phase": "Base",
+   "schedule": {
+    "Fri": "Tempo (5)",
+    "Mon": "Z2 (6)",
+    "Sat": "Long Run (10)",
+    "Sun": "Rest",
+    "Thu": "Rest",
+    "Tue": "VO2 (4)",
+    "Wed": "Z2 (6)"
+   },
+   "sessions": {
+    "lr": 10,
+    "mlr": 0,
+    "tempo": 5,
+    "vo2": 4,
+    "z2_runs": [
+     6,
+     6
+    ]
+   },
+   "warnings": [],
+   "week": 1
+  },
+  {
+   "mileage": 33,
+   "phase": "Base",
+   "schedule": {
+    "Fri": "Rest",
+    "Mon": "Z2 (6)",
+    "Sat": "Long Run (12)",
+    "Sun": "Rest",
+    "Thu": "Z2 (5)",
+    "Tue": "VO2 (4)",
+    "Wed": "Z2 (6)"
+   },
+   "sessions": {
+    "lr": 12,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 4,
+    "z2_runs": [
+     6,
+     6,
+     5
+    ]
+   },
+   "warnings": [],
+   "week": 2
+  },
+  {
+   "mileage": 36,
+   "phase": "Base",
+   "schedule": {
+    "Fri": "Tempo (5)",
+    "Mon": "Z2 (7)",
+    "Sat": "Long Run (14)",
+    "Sun": "Rest",
+    "Thu": "Rest",
+    "Tue": "VO2 (4)",
+    "Wed": "Z2 (6)"
+   },
+   "sessions": {
+    "lr": 14,
+    "mlr": 0,
+    "tempo": 5,
+    "vo2": 4,
+    "z2_runs": [
+     7,
+     6
+    ]
+   },
+   "warnings": [],
+   "week": 3
+  },
+  {
+   "mileage": 38,
+   "phase": "Base",
+   "schedule": {
+    "Fri": "Rest",
+    "Mon": "Z2 (8)",
+    "Sat": "Long Run (12)",
+    "Sun": "Rest",
+    "Thu": "Z2 (7)",
+    "Tue": "VO2 (4)",
+    "Wed": "Z2 (7)"
+   },
+   "sessions": {
+    "lr": 12,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 4,
+    "z2_runs": [
+     8,
+     7,
+     7
+    ]
+   },
+   "warnings": [],
+   "week": 4
+  },
+  {
+   "mileage": 41,
+   "phase": "Base",
+   "schedule": {
+    "Fri": "Tempo (6)",
+    "Mon": "Z2 (9)",
+    "Sat": "Long Run (14)",
+    "Sun": "Rest",
+    "Thu": "Rest",
+    "Tue": "VO2 (4)",
+    "Wed": "Z2 (8)"
+   },
+   "sessions": {
+    "lr": 14,
+    "mlr": 0,
+    "tempo": 6,
+    "vo2": 4,
+    "z2_runs": [
+     9,
+     8
+    ]
+   },
+   "warnings": [],
+   "week": 5
+  },
+  {
+   "mileage": 42,
+   "phase": "Build",
+   "schedule": {
+    "Fri": "Rest",
+    "Mon": "Z2 (8)",
+    "Sat": "Long Run (14)",
+    "Sun": "Rest",
+    "Thu": "Z2 (7)",
+    "Tue": "VO2 (5)",
+    "Wed": "Z2 (8)"
+   },
+   "sessions": {
+    "lr": 14,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 5,
+    "z2_runs": [
+     8,
+     8,
+     7
+    ]
+   },
+   "warnings": [],
+   "week": 6
+  },
+  {
+   "mileage": 43,
+   "phase": "Build",
+   "schedule": {
+    "Fri": "Tempo (6)",
+    "Mon": "Z2 (8)",
+    "Sat": "Long Run (16)",
+    "Sun": "Rest",
+    "Thu": "Rest",
+    "Tue": "VO2 (5)",
+    "Wed": "Z2 (8)"
+   },
+   "sessions": {
+    "lr": 16,
+    "mlr": 0,
+    "tempo": 6,
+    "vo2": 5,
+    "z2_runs": [
+     8,
+     8
+    ]
+   },
+   "warnings": [],
+   "week": 7
+  },
+  {
+   "mileage": 45,
+   "phase": "Build",
+   "schedule": {
+    "Fri": "Rest",
+    "Mon": "Z2 (8)",
+    "Sat": "Long Run (16)",
+    "Sun": "Rest",
+    "Thu": "Z2 (8)",
+    "Tue": "VO2 (5)",
+    "Wed": "Z2 (8)"
+   },
+   "sessions": {
+    "lr": 16,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 5,
+    "z2_runs": [
+     8,
+     8,
+     8
+    ]
+   },
+   "warnings": [],
+   "week": 8
+  },
+  {
+   "mileage": 46,
+   "phase": "Build",
+   "schedule": {
+    "Fri": "Tempo (6)",
+    "Mon": "Z2 (10)",
+    "Sat": "Long Run (16)",
+    "Sun": "Rest",
+    "Thu": "Rest",
+    "Tue": "VO2 (5)",
+    "Wed": "Z2 (9)"
+   },
+   "sessions": {
+    "lr": 16,
+    "mlr": 0,
+    "tempo": 6,
+    "vo2": 5,
+    "z2_runs": [
+     10,
+     9
+    ]
+   },
+   "warnings": [],
+   "week": 9
+  },
+  {
+   "mileage": 39,
+   "phase": "Build",
+   "schedule": {
+    "Fri": "Rest",
+    "Mon": "Z2 (7)",
+    "Sat": "Long Run (14)",
+    "Sun": "Rest",
+    "Thu": "Z2 (6)",
+    "Tue": "VO2 (5)",
+    "Wed": "Z2 (7)"
+   },
+   "sessions": {
+    "lr": 14,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 5,
+    "z2_runs": [
+     7,
+     7,
+     6
+    ]
+   },
+   "warnings": [],
+   "week": 10
+  },
+  {
+   "mileage": 43,
+   "phase": "Peak",
+   "schedule": {
+    "Fri": "Rest",
+    "Mon": "Z2 (7)",
+    "Sat": "Long Run (16)",
+    "Sun": "Rest",
+    "Thu": "Z2 (7)",
+    "Tue": "VO2 (6)",
+    "Wed": "Z2 (7)"
+   },
+   "sessions": {
+    "lr": 16,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 6,
+    "z2_runs": [
+     7,
+     7,
+     7
+    ]
+   },
+   "warnings": [],
+   "week": 11
+  },
+  {
+   "mileage": 46,
+   "phase": "Peak",
+   "schedule": {
+    "Fri": "Rest",
+    "Mon": "Z2 (8)",
+    "Sat": "Long Run (18)",
+    "Sun": "Rest",
+    "Thu": "Z2 (7)",
+    "Tue": "VO2 (6)",
+    "Wed": "Z2 (7)"
+   },
+   "sessions": {
+    "lr": 18,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 6,
+    "z2_runs": [
+     8,
+     7,
+     7
+    ]
+   },
+   "warnings": [],
+   "week": 12
+  },
+  {
+   "mileage": 50,
+   "phase": "Peak",
+   "schedule": {
+    "Fri": "Rest",
+    "Mon": "Z2 (9)",
+    "Sat": "Long Run (18)",
+    "Sun": "Rest",
+    "Thu": "Z2 (8)",
+    "Tue": "VO2 (6)",
+    "Wed": "Z2 (9)"
+   },
+   "sessions": {
+    "lr": 18,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 6,
+    "z2_runs": [
+     9,
+     9,
+     8
+    ]
+   },
+   "warnings": [],
+   "week": 13
+  },
+  {
+   "mileage": 38,
+   "phase": "Taper",
+   "schedule": {
+    "Fri": "Rest",
+    "Mon": "Z2 (12)",
+    "Sat": "Long Run (12)",
+    "Sun": "Rest",
+    "Thu": "Rest",
+    "Tue": "VO2 (3)",
+    "Wed": "Z2 (11)"
+   },
+   "sessions": {
+    "lr": 12,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 3,
+    "z2_runs": [
+     12,
+     11
+    ]
+   },
+   "warnings": [],
+   "week": 14
+  },
+  {
+   "mileage": 28,
+   "phase": "Taper",
+   "schedule": {
+    "Fri": "Rest",
+    "Mon": "Z2 (9)",
+    "Sat": "Long Run (8)",
+    "Sun": "Rest",
+    "Thu": "Rest",
+    "Tue": "VO2 (3)",
+    "Wed": "Z2 (8)"
+   },
+   "sessions": {
+    "lr": 8,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 3,
+    "z2_runs": [
+     9,
+     8
+    ]
+   },
+   "warnings": [],
+   "week": 15
+  },
+  {
+   "mileage": 6,
+   "phase": "Race",
+   "schedule": {
+    "Fri": "Rest",
+    "Mon": "Shakeout (3)",
+    "Sat": "Race",
+    "Sun": "Rest",
+    "Thu": "Rest",
+    "Tue": "Rest",
+    "Wed": "Shakeout (3)"
+   },
+   "sessions": {
+    "lr": 0,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 0,
+    "z2_runs": [
+     3,
+     3
+    ]
+   },
+   "warnings": [],
+   "week": 16
+  }
+ ],
+ "intermediate-35mpw-lr12-5d-24wk": [
+  {
+   "mileage": 36,
+   "phase": "Base",
+   "schedule": {
+    "Fri": "Tempo (5)",
+    "Mon": "Z2 (8)",
+    "Sat": "Long Run (12)",
+    "Sun": "Rest",
+    "Thu": "Rest",
+    "Tue": "VO2 (4)",
+    "Wed": "Z2 (7)"
+   },
+   "sessions": {
+    "lr": 12,
+    "mlr": 0,
+    "tempo": 5,
+    "vo2": 4,
+    "z2_runs": [
+     8,
+     7
+    ]
+   },
+   "warnings": [],
+   "week": 1
+  },
+  {
+   "mileage": 36,
+   "phase": "Base",
+   "schedule": {
+    "Fri": "Rest",
+    "Mon": "Z2 (6)",
+    "Sat": "Long Run (14)",
+    "Sun": "Rest",
+    "Thu": "Z2 (6)",
+    "Tue": "VO2 (4)",
+    "Wed": "Z2 (6)"
+   },
+   "sessions": {
+    "lr": 14,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 4,
+    "z2_runs": [
+     6,
+     6,
+     6
+    ]
+   },
+   "warnings": [],
+   "week": 2
+  },
+  {
+   "mileage": 37,
+   "phase": "Base",
+   "schedule": {
+    "Fri": "Tempo (6)",
+    "Mon": "Z2 (8)",
+    "Sat": "Long Run (12)",
+    "Sun": "Rest",
+    "Thu": "Rest",
+    "Tue": "VO2 (4)",
+    "Wed": "Z2 (7)"
+   },
+   "sessions": {
+    "lr": 12,
+    "mlr": 0,
+    "tempo": 6,
+    "vo2": 4,
+    "z2_runs": [
+     8,
+     7
+    ]
+   },
+   "warnings": [],
+   "week": 3
+  },
+  {
+   "mileage": 38,
+   "phase": "Base",
+   "schedule": {
+    "Fri": "Rest",
+    "Mon": "Z2 (7)",
+    "Sat": "Long Run (14)",
+    "Sun": "Rest",
+    "Thu": "Z2 (6)",
+    "Tue": "VO2 (4)",
+    "Wed": "Z2 (7)"
+   },
+   "sessions": {
+    "lr": 14,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 4,
+    "z2_runs": [
+     7,
+     7,
+     6
+    ]
+   },
+   "warnings": [],
+   "week": 4
+  },
+  {
+   "mileage": 39,
+   "phase": "Base",
+   "schedule": {
+    "Fri": "Tempo (6)",
+    "Mon": "Z2 (9)",
+    "Sat": "Long Run (12)",
+    "Sun": "Rest",
+    "Thu": "Rest",
+    "Tue": "VO2 (4)",
+    "Wed": "Z2 (8)"
+   },
+   "sessions": {
+    "lr": 12,
+    "mlr": 0,
+    "tempo": 6,
+    "vo2": 4,
+    "z2_runs": [
+     9,
+     8
+    ]
+   },
+   "warnings": [],
+   "week": 5
+  },
+  {
+   "mileage": 40,
+   "phase": "Base",
+   "schedule": {
+    "Fri": "Rest",
+    "Mon": "Z2 (8)",
+    "Sat": "Long Run (14)",
+    "Sun": "Rest",
+    "Thu": "Z2 (7)",
+    "Tue": "VO2 (4)",
+    "Wed": "Z2 (7)"
+   },
+   "sessions": {
+    "lr": 14,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 4,
+    "z2_runs": [
+     8,
+     7,
+     7
+    ]
+   },
+   "warnings": [],
+   "week": 6
+  },
+  {
+   "mileage": 41,
+   "phase": "Base",
+   "schedule": {
+    "Fri": "Tempo (6)",
+    "Mon": "Z2 (10)",
+    "Sat": "Long Run (12)",
+    "Sun": "Rest",
+    "Thu": "Rest",
+    "Tue": "VO2 (4)",
+    "Wed": "Z2 (9)"
+   },
+   "sessions": {
+    "lr": 12,
+    "mlr": 0,
+    "tempo": 6,
+    "vo2": 4,
+    "z2_runs": [
+     10,
+     9
+    ]
+   },
+   "warnings": [],
+   "week": 7
+  },
+  {
+   "mileage": 42,
+   "phase": "Build",
+   "schedule": {
+    "Fri": "Rest",
+    "Mon": "Z2 (8)",
+    "Sat": "Long Run (14)",
+    "Sun": "Rest",
+    "Thu": "Z2 (7)",
+    "Tue": "VO2 (5)",
+    "Wed": "Z2 (8)"
+   },
+   "sessions": {
+    "lr": 14,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 5,
+    "z2_runs": [
+     8,
+     8,
+     7
+    ]
+   },
+   "warnings": [],
+   "week": 8
+  },
+  {
+   "mileage": 42,
+   "phase": "Build",
+   "schedule": {
+    "Fri": "Tempo (6)",
+    "Mon": "Z2 (9)",
+    "Sat": "Long Run (14)",
+    "Sun": "Rest",
+    "Thu": "Rest",
+    "Tue": "VO2 (5)",
+    "Wed": "Z2 (8)"
+   },
+   "sessions": {
+    "lr": 14,
+    "mlr": 0,
+    "tempo": 6,
+    "vo2": 5,
+    "z2_runs": [
+     9,
+     8
+    ]
+   },
+   "warnings": [],
+   "week": 9
+  },
+  {
+   "mileage": 43,
+   "phase": "Build",
+   "schedule": {
+    "Fri": "Rest",
+    "Mon": "Z2 (8)",
+    "Sat": "Long Run (16)",
+    "Sun": "Rest",
+    "Thu": "Z2 (7)",
+    "Tue": "VO2 (5)",
+    "Wed": "Z2 (7)"
+   },
+   "sessions": {
+    "lr": 16,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 5,
+    "z2_runs": [
+     8,
+     7,
+     7
+    ]
+   },
+   "warnings": [],
+   "week": 10
+  },
+  {
+   "mileage": 44,
+   "phase": "Build",
+   "schedule": {
+    "Fri": "Tempo (6)",
+    "Mon": "Z2 (9)",
+    "Sat": "Long Run (16)",
+    "Sun": "Rest",
+    "Thu": "Rest",
+    "Tue": "VO2 (5)",
+    "Wed": "Z2 (8)"
+   },
+   "sessions": {
+    "lr": 16,
+    "mlr": 0,
+    "tempo": 6,
+    "vo2": 5,
+    "z2_runs": [
+     9,
+     8
+    ]
+   },
+   "warnings": [],
+   "week": 11
+  },
+  {
+   "mileage": 45,
+   "phase": "Build",
+   "schedule": {
+    "Fri": "Rest",
+    "Mon": "Z2 (8)",
+    "Sat": "Long Run (16)",
+    "Sun": "Rest",
+    "Thu": "Z2 (8)",
+    "Tue": "VO2 (5)",
+    "Wed": "Z2 (8)"
+   },
+   "sessions": {
+    "lr": 16,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 5,
+    "z2_runs": [
+     8,
+     8,
+     8
+    ]
+   },
+   "warnings": [],
+   "week": 12
+  },
+  {
+   "mileage": 46,
+   "phase": "Build",
+   "schedule": {
+    "Fri": "Tempo (6)",
+    "Mon": "Z2 (10)",
+    "Sat": "Long Run (16)",
+    "Sun": "Rest",
+    "Thu": "Rest",
+    "Tue": "VO2 (5)",
+    "Wed": "Z2 (9)"
+   },
+   "sessions": {
+    "lr": 16,
+    "mlr": 0,
+    "tempo": 6,
+    "vo2": 5,
+    "z2_runs": [
+     10,
+     9
+    ]
+   },
+   "warnings": [],
+   "week": 13
+  },
+  {
+   "mileage": 47,
+   "phase": "Build",
+   "schedule": {
+    "Fri": "Rest",
+    "Mon": "Z2 (9)",
+    "Sat": "Long Run (16)",
+    "Sun": "Rest",
+    "Thu": "Z2 (8)",
+    "Tue": "VO2 (5)",
+    "Wed": "Z2 (9)"
+   },
+   "sessions": {
+    "lr": 16,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 5,
+    "z2_runs": [
+     9,
+     9,
+     8
+    ]
+   },
+   "warnings": [],
+   "week": 14
+  },
+  {
+   "mileage": 40,
+   "phase": "Build",
+   "schedule": {
+    "Fri": "Tempo (6)",
+    "Mon": "Z2 (8)",
+    "Sat": "Long Run (14)",
+    "Sun": "Rest",
+    "Thu": "Rest",
+    "Tue": "VO2 (5)",
+    "Wed": "Z2 (7)"
+   },
+   "sessions": {
+    "lr": 14,
+    "mlr": 0,
+    "tempo": 6,
+    "vo2": 5,
+    "z2_runs": [
+     8,
+     7
+    ]
+   },
+   "warnings": [],
+   "week": 15
+  },
+  {
+   "mileage": 42,
+   "phase": "Peak",
+   "schedule": {
+    "Fri": "Rest",
+    "Mon": "Z2 (7)",
+    "Sat": "Long Run (16)",
+    "Sun": "Rest",
+    "Thu": "Z2 (6)",
+    "Tue": "VO2 (6)",
+    "Wed": "Z2 (7)"
+   },
+   "sessions": {
+    "lr": 16,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 6,
+    "z2_runs": [
+     7,
+     7,
+     6
+    ]
+   },
+   "warnings": [],
+   "week": 16
+  },
+  {
+   "mileage": 43,
+   "phase": "Peak",
+   "schedule": {
+    "Fri": "Rest",
+    "Mon": "Z2 (7)",
+    "Sat": "Long Run (17)",
+    "Sun": "Rest",
+    "Thu": "Z2 (6)",
+    "Tue": "VO2 (6)",
+    "Wed": "Z2 (7)"
+   },
+   "sessions": {
+    "lr": 17,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 6,
+    "z2_runs": [
+     7,
+     7,
+     6
+    ]
+   },
+   "warnings": [],
+   "week": 17
+  },
+  {
+   "mileage": 45,
+   "phase": "Peak",
+   "schedule": {
+    "Fri": "Rest",
+    "Mon": "Z2 (7)",
+    "Sat": "Long Run (18)",
+    "Sun": "Rest",
+    "Thu": "Z2 (7)",
+    "Tue": "VO2 (6)",
+    "Wed": "Z2 (7)"
+   },
+   "sessions": {
+    "lr": 18,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 6,
+    "z2_runs": [
+     7,
+     7,
+     7
+    ]
+   },
+   "warnings": [],
+   "week": 18
+  },
+  {
+   "mileage": 47,
+   "phase": "Peak",
+   "schedule": {
+    "Fri": "Rest",
+    "Mon": "Z2 (8)",
+    "Sat": "Long Run (18)",
+    "Sun": "Rest",
+    "Thu": "Z2 (7)",
+    "Tue": "VO2 (6)",
+    "Wed": "Z2 (8)"
+   },
+   "sessions": {
+    "lr": 18,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 6,
+    "z2_runs": [
+     8,
+     8,
+     7
+    ]
+   },
+   "warnings": [],
+   "week": 19
+  },
+  {
+   "mileage": 48,
+   "phase": "Peak",
+   "schedule": {
+    "Fri": "Rest",
+    "Mon": "Z2 (8)",
+    "Sat": "Long Run (18)",
+    "Sun": "Rest",
+    "Thu": "Z2 (8)",
+    "Tue": "VO2 (6)",
+    "Wed": "Z2 (8)"
+   },
+   "sessions": {
+    "lr": 18,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 6,
+    "z2_runs": [
+     8,
+     8,
+     8
+    ]
+   },
+   "warnings": [],
+   "week": 20
+  },
+  {
+   "mileage": 50,
+   "phase": "Peak",
+   "schedule": {
+    "Fri": "Rest",
+    "Mon": "Z2 (9)",
+    "Sat": "Long Run (18)",
+    "Sun": "Rest",
+    "Thu": "Z2 (8)",
+    "Tue": "VO2 (6)",
+    "Wed": "Z2 (9)"
+   },
+   "sessions": {
+    "lr": 18,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 6,
+    "z2_runs": [
+     9,
+     9,
+     8
+    ]
+   },
+   "warnings": [],
+   "week": 21
+  },
+  {
+   "mileage": 38,
+   "phase": "Taper",
+   "schedule": {
+    "Fri": "Rest",
+    "Mon": "Z2 (12)",
+    "Sat": "Long Run (12)",
+    "Sun": "Rest",
+    "Thu": "Rest",
+    "Tue": "VO2 (3)",
+    "Wed": "Z2 (11)"
+   },
+   "sessions": {
+    "lr": 12,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 3,
+    "z2_runs": [
+     12,
+     11
+    ]
+   },
+   "warnings": [],
+   "week": 22
+  },
+  {
+   "mileage": 28,
+   "phase": "Taper",
+   "schedule": {
+    "Fri": "Rest",
+    "Mon": "Z2 (9)",
+    "Sat": "Long Run (8)",
+    "Sun": "Rest",
+    "Thu": "Rest",
+    "Tue": "VO2 (3)",
+    "Wed": "Z2 (8)"
+   },
+   "sessions": {
+    "lr": 8,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 3,
+    "z2_runs": [
+     9,
+     8
+    ]
+   },
+   "warnings": [],
+   "week": 23
+  },
+  {
+   "mileage": 6,
+   "phase": "Race",
+   "schedule": {
+    "Fri": "Rest",
+    "Mon": "Shakeout (3)",
+    "Sat": "Race",
+    "Sun": "Rest",
+    "Thu": "Rest",
+    "Tue": "Rest",
+    "Wed": "Shakeout (3)"
+   },
+   "sessions": {
+    "lr": 0,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 0,
+    "z2_runs": [
+     3,
+     3
+    ]
+   },
+   "warnings": [],
+   "week": 24
+  }
+ ],
+ "intermediate-35mpw-lr13-6d-16wk": [
+  {
+   "mileage": 36,
+   "phase": "Base",
+   "schedule": {
+    "Fri": "Tempo (5)",
+    "Mon": "Z2 (5)",
+    "Sat": "Long Run (12)",
+    "Sun": "Rest",
+    "Thu": "Z2 (4)",
+    "Tue": "VO2 (5)",
+    "Wed": "Z2 (5)"
+   },
+   "sessions": {
+    "lr": 12,
+    "mlr": 0,
+    "tempo": 5,
+    "vo2": 5,
+    "z2_runs": [
+     5,
+     5,
+     4
+    ]
+   },
+   "warnings": [],
+   "week": 1
+  },
+  {
+   "mileage": 38,
+   "phase": "Base",
+   "schedule": {
+    "Fri": "Z2 (4)",
+    "Mon": "Z2 (5)",
+    "Sat": "Long Run (14)",
+    "Sun": "Rest",
+    "Thu": "Z2 (5)",
+    "Tue": "VO2 (5)",
+    "Wed": "Z2 (5)"
+   },
+   "sessions": {
+    "lr": 14,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 5,
+    "z2_runs": [
+     5,
+     5,
+     5,
+     4
+    ]
+   },
+   "warnings": [],
+   "week": 2
+  },
+  {
+   "mileage": 40,
+   "phase": "Base",
+   "schedule": {
+    "Fri": "Tempo (6)",
+    "Mon": "Z2 (6)",
+    "Sat": "Long Run (12)",
+    "Sun": "Rest",
+    "Thu": "Z2 (5)",
+    "Tue": "VO2 (5)",
+    "Wed": "Z2 (6)"
+   },
+   "sessions": {
+    "lr": 12,
+    "mlr": 0,
+    "tempo": 6,
+    "vo2": 5,
+    "z2_runs": [
+     6,
+     6,
+     5
+    ]
+   },
+   "warnings": [],
+   "week": 3
+  },
+  {
+   "mileage": 43,
+   "phase": "Base",
+   "schedule": {
+    "Fri": "Z2 (6)",
+    "Mon": "Z2 (6)",
+    "Sat": "Long Run (14)",
+    "Sun": "Rest",
+    "Thu": "Z2 (6)",
+    "Tue": "VO2 (5)",
+    "Wed": "Z2 (6)"
+   },
+   "sessions": {
+    "lr": 14,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 5,
+    "z2_runs": [
+     6,
+     6,
+     6,
+     6
+    ]
+   },
+   "warnings": [],
+   "week": 4
+  },
+  {
+   "mileage": 45,
+   "phase": "Base",
+   "schedule": {
+    "Fri": "Tempo (6)",
+    "Mon": "Z2 (6)",
+    "Sat": "Long Run (16)",
+    "Sun": "Rest",
+    "Thu": "Z2 (6)",
+    "Tue": "VO2 (5)",
+    "Wed": "Z2 (6)"
+   },
+   "sessions": {
+    "lr": 16,
+    "mlr": 0,
+    "tempo": 6,
+    "vo2": 5,
+    "z2_runs": [
+     6,
+     6,
+     6
+    ]
+   },
+   "warnings": [],
+   "week": 5
+  },
+  {
+   "mileage": 46,
+   "phase": "Build",
+   "schedule": {
+    "Fri": "Z2 (4)",
+    "Mon": "Z2 (5)",
+    "Sat": "Long Run (16)",
+    "Sun": "Rest",
+    "Thu": "Z2 (4)",
+    "Tue": "VO2 (6)",
+    "Wed": "MLR (11)"
+   },
+   "sessions": {
+    "lr": 16,
+    "mlr": 11,
+    "tempo": 0,
+    "vo2": 6,
+    "z2_runs": [
+     5,
+     4,
+     4
+    ]
+   },
+   "warnings": [],
+   "week": 6
+  },
+  {
+   "mileage": 47,
+   "phase": "Build",
+   "schedule": {
+    "Fri": "Tempo (6)",
+    "Mon": "Z2 (4)",
+    "Sat": "Long Run (16)",
+    "Sun": "Rest",
+    "Thu": "Z2 (4)",
+    "Tue": "VO2 (6)",
+    "Wed": "MLR (11)"
+   },
+   "sessions": {
+    "lr": 16,
+    "mlr": 11,
+    "tempo": 6,
+    "vo2": 6,
+    "z2_runs": [
+     4,
+     4
+    ]
+   },
+   "warnings": [],
+   "week": 7
+  },
+  {
+   "mileage": 49,
+   "phase": "Build",
+   "schedule": {
+    "Fri": "Z2 (5)",
+    "Mon": "Z2 (6)",
+    "Sat": "Long Run (16)",
+    "Sun": "Rest",
+    "Thu": "Z2 (5)",
+    "Tue": "VO2 (6)",
+    "Wed": "MLR (11)"
+   },
+   "sessions": {
+    "lr": 16,
+    "mlr": 11,
+    "tempo": 0,
+    "vo2": 6,
+    "z2_runs": [
+     6,
+     5,
+     5
+    ]
+   },
+   "warnings": [],
+   "week": 8
+  },
+  {
+   "mileage": 50,
+   "phase": "Build",
+   "schedule": {
+    "Fri": "Tempo (6)",
+    "Mon": "Z2 (6)",
+    "Sat": "Long Run (16)",
+    "Sun": "Rest",
+    "Thu": "Z2 (5)",
+    "Tue": "VO2 (6)",
+    "Wed": "MLR (11)"
+   },
+   "sessions": {
+    "lr": 16,
+    "mlr": 11,
+    "tempo": 6,
+    "vo2": 6,
+    "z2_runs": [
+     6,
+     5
+    ]
+   },
+   "warnings": [],
+   "week": 9
+  },
+  {
+   "mileage": 42,
+   "phase": "Build",
+   "schedule": {
+    "Fri": "Z2 (4)",
+    "Mon": "Z2 (4)",
+    "Sat": "Long Run (14)",
+    "Sun": "Rest",
+    "Thu": "Z2 (4)",
+    "Tue": "VO2 (6)",
+    "Wed": "MLR (10)"
+   },
+   "sessions": {
+    "lr": 14,
+    "mlr": 10,
+    "tempo": 0,
+    "vo2": 6,
+    "z2_runs": [
+     4,
+     4,
+     4
+    ]
+   },
+   "warnings": [],
+   "week": 10
+  },
+  {
+   "mileage": 46,
+   "phase": "Peak",
+   "schedule": {
+    "Fri": "Z2 (4)",
+    "Mon": "Z2 (4)",
+    "Sat": "Long Run (16)",
+    "Sun": "Rest",
+    "Thu": "Z2 (4)",
+    "Tue": "VO2 (7)",
+    "Wed": "MLR (11)"
+   },
+   "sessions": {
+    "lr": 16,
+    "mlr": 11,
+    "tempo": 0,
+    "vo2": 7,
+    "z2_runs": [
+     4,
+     4,
+     4
+    ]
+   },
+   "warnings": [],
+   "week": 11
+  },
+  {
+   "mileage": 51,
+   "phase": "Peak",
+   "schedule": {
+    "Fri": "Z2 (4)",
+    "Mon": "Z2 (5)",
+    "Sat": "Long Run (18)",
+    "Sun": "Rest",
+    "Thu": "Z2 (4)",
+    "Tue": "VO2 (7)",
+    "Wed": "MLR (13)"
+   },
+   "sessions": {
+    "lr": 18,
+    "mlr": 13,
+    "tempo": 0,
+    "vo2": 7,
+    "z2_runs": [
+     5,
+     4,
+     4
+    ]
+   },
+   "warnings": [],
+   "week": 12
+  },
+  {
+   "mileage": 55,
+   "phase": "Peak",
+   "schedule": {
+    "Fri": "Z2 (4)",
+    "Mon": "Z2 (5)",
+    "Sat": "Long Run (20)",
+    "Sun": "Rest",
+    "Thu": "Z2 (5)",
+    "Tue": "VO2 (7)",
+    "Wed": "MLR (14)"
+   },
+   "sessions": {
+    "lr": 20,
+    "mlr": 14,
+    "tempo": 0,
+    "vo2": 7,
+    "z2_runs": [
+     5,
+     5,
+     4
+    ]
+   },
+   "warnings": [],
+   "week": 13
+  },
+  {
+   "mileage": 41,
+   "phase": "Taper",
+   "schedule": {
+    "Fri": "Rest",
+    "Mon": "Z2 (8)",
+    "Sat": "Long Run (14)",
+    "Sun": "Rest",
+    "Thu": "Z2 (7)",
+    "Tue": "VO2 (4)",
+    "Wed": "Z2 (8)"
+   },
+   "sessions": {
+    "lr": 14,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 4,
+    "z2_runs": [
+     8,
+     8,
+     7
+    ]
+   },
+   "warnings": [],
+   "week": 14
+  },
+  {
+   "mileage": 30,
+   "phase": "Taper",
+   "schedule": {
+    "Fri": "Rest",
+    "Mon": "Z2 (6)",
+    "Sat": "Long Run (10)",
+    "Sun": "Rest",
+    "Thu": "Z2 (5)",
+    "Tue": "VO2 (4)",
+    "Wed": "Z2 (5)"
+   },
+   "sessions": {
+    "lr": 10,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 4,
+    "z2_runs": [
+     6,
+     5,
+     5
+    ]
+   },
+   "warnings": [],
+   "week": 15
+  },
+  {
+   "mileage": 6,
+   "phase": "Race",
+   "schedule": {
+    "Fri": "Rest",
+    "Mon": "Shakeout (3)",
+    "Sat": "Race",
+    "Sun": "Rest",
+    "Thu": "Rest",
+    "Tue": "Rest",
+    "Wed": "Shakeout (3)"
+   },
+   "sessions": {
+    "lr": 0,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 0,
+    "z2_runs": [
+     3,
+     3
+    ]
+   },
+   "warnings": [],
+   "week": 16
+  }
+ ],
+ "intermediate-40mpw-lr14-6d-18wk": [
+  {
+   "mileage": 41,
+   "phase": "Base",
+   "schedule": {
+    "Fri": "Tempo (6)",
+    "Mon": "Z2 (6)",
+    "Sat": "Long Run (12)",
+    "Sun": "Rest",
+    "Thu": "Z2 (6)",
+    "Tue": "VO2 (5)",
+    "Wed": "Z2 (6)"
+   },
+   "sessions": {
+    "lr": 12,
+    "mlr": 0,
+    "tempo": 6,
+    "vo2": 5,
+    "z2_runs": [
+     6,
+     6,
+     6
+    ]
+   },
+   "warnings": [],
+   "week": 1
+  },
+  {
+   "mileage": 42,
+   "phase": "Base",
+   "schedule": {
+    "Fri": "Z2 (5)",
+    "Mon": "Z2 (6)",
+    "Sat": "Long Run (14)",
+    "Sun": "Rest",
+    "Thu": "Z2 (6)",
+    "Tue": "VO2 (5)",
+    "Wed": "Z2 (6)"
+   },
+   "sessions": {
+    "lr": 14,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 5,
+    "z2_runs": [
+     6,
+     6,
+     6,
+     5
+    ]
+   },
+   "warnings": [],
+   "week": 2
+  },
+  {
+   "mileage": 43,
+   "phase": "Base",
+   "schedule": {
+    "Fri": "Tempo (6)",
+    "Mon": "Z2 (6)",
+    "Sat": "Long Run (16)",
+    "Sun": "Rest",
+    "Thu": "Z2 (5)",
+    "Tue": "VO2 (5)",
+    "Wed": "Z2 (5)"
+   },
+   "sessions": {
+    "lr": 16,
+    "mlr": 0,
+    "tempo": 6,
+    "vo2": 5,
+    "z2_runs": [
+     6,
+     5,
+     5
+    ]
+   },
+   "warnings": [],
+   "week": 3
+  },
+  {
+   "mileage": 44,
+   "phase": "Base",
+   "schedule": {
+    "Fri": "Z2 (6)",
+    "Mon": "Z2 (7)",
+    "Sat": "Long Run (14)",
+    "Sun": "Rest",
+    "Thu": "Z2 (6)",
+    "Tue": "VO2 (5)",
+    "Wed": "Z2 (6)"
+   },
+   "sessions": {
+    "lr": 14,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 5,
+    "z2_runs": [
+     7,
+     6,
+     6,
+     6
+    ]
+   },
+   "warnings": [],
+   "week": 4
+  },
+  {
+   "mileage": 45,
+   "phase": "Base",
+   "schedule": {
+    "Fri": "Tempo (6)",
+    "Mon": "Z2 (6)",
+    "Sat": "Long Run (16)",
+    "Sun": "Rest",
+    "Thu": "Z2 (6)",
+    "Tue": "VO2 (5)",
+    "Wed": "Z2 (6)"
+   },
+   "sessions": {
+    "lr": 16,
+    "mlr": 0,
+    "tempo": 6,
+    "vo2": 5,
+    "z2_runs": [
+     6,
+     6,
+     6
+    ]
+   },
+   "warnings": [],
+   "week": 5
+  },
+  {
+   "mileage": 46,
+   "phase": "Build",
+   "schedule": {
+    "Fri": "Z2 (4)",
+    "Mon": "Z2 (5)",
+    "Sat": "Long Run (16)",
+    "Sun": "Rest",
+    "Thu": "Z2 (4)",
+    "Tue": "VO2 (6)",
+    "Wed": "MLR (11)"
+   },
+   "sessions": {
+    "lr": 16,
+    "mlr": 11,
+    "tempo": 0,
+    "vo2": 6,
+    "z2_runs": [
+     5,
+     4,
+     4
+    ]
+   },
+   "warnings": [],
+   "week": 6
+  },
+  {
+   "mileage": 47,
+   "phase": "Build",
+   "schedule": {
+    "Fri": "Tempo (6)",
+    "Mon": "Z2 (4)",
+    "Sat": "Long Run (16)",
+    "Sun": "Rest",
+    "Thu": "Z2 (4)",
+    "Tue": "VO2 (6)",
+    "Wed": "MLR (11)"
+   },
+   "sessions": {
+    "lr": 16,
+    "mlr": 11,
+    "tempo": 6,
+    "vo2": 6,
+    "z2_runs": [
+     4,
+     4
+    ]
+   },
+   "warnings": [],
+   "week": 7
+  },
+  {
+   "mileage": 48,
+   "phase": "Build",
+   "schedule": {
+    "Fri": "Z2 (5)",
+    "Mon": "Z2 (5)",
+    "Sat": "Long Run (16)",
+    "Sun": "Rest",
+    "Thu": "Z2 (5)",
+    "Tue": "VO2 (6)",
+    "Wed": "MLR (11)"
+   },
+   "sessions": {
+    "lr": 16,
+    "mlr": 11,
+    "tempo": 0,
+    "vo2": 6,
+    "z2_runs": [
+     5,
+     5,
+     5
+    ]
+   },
+   "warnings": [],
+   "week": 8
+  },
+  {
+   "mileage": 49,
+   "phase": "Build",
+   "schedule": {
+    "Fri": "Tempo (6)",
+    "Mon": "Z2 (5)",
+    "Sat": "Long Run (16)",
+    "Sun": "Rest",
+    "Thu": "Z2 (5)",
+    "Tue": "VO2 (6)",
+    "Wed": "MLR (11)"
+   },
+   "sessions": {
+    "lr": 16,
+    "mlr": 11,
+    "tempo": 6,
+    "vo2": 6,
+    "z2_runs": [
+     5,
+     5
+    ]
+   },
+   "warnings": [],
+   "week": 9
+  },
+  {
+   "mileage": 51,
+   "phase": "Build",
+   "schedule": {
+    "Fri": "Z2 (6)",
+    "Mon": "Z2 (6)",
+    "Sat": "Long Run (16)",
+    "Sun": "Rest",
+    "Thu": "Z2 (6)",
+    "Tue": "VO2 (6)",
+    "Wed": "MLR (11)"
+   },
+   "sessions": {
+    "lr": 16,
+    "mlr": 11,
+    "tempo": 0,
+    "vo2": 6,
+    "z2_runs": [
+     6,
+     6,
+     6
+    ]
+   },
+   "warnings": [],
+   "week": 10
+  },
+  {
+   "mileage": 43,
+   "phase": "Build",
+   "schedule": {
+    "Fri": "Tempo (6)",
+    "Mon": "Z2 (4)",
+    "Sat": "Long Run (14)",
+    "Sun": "Rest",
+    "Thu": "Z2 (3)",
+    "Tue": "VO2 (6)",
+    "Wed": "MLR (10)"
+   },
+   "sessions": {
+    "lr": 14,
+    "mlr": 10,
+    "tempo": 6,
+    "vo2": 6,
+    "z2_runs": [
+     4,
+     3
+    ]
+   },
+   "warnings": [],
+   "week": 11
+  },
+  {
+   "mileage": 46,
+   "phase": "Peak",
+   "schedule": {
+    "Fri": "Z2 (4)",
+    "Mon": "Z2 (4)",
+    "Sat": "Long Run (16)",
+    "Sun": "Rest",
+    "Thu": "Z2 (4)",
+    "Tue": "VO2 (7)",
+    "Wed": "MLR (11)"
+   },
+   "sessions": {
+    "lr": 16,
+    "mlr": 11,
+    "tempo": 0,
+    "vo2": 7,
+    "z2_runs": [
+     4,
+     4,
+     4
+    ]
+   },
+   "warnings": [],
+   "week": 12
+  },
+  {
+   "mileage": 49,
+   "phase": "Peak",
+   "schedule": {
+    "Fri": "Z2 (3)",
+    "Mon": "Z2 (4)",
+    "Sat": "Long Run (18)",
+    "Sun": "Rest",
+    "Thu": "Z2 (4)",
+    "Tue": "VO2 (7)",
+    "Wed": "MLR (13)"
+   },
+   "sessions": {
+    "lr": 18,
+    "mlr": 13,
+    "tempo": 0,
+    "vo2": 7,
+    "z2_runs": [
+     4,
+     4,
+     3
+    ]
+   },
+   "warnings": [],
+   "week": 13
+  },
+  {
+   "mileage": 52,
+   "phase": "Peak",
+   "schedule": {
+    "Fri": "Z2 (3)",
+    "Mon": "Z2 (4)",
+    "Sat": "Long Run (20)",
+    "Sun": "Rest",
+    "Thu": "Z2 (4)",
+    "Tue": "VO2 (7)",
+    "Wed": "MLR (14)"
+   },
+   "sessions": {
+    "lr": 20,
+    "mlr": 14,
+    "tempo": 0,
+    "vo2": 7,
+    "z2_runs": [
+     4,
+     4,
+     3
+    ]
+   },
+   "warnings": [],
+   "week": 14
+  },
+  {
+   "mileage": 55,
+   "phase": "Peak",
+   "schedule": {
+    "Fri": "Z2 (4)",
+    "Mon": "Z2 (5)",
+    "Sat": "Long Run (20)",
+    "Sun": "Rest",
+    "Thu": "Z2 (5)",
+    "Tue": "VO2 (7)",
+    "Wed": "MLR (14)"
+   },
+   "sessions": {
+    "lr": 20,
+    "mlr": 14,
+    "tempo": 0,
+    "vo2": 7,
+    "z2_runs": [
+     5,
+     5,
+     4
+    ]
+   },
+   "warnings": [],
+   "week": 15
+  },
+  {
+   "mileage": 41,
+   "phase": "Taper",
+   "schedule": {
+    "Fri": "Rest",
+    "Mon": "Z2 (8)",
+    "Sat": "Long Run (14)",
+    "Sun": "Rest",
+    "Thu": "Z2 (7)",
+    "Tue": "VO2 (4)",
+    "Wed": "Z2 (8)"
+   },
+   "sessions": {
+    "lr": 14,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 4,
+    "z2_runs": [
+     8,
+     8,
+     7
+    ]
+   },
+   "warnings": [],
+   "week": 16
+  },
+  {
+   "mileage": 30,
+   "phase": "Taper",
+   "schedule": {
+    "Fri": "Rest",
+    "Mon": "Z2 (6)",
+    "Sat": "Long Run (10)",
+    "Sun": "Rest",
+    "Thu": "Z2 (5)",
+    "Tue": "VO2 (4)",
+    "Wed": "Z2 (5)"
+   },
+   "sessions": {
+    "lr": 10,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 4,
+    "z2_runs": [
+     6,
+     5,
+     5
+    ]
+   },
+   "warnings": [],
+   "week": 17
+  },
+  {
+   "mileage": 6,
+   "phase": "Race",
+   "schedule": {
+    "Fri": "Rest",
+    "Mon": "Shakeout (3)",
+    "Sat": "Race",
+    "Sun": "Rest",
+    "Thu": "Rest",
+    "Tue": "Rest",
+    "Wed": "Shakeout (3)"
+   },
+   "sessions": {
+    "lr": 0,
+    "mlr": 0,
+    "tempo": 0,
+    "vo2": 0,
+    "z2_runs": [
+     3,
+     3
+    ]
+   },
+   "warnings": [],
+   "week": 18
+  }
+ ]
+}

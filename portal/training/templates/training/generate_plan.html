@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}Generate a Draft Plan{% endblock %}
+{% block content %}
+<a class="back" href="{% url 'coach_home' %}">← Clients</a>
+<div class="page-head">
+  <h1>Generate a Draft Plan</h1>
+  <p>For {{ client }}. The draft stays hidden from them until you publish it.</p>
+</div>
+
+<form method="post" class="form form--wide" novalidate>
+  {% csrf_token %}
+  {% if form.non_field_errors %}<div class="notice notice--warn" role="alert">{% for e in form.non_field_errors %}<p>{{ e }}</p>{% endfor %}</div>{% endif %}
+
+  <fieldset class="fieldset">
+    <legend>Race</legend>
+    <div class="field-row">
+      {% include "training/_field.html" with field=form.race_name %}
+      {% include "training/_field.html" with field=form.race_date %}
+    </div>
+    <div class="field-row">
+      {% include "training/_field.html" with field=form.plan_type %}
+      {% include "training/_field.html" with field=form.weeks %}
+    </div>
+  </fieldset>
+
+  <fieldset class="fieldset">
+    <legend>Runner</legend>
+    <div class="field-row">
+      {% include "training/_field.html" with field=form.experience %}
+      {% include "training/_field.html" with field=form.runs_per_week %}
+    </div>
+    <div class="field-row">
+      {% include "training/_field.html" with field=form.current_mileage %}
+      {% include "training/_field.html" with field=form.longest_run %}
+    </div>
+  </fieldset>
+
+  <fieldset class="fieldset">
+    <legend>Schedule</legend>
+    <div class="field-row">
+      {% include "training/_field.html" with field=form.long_run_day %}
+      {% include "training/_field.html" with field=form.quality_day %}
+    </div>
+    {% include "training/_field.html" with field=form.unavailable_days choices=True %}
+    {% include "training/_field.html" with field=form.preferred_rest_days choices=True %}
+  </fieldset>
+
+  <button class="btn btn--primary" type="submit">Generate Draft</button>
+  <p class="form__note">The plan is built backward from the race date, so its last week is race week. Nothing is published until you choose to.</p>
+</form>
+{% endblock %}

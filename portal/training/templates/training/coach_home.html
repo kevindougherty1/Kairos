@@ -36,6 +36,7 @@
         {% else %}
           <p class="muted">No plans yet.</p>
         {% endif %}
+        <p class="form__note"><a class="btn btn--secondary" href="{% url 'generate_plan' client.pk %}">Generate Draft</a></p>
       </section>
     {% endfor %}
   </div>
