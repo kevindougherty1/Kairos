@@ -2,23 +2,68 @@
 {% load kairos %}
 {% block title %}My Training{% endblock %}
 {% block content %}
-<div class="page-head">
-  <h1>My Training</h1>
-  {% if current %}<p>{{ current.title }} · {{ current.start_date|date:"M j" }}–{{ current.end_date|date:"M j, Y" }}</p>{% endif %}
-</div>
-
 {% if current %}
+  <div class="page-head">
+    <h1>{% if is_this_week %}This Week{% else %}Week of {{ monday|date:"M j" }}{% endif %}</h1>
+    <p>
+      {{ current.title }}{% if plan_week %} · Week {{ plan_week.number }}{% if plan_week.phase %} · {{ plan_week.phase }}{% endif %}{% endif %}
+      · <span class="num">{{ monday|date:"M j" }}–{{ monday|add_days:6|date:"M j" }}</span>
+    </p>
+  </div>
+
   {% if current.is_fixture %}<p class="notice"><strong>Demo plan.</strong> This is sample data, not a real training plan.</p>{% endif %}
-  <section aria-labelledby="coming-up">
-    <h2 id="coming-up">Coming Up</h2>
-    {% if upcoming %}
-      <ul class="rows">{% for w in upcoming %}{% include "training/_workout_row.html" %}{% endfor %}</ul>
-    {% else %}
-      <p class="muted">No more workouts in this plan.</p>
-    {% endif %}
+
+  {% if is_this_week and next_up %}
+    <a class="card next-up" href="{% url 'workout_detail' next_up.pk %}">
+      <span class="label">Next Up · {% if next_up.date == today %}Today{% else %}{{ next_up.date|date:"l, M j" }}{% endif %}</span>
+      <span class="next-up__title">{{ next_up.title }}</span>
+      <span class="muted">{% if next_up.target_distance_m %}{{ next_up.target_distance_m|distance:units }} · {% endif %}{% if next_up.date <= today %}Log it when you’re done{% else %}See the details{% endif %}</span>
+    </a>
+  {% endif %}
+
+  <section aria-labelledby="week-days">
+    <div class="week__head">
+      <h2 id="week-days">Your Week</h2>
+      <ul class="facts">
+        <li><strong class="num">{{ planned_m|distance:units|default:"0 mi" }}</strong> planned</li>
+        <li><strong class="num">{{ logged_m|distance:units|default:"0 mi" }}</strong> logged</li>
+        <li class="num">{{ logged_count }} of {{ workout_count }} run{{ workout_count|pluralize }} logged</li>
+      </ul>
+    </div>
+    <ul class="rows">
+      {% for day in days %}
+        {% for w in day.workouts %}
+          <li{% if day.is_today %} aria-current="date"{% endif %}>
+            <a class="row{% if day.is_today %} row--today{% endif %}" href="{% url 'workout_detail' w.pk %}">
+              <span class="row__date">{{ day.date|date:"D, M j" }}{% if day.is_today %} <span class="badge">Today</span>{% endif %}</span>
+              <span class="row__title">{{ w.title }}</span>
+              <span class="row__meta">
+                {% if w.result %}{% include "training/_result_badge.html" with result=w.result %}
+                {% elif w.target_distance_m %}{{ w.target_distance_m|distance:units }}{% endif %}
+              </span>
+            </a>
+          </li>
+        {% empty %}
+          <li{% if day.is_today %} aria-current="date"{% endif %}>
+            <div class="row row--rest{% if day.is_today %} row--today{% endif %}">
+              <span class="row__date">{{ day.date|date:"D, M j" }}{% if day.is_today %} <span class="badge">Today</span>{% endif %}</span>
+              <span class="row__title">Rest</span>
+              <span class="row__meta"></span>
+            </div>
+          </li>
+        {% endfor %}
+      {% endfor %}
+    </ul>
+
+    <nav class="week-nav" aria-label="Weeks">
+      {% if prev_week %}<a class="btn btn--secondary" href="?week={{ prev_week|date:'Y-m-d' }}">← Previous Week</a>{% else %}<span></span>{% endif %}
+      {% if not is_this_week %}<a class="link-quiet" href="{% url 'client_home' %}">Back to This Week</a>{% endif %}
+      {% if next_week %}<a class="btn btn--secondary" href="?week={{ next_week|date:'Y-m-d' }}">Next Week →</a>{% else %}<span></span>{% endif %}
+    </nav>
     <p class="form__note"><a href="{% url 'plan_detail' current.pk %}">See the Full Plan</a></p>
   </section>
 {% else %}
+  <div class="page-head"><h1>My Training</h1></div>
   <div class="card">
     <h2>No Plan Yet</h2>
     <p>Your coach is putting your plan together. It shows up here as soon as it’s published.</p>

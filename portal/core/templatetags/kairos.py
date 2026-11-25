@@ -13,3 +13,10 @@ def distance(metres, units="mi"):
 @register.filter
 def duration(seconds):
     return format_duration(seconds)
+
+
+@register.filter
+def add_days(day, n):
+    from datetime import timedelta
+
+    return day + timedelta(days=int(n)) if day else day

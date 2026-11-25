@@ -197,6 +197,96 @@ class IsolationTests(TestCase):
         self.assertIn("client_a", mail.outbox[0].body)
 
 
+def at_utc(year, month, day, hour=12):
+    """Freeze "now" for a test (views read django.utils.timezone.now)."""
+    from datetime import datetime, timezone as dt_tz
+    from unittest import mock
+
+    return mock.patch("django.utils.timezone.now", return_value=datetime(year, month, day, hour, tzinfo=dt_tz.utc))
+
+
+class ThisWeekTests(TestCase):
+    """Client home = This Week: Mon–Sun of the live plan, in the client's own time zone."""
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.coach = make_user("coach", User.Role.COACH)
+        cls.a = make_user("client_a", User.Role.CLIENT)
+        cls.b = make_user("client_b", User.Role.CLIENT)
+        cls.pa = ClientProfile.objects.create(user=cls.a, coach=cls.coach)
+        cls.pb = ClientProfile.objects.create(user=cls.b, coach=cls.coach)
+        # Two-week plan starting Mon 2026-11-23: week 1 Mon + Sat, week 2 Tue.
+        cls.plan = TrainingPlan.objects.create(
+            client=cls.pa, title="A Live", plan_type="marathon", status="published", published_at=timezone.now(),
+            start_date=MONDAY, end_date=MONDAY + timedelta(days=13), created_by=cls.coach,
+        )
+        w1 = PlanWeek.objects.create(plan=cls.plan, number=1, start_date=MONDAY, phase="Base")
+        w2 = PlanWeek.objects.create(plan=cls.plan, number=2, start_date=MONDAY + timedelta(days=7), phase="Build")
+        cls.mon = ScheduledWorkout.objects.create(week=w1, date=MONDAY, workout_type="easy", title="Week One Easy",
+                                                  target_distance_m=miles_to_m(4))
+        cls.sat = ScheduledWorkout.objects.create(week=w1, date=MONDAY + timedelta(days=5), workout_type="long_run",
+                                                  title="Week One Long", target_distance_m=miles_to_m(10))
+        cls.tue2 = ScheduledWorkout.objects.create(week=w2, date=MONDAY + timedelta(days=8), workout_type="tempo",
+                                                   title="Week Two Tempo", target_distance_m=miles_to_m(6))
+        WorkoutResult.objects.create(workout=cls.mon, status="completed", actual_distance_m=miles_to_m(4.2))
+        other = make_plan(cls.pb, cls.coach, TrainingPlan.Status.PUBLISHED, "B Live")
+        ScheduledWorkout.objects.filter(week__plan=other).update(title="B Secret Run")
+
+    def home(self, user, **params):
+        self.client.force_login(user)
+        return self.client.get(reverse("client_home"), params)
+
+    def test_shows_this_weeks_runs_and_rest_days(self):
+        with at_utc(2026, 11, 25):  # Wednesday of week 1
+            r = self.home(self.a)
+        self.assertContains(r, "This Week")
+        self.assertContains(r, "Week One Easy")
+        self.assertContains(r, "Week One Long")
+        self.assertNotContains(r, "Week Two Tempo")
+        self.assertContains(r, "Rest", count=5)  # Tue, Wed, Thu, Fri, Sun
+        self.assertContains(r, 'aria-current="date"', count=1)  # today is marked once
+
+    def test_next_up_is_first_unlogged_run_from_today(self):
+        with at_utc(2026, 11, 25):
+            r = self.home(self.a)
+        self.assertEqual(r.context["next_up"], self.sat)  # Monday's run is logged and in the past
+        self.assertEqual(r.context["logged_count"], 1)
+        self.assertEqual(r.context["planned_m"], miles_to_m(4) + miles_to_m(10))
+
+    def test_week_param_shows_another_week(self):
+        with at_utc(2026, 11, 25):
+            r = self.home(self.a, week="2026-12-02")  # any day in week 2
+        self.assertContains(r, "Week of Nov 30")
+        self.assertContains(r, "Week Two Tempo")
+        self.assertNotContains(r, "Week One Long")
+        self.assertIsNotNone(r.context["prev_week"])
+        self.assertIsNone(r.context["next_week"])  # last week of the plan
+
+    def test_bad_or_out_of_range_week_param_is_safe(self):
+        with at_utc(2026, 11, 25):
+            self.assertEqual(self.home(self.a, week="not-a-date").context["monday"], MONDAY)
+            self.assertEqual(self.home(self.a, week="2030-01-01").context["monday"], MONDAY + timedelta(days=7))
+            self.assertEqual(self.home(self.a, week="2001-01-01").context["monday"], MONDAY)
+
+    def test_today_uses_the_clients_time_zone(self):
+        # 12:00 UTC Sun Nov 29 is already 01:00 Mon Nov 30 in Auckland (UTC+13).
+        with at_utc(2026, 11, 29):
+            self.assertEqual(self.home(self.a).context["monday"], MONDAY)
+            self.pa.timezone = "Pacific/Auckland"
+            self.pa.save()
+            r = self.home(self.a)
+        self.assertEqual(r.context["today"], date(2026, 11, 30))
+        self.assertContains(r, "Week Two Tempo")
+
+    def test_week_view_never_shows_another_clients_runs(self):
+        with at_utc(2026, 11, 25):
+            r = self.home(self.a)
+            r_b = self.home(self.b)
+        self.assertNotContains(r, "B Secret Run")
+        self.assertContains(r_b, "B Secret Run")
+        self.assertNotContains(r_b, "Week One")
+
+
 class ConstraintTests(TestCase):
     """The database itself refuses bad data, even if a view or admin form missed it."""
 
