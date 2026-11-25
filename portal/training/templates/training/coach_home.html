@@ -10,6 +10,25 @@
   <a class="link-quiet trash-link" href="{% url 'coach_trash' %}">Trash{% if trash_count %} <span class="badge num" aria-label="{{ trash_count }} plan{{ trash_count|pluralize }}">{{ trash_count }}</span>{% endif %}</a>
 </div>
 
+{% if recent_results %}
+  <section class="review" aria-labelledby="to-review">
+    <h2 id="to-review">Runs to Review</h2>
+    <ul class="rows">
+      {% for r in recent_results %}
+        <li>
+          <a class="row" href="{% url 'workout_detail' r.workout.pk %}">
+            <span class="row__date">{{ r.workout.date|date:"D, M j" }}</span>
+            <span class="row__title">{{ r.workout.week.plan.client }} · {{ r.workout.title }}
+              <span class="row__hint">{% include "training/_result_badge.html" with result=r %}{% if r.actual_distance_m %} {{ r.actual_distance_m|distance:r.workout.week.plan.client.preferred_units }}{% endif %}{% if r.perceived_effort %} · effort {{ r.perceived_effort }}/10{% endif %}{% if r.comments %} · “{{ r.comments|truncatechars:60 }}”{% endif %}</span>
+            </span>
+            <span class="row__meta">{% if r.coach_feedback %}<span class="badge badge--muted">Replied</span>{% else %}<span class="badge badge--warn">Reply</span>{% endif %}</span>
+          </a>
+        </li>
+      {% endfor %}
+    </ul>
+  </section>
+{% endif %}
+
 {% if clients %}
   <div class="cards">
     {% for client in clients %}

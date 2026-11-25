@@ -241,6 +241,11 @@ class WorkoutResult(models.Model):
         default=1, help_text="Which version of the prescription this result was logged against."
     )
 
+    # The coach's reply to this run. Written by the coach only (never part of the client's form).
+    coach_feedback = models.TextField(blank=True)
+    coach_feedback_at = models.DateTimeField(null=True, blank=True)
+    client_seen_feedback_at = models.DateTimeField(null=True, blank=True)
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -254,3 +259,10 @@ class WorkoutResult(models.Model):
 
     def __str__(self):
         return f"{self.workout} → {self.get_status_display()}"
+
+    @property
+    def has_new_feedback(self):
+        """Feedback the client hasn't opened yet."""
+        return bool(self.coach_feedback) and (
+            self.client_seen_feedback_at is None or self.client_seen_feedback_at < self.coach_feedback_at
+        )

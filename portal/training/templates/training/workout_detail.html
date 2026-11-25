@@ -73,8 +73,15 @@
           </ul>
           {% if result.comments %}<p>{{ result.comments|linebreaksbr }}</p>{% endif %}
           {% if result.prescription_version != workout.version %}<p class="muted">Logged against v{{ result.prescription_version }} (now v{{ workout.version }}).</p>{% endif %}
+          <form method="post" action="{% url 'result_feedback' workout.pk %}" class="form feedback-form" novalidate>
+            {% csrf_token %}
+            <h3>Coach Feedback</h3>
+            {% include "training/_field.html" with field=feedback_form.feedback %}
+            <button class="btn btn--primary" type="submit">{% if result.coach_feedback %}Update Feedback{% else %}Send Feedback{% endif %}</button>
+            {% if result.coach_feedback_at %}<p class="form__note">Sent {{ result.coach_feedback_at|date:"M j" }}{% if result.client_seen_feedback_at and result.client_seen_feedback_at >= result.coach_feedback_at %} · Seen by your client{% else %} · Not seen yet{% endif %}.</p>{% endif %}
+          </form>
         {% else %}
-          <p class="muted">Not logged yet.</p>
+          <p class="muted">Not logged yet. You can reply once your client logs this run.</p>
         {% endif %}
       </section>
     </div>
@@ -113,6 +120,12 @@
       {% endif %}
       {% if result and result.prescription_version != workout.version %}
         <p class="muted">Your coach updated this workout after you logged it.</p>
+      {% endif %}
+      {% if result.coach_feedback %}
+        <div class="feedback" role="note" aria-label="Coach feedback">
+          <span class="label">Coach Feedback · {{ result.coach_feedback_at|date:"M j" }}</span>
+          <p>{{ result.coach_feedback|linebreaksbr }}</p>
+        </div>
       {% endif %}
 
       {% if form %}

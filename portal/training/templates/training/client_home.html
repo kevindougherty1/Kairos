@@ -39,6 +39,7 @@
               <span class="row__date">{{ day.date|date:"D, M j" }}{% if day.is_today %} <span class="badge">Today</span>{% endif %}</span>
               <span class="row__title">{{ w.title }}{% if w.coach_notes %}<span class="row__note"><span class="row__note-label">Coach note:</span> {{ w.coach_notes|truncatechars:90 }}</span>{% endif %}</span>
               <span class="row__meta">
+                {% if w.result.has_new_feedback %}<span class="badge badge--live">New Feedback</span>{% endif %}
                 {% if w.result %}{% include "training/_result_badge.html" with result=w.result %}
                 {% elif w.target_distance_m %}{{ w.target_distance_m|distance:units }}{% endif %}
               </span>

@@ -24,4 +24,5 @@ urlpatterns = [
     path("plans/<int:pk>/", training_views.plan_detail, name="plan_detail"),
     path("workouts/<int:pk>/", training_views.workout_detail, name="workout_detail"),
     path("workouts/<int:pk>/prescribe/", training_views.workout_prescribe, name="workout_prescribe"),
+    path("workouts/<int:pk>/feedback/", training_views.result_feedback, name="result_feedback"),
 ]

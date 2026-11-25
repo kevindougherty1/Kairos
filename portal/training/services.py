@@ -145,3 +145,14 @@ def update_prescription(coach, workout, **changes) -> bool:
             setattr(workout, field_name, value)
         workout.save()
     return True
+
+
+def give_feedback(coach, result, text: str) -> None:
+    """Coach replies to a logged run. Empty text clears the reply."""
+    if result.workout.week.plan.client.coach_id != coach.id:
+        raise PermissionDenied
+    text = text.strip()
+    result.coach_feedback = text
+    result.coach_feedback_at = timezone.now() if text else None
+    # Not updated_at: that is when the CLIENT last logged/changed the run ("Logged Nov 16").
+    result.save(update_fields=["coach_feedback", "coach_feedback_at"])

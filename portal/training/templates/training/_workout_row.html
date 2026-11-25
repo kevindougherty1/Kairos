@@ -7,6 +7,7 @@
     </span>
     <span class="row__meta">
       {% if user.is_coach and w.needs_prescription %}<span class="badge badge--warn">To Write</span>{% endif %}
+      {% if not user.is_coach and w.result.has_new_feedback %}<span class="badge badge--live">New Feedback</span>{% endif %}
       {% if w.result %}<span class="badge{% if w.result.status == 'completed' %} badge--done{% elif w.result.status == 'skipped' %} badge--muted{% endif %}">{{ w.result.get_status_display }}</span>
       {% elif w.target_distance_m %}{{ w.target_distance_m|distance:units }}{% endif %}
     </span>

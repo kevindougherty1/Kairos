@@ -15,7 +15,7 @@ from django.core.exceptions import ValidationError
 
 from . import access, services
 from .engines import PlanRequest
-from .forms import GeneratePlanForm, PrescriptionForm, WorkoutResultForm
+from .forms import FeedbackForm, GeneratePlanForm, PrescriptionForm, WorkoutResultForm
 from .models import ScheduledWorkout, TrainingPlan, WorkoutResult
 
 
@@ -50,7 +50,14 @@ def coach_home(request):
         Prefetch("plans", queryset=TrainingPlan.objects.filter(trashed_at__isnull=True).order_by("-start_date"))
     )
     trash_count = access.trashed_plans_for(request.user).count()
-    return render(request, "training/coach_home.html", {"clients": clients, "trash_count": trash_count, "nav": "home"})
+    recent_results = (
+        access.results_for(request.user)
+        .select_related("workout__week__plan__client__user")
+        .order_by("-updated_at")[:10]
+    )
+    return render(request, "training/coach_home.html", {
+        "clients": clients, "trash_count": trash_count, "recent_results": recent_results, "nav": "home",
+    })
 
 
 def _back(request, fallback="coach_home"):
@@ -228,6 +235,9 @@ def workout_detail(request, pk):
         form.focus_first_error()
     else:
         form = WorkoutResultForm(instance=result, units=units) if can_log else None
+        if result and request.user.is_client and result.has_new_feedback:
+            result.client_seen_feedback_at = timezone.now()
+            result.save(update_fields=["client_seen_feedback_at"])
 
     return _render_workout(request, workout, result=result, form=form)
 
@@ -237,7 +247,7 @@ def _can_prescribe(user, workout):
     return user.is_coach and plan.status in (TrainingPlan.Status.DRAFT, TrainingPlan.Status.PUBLISHED)
 
 
-def _render_workout(request, workout, result=None, form=None, prescription_form=None):
+def _render_workout(request, workout, result=None, form=None, prescription_form=None, feedback_form=None):
     units = workout.week.plan.client.preferred_units
     if result is None:
         result = WorkoutResult.objects.filter(workout=workout).first()
@@ -249,9 +259,26 @@ def _render_workout(request, workout, result=None, form=None, prescription_form=
     return render(request, "training/workout_detail.html", {
         "workout": workout, "result": result, "form": form, "units": units,
         "prescription_form": prescription_form,
+        "feedback_form": feedback_form if feedback_form is not None else (
+            FeedbackForm(initial={"feedback": result.coach_feedback}) if result and request.user.is_coach else None
+        ),
         "revisions": workout.revisions.all() if request.user.is_coach else [],
         "using_suggestion": "use_suggestion" in request.GET,
     })
+
+
+@require_POST
+@role_required("coach")
+def result_feedback(request, pk):
+    """Coach replies to a client's logged run."""
+    workout = get_object_or_404(access.workouts_for(request.user).select_related("week__plan__client"), pk=pk)
+    result = get_object_or_404(WorkoutResult, workout=workout)
+    form = FeedbackForm(request.POST)
+    if not form.is_valid():
+        return _render_workout(request, workout, result=result, feedback_form=form)
+    services.give_feedback(request.user, result, form.cleaned_data["feedback"])
+    messages.success(request, "Feedback saved. Your client sees it now." if result.coach_feedback else "Feedback removed.")
+    return redirect("workout_detail", pk=workout.pk)
 
 
 @require_POST

@@ -304,3 +304,17 @@ Nothing was lost. Start it on demand only; Docker reserves about 8 GB.
 - Tests **84/84** (+3). Browser: wrote a sample note on demo client Avery's Mon Nov 23 easy run (live demo plan → v2);
   it shows on her This Week at 390/1280, 0 overflow, 0 errors. `seed_demo` resets it.
 
+### 41 — 2026-11-25 — Coach feedback on logged runs
+- `WorkoutResult.coach_feedback`, `coach_feedback_at`, `client_seen_feedback_at` (migration 0005); `has_new_feedback`.
+  Never in the client's result form (test proves a POSTed `coach_feedback` is ignored).
+- Coach: a **Coach Feedback** box under the client's result on the workout page (Send/Update; empty = remove; shows
+  "Seen by your client" / "Not seen yet"). POST `/workouts/<id>/feedback/`, own coach only, 404 if nothing is logged.
+  **Runs to Review** on the coach home: the latest 10 results across own clients (status, miles, effort, comment) with
+  a Reply/Replied badge.
+- Client: feedback shown under their result (accent bar); **New Feedback** badge in This Week and plan lists until they
+  open the run (opening marks it seen; an updated reply is new again).
+- Fix after screenshots: saving feedback bumped the result's `updated_at`, so the client's "Logged" date moved;
+  `give_feedback` no longer touches it.
+- Tests **91/91** (+7). Browser: replied to demo Avery's Nov 16 run → her previous week showed New Feedback → opening cleared
+  it; 0 overflow at 390/1280, 0 errors.
+

@@ -197,3 +197,15 @@ class PrescriptionForm(forms.Form):
             if name in self.errors:
                 self.fields[name].widget.attrs["autofocus"] = True
                 break
+
+
+class FeedbackForm(forms.Form):
+    feedback = forms.CharField(
+        label="Your reply", required=False, max_length=4000,
+        widget=forms.Textarea(attrs={"rows": 4, "autocomplete": "off"}),
+        help_text="Your client sees this under their result. Leave it empty and save to remove it.",
+    )
+
+    def __init__(self, *args, **kwargs):
+        kwargs.setdefault("label_suffix", "")
+        super().__init__(*args, **kwargs)
