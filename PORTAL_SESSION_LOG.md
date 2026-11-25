@@ -7,19 +7,25 @@ Running context for the portal build (started 2026-11-19), updated after every p
 
 ---
 
-## ▶ START HERE (Wed 2026-11-25, catching up on Sunday's list)
+## ▶ START HERE (Wed 2026-11-25, evening)
 
-**Phase 1 is signed off** (fresh checkout → README → coach + 2 clients isolated). Brand is now **Hard Left**
-(display only). Sunday items left: the **public pages** (waiting on Kevin's facts). The stretch adapter is done (HM drafts).
+**Phase 1 is signed off.** The brand is **Hard Left** (display only). On Sunday's list, **only the public pages remain**, and
+they're in progress: **Kevin is choosing the offer/pricing** (see prompt 45 for the options I recommended).
+
+**What the portal does now** (all tested, 100 tests): the coach generates half-marathon drafts from the engine (the engine's
+picks are coach-only *suggestions*), writes each workout + notes (clients see "Speed Session" and only what the coach wrote),
+publishes (the old live plan is archived, runs kept), trashes/restores/deletes drafts, and replies to logged runs (Runs to Review).
+Clients see This Week (their time zone), log runs, and see coach notes and feedback.
 
 ### Resume here
-1. **Start Docker Desktop**, then from `portal/`: `docker compose up -d` → `..\.venv\Scripts\python.exe manage.py runserver`.
-   WSL/Docker is capped at 3 GB (`%USERPROFILE%\.wslconfig`). Stop the dev server when you're done.
-2. **Kevin:** create the admin login once: `.venv\Scripts\python.exe portal\manage.py createsuperuser`.
-3. **Public pages need from Kevin:** the offer (prices shown or "contact me"), location (or online-only), a 2–3 line
-   bio, the inquiry email address. Photos: licensed stand-ins approved (2026-11-25).
-4. **Stay on Sunday's list:** the public pages are the only open item (taste-skill, kind = service; arm its gate in
-   `portal/` once the page exists). Everything else (marathon generation, Phase 2 walkthrough) is parked in `TBD.md`.
+1. **Start Docker Desktop**, then from `portal/`: `docker compose up -d` → `..\.venv\Scripts\python.exe manage.py runserver`
+   → http://127.0.0.1:8000/. WSL/Docker is capped at 3 GB. Times display in Pacific (`DJANGO_TIME_ZONE` in `portal/.env`).
+   Demo logins: `demo_coach`, `demo_client_a`, `demo_client_b` (password from the last `seed_demo` run).
+2. **Waiting on Kevin:** (a) the offer + prices; (b) location or online-only; (c) a 2–3 line bio; (d) the inquiry email.
+   Photos: licensed stand-ins approved. Admin login still not created (`createsuperuser`).
+3. **Then build the public pages** with taste-skill (kind = service; arm its gate in `portal/` once the page exists).
+4. **Not today:** everything in `TBD.md` (Phase 2 backlog: marathon generation, strength workouts in the portal, payments,
+   Phase 2 walkthrough; engine follow-ups; later phases).
 
 ---
 
@@ -342,4 +348,20 @@ Nothing was lost. Start it on demand only; Docker reserves about 8 GB.
   notes, feedback, draft times and Publish built today on request). Parked it + the Phase 2 walkthrough in `TBD.md` → "Phase 2 Backlog".
 - Sunday status: This Week ✓, README ✓, Phase 1 sign-off ✓, stretch ✓, pushed ✓. **Only the public pages remain**, waiting on
   Kevin's facts. Focus stays there until he chooses TBD items.
+
+### 45 — 2026-11-25 — Offer + pricing discussion (public pages, Sunday list)
+- Kevin's idea: running OR lifting coaching $110/mo; both $135/mo; the generator is a tool, not the product; wants payment variety.
+- Market check (web, individual coach listings, not a survey): 1:1 running coaching mostly $99–$170/mo (McMillan $99/$199/$399,
+  RunnersConnect $169, FinalSurge coaches $99–$130); run + strength packages $169–$300/mo (RunnersConnect $169 incl. strength,
+  McMillan Run + Strength $300).
+- Advice given: keep the modular idea; $110 is fine as founding-client pricing; +$25 undervalues the hybrid (more work, and
+  the differentiator) → suggested ~$150–155; three options max on the page (one-time coach-reviewed race plan, 1 focus, hybrid)
+  + a 3-month prepay discount. Waiting on Kevin's numbers. Repo notes: no coaching certification yet (RRCA/UESCA was planned
+  in KAIROS_CONTEXT); lifting expertise = his strength guide (runner-focused) + own program.
+- Flagged dependencies → TBD: selling strength needs coach-written strength workouts in the portal; how clients pay.
+
+### 46 — 2026-11-25 — "Have you been saving context?" check
+- Verified: prompts 24–45 each have a log entry (1–23 condensed by day). Found two gaps and fixed them: the prompt-45
+  entry and TBD additions weren't committed, and **START HERE was stale** (missing today's Phase 2 features and the pending
+  pricing decision). START HERE rewritten; committed + pushed.
 

@@ -49,6 +49,10 @@ code. Speed is the best first candidate. The portal treats plan type as a generi
 ---
 
 ## Phase 2 Backlog (not on the weekend lists)
+- **Strength workouts in the portal** (needed before selling strength/hypertrophy coaching): the coach can only edit
+  generated running workouts today. Needs "add a workout" (strength sessions with exercises, sets, reps) on a plan, and
+  coach-built plans with no generator. Moves TBD #4 forward.
+- **How clients pay:** invoices are fine for 2–3 clients; a Stripe/Square payment link or subscription later (Phase 3+).
 - **Marathon plan generation.** Add `generate_marathon` to `portal/training/engines.py` (same shape as the half marathon; add
   the "math check" warning from #2 above) and enable it in the Generate Draft form. Snapshot tests already cover the engine.
 - **Phase 2 done-check walkthrough** (brief): generate → edit → publish to one client → client logs → coach reviews; drafts
