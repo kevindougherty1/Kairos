@@ -49,7 +49,7 @@
               <li class="row-with-action">
                 <a class="row" href="{% url 'plan_detail' plan.pk %}">
                   <span class="row__date">{{ plan.start_date|date:"M j" }}–{{ plan.end_date|date:"M j" }}</span>
-                  <span class="row__title">{{ plan.title }}</span>
+                  <span class="row__title">{{ plan.title }}{% if plan.status == "draft" %}<span class="row__hint">Made {{ plan.created_at|date:"M j, g:i A" }}</span>{% endif %}</span>
                   <span class="row__meta">{% include "training/_plan_badge.html" %}</span>
                 </a>
                 {% if plan.can_trash %}

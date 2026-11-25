@@ -10,6 +10,7 @@
     {% if user.is_coach %}<li><strong>{{ plan.client }}</strong></li>{% endif %}
     <li>{{ plan.get_plan_type_display }}</li>
     <li class="num">{{ plan.start_date|date:"M j" }}–{{ plan.end_date|date:"M j, Y" }}</li>
+    {% if user.is_coach and plan.status == "draft" %}<li class="num">Made {{ plan.created_at|date:"M j, g:i A" }}</li>{% endif %}
     {% if plan.race_name %}<li>{{ plan.race_name }}{% if plan.race_date %}, <span class="num">{{ plan.race_date|date:"M j" }}</span>{% endif %}</li>{% endif %}
   </ul>
 </div>

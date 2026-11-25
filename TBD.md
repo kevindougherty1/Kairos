@@ -50,7 +50,6 @@ code. Speed is the best first candidate. The portal treats plan type as a generi
 
 ## Portal Follow-Ups
 - **Publish button (Phase 2):** warn before publishing if any Speed Session is still unwritten (the plan page counts them).
-- Show a created time on drafts so identical titles are easy to tell apart.
 
 ## Later Phases (not this weekend)
 Deployment/hosting choice, HTTPS, backups, the `/api/v1/` API surface, weekly check-ins, notifications, the 4 new

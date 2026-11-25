@@ -318,3 +318,9 @@ Nothing was lost. Start it on demand only; Docker reserves about 8 GB.
 - Tests **91/91** (+7). Browser: replied to demo Avery's Nov 16 run → her previous week showed New Feedback → opening cleared
   it; 0 overflow at 390/1280, 0 errors.
 
+### 42 — 2026-11-25 — Draft "Made" times
+- Drafts show **"Made Nov 25, 11:09 AM"** under the title on the coach's client list, the plan page and the Trash (coach only).
+- Display time zone: Kevin's PC is Pacific, so `portal/.env` now has `DJANGO_TIME_ZONE=America/Los_Angeles` (local file,
+  not committed; `.env.example` documents it). Stored times stay UTC; client "today" still uses each client's own time zone.
+- Test (+1, **92/92**): a UTC 20:45 draft shows "Made Nov 25, 12:45 PM"; clients never see it.
+

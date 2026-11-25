@@ -13,7 +13,7 @@
       <li class="row-with-action">
         <div class="row">
           <span class="row__date">Trashed {{ plan.trashed_at|date:"M j" }}</span>
-          <span class="row__title">{{ plan.title }} <span class="muted">· {{ plan.client }}</span></span>
+          <span class="row__title">{{ plan.title }} <span class="muted">· {{ plan.client }}</span>{% if plan.status == "draft" %}<span class="row__hint">Made {{ plan.created_at|date:"M j, g:i A" }}</span>{% endif %}</span>
           <span class="row__meta">{% include "training/_plan_badge.html" %}{% if plan.logged %} <span class="badge badge--muted">{{ plan.logged }} logged run{{ plan.logged|pluralize }}</span>{% endif %}</span>
         </div>
         <div class="row-actions">

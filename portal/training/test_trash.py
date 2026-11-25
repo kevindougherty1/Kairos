@@ -108,6 +108,20 @@ class TrashTests(TestCase):
         self.assertEqual(self.client.get(reverse("plan_delete", args=[self.draft.pk])).status_code, 404)
         self.assertNotContains(self.client.get(reverse("coach_trash")), "Dead Draft")
 
+    def test_drafts_show_when_they_were_made_in_the_coachs_time_zone(self):
+        from datetime import datetime, timezone as dt_tz
+
+        made = datetime(2026, 11, 25, 20, 45, tzinfo=dt_tz.utc)  # 12:45 PM in Los Angeles
+        TrainingPlan.objects.filter(pk=self.draft.pk).update(created_at=made)
+        self.client.force_login(self.coach)
+        with self.settings(TIME_ZONE="America/Los_Angeles"):
+            home = self.client.get(reverse("coach_home"))
+            detail = self.client.get(reverse("plan_detail", args=[self.draft.pk]))
+        self.assertContains(home, "Made Nov 25, 12:45 PM")
+        self.assertContains(detail, "Made Nov 25, 12:45 PM")
+        self.client.force_login(self.runner)  # clients never see it (and never see drafts at all)
+        self.assertNotContains(self.client.get(reverse("client_home")), "Made Nov")
+
     def test_next_parameter_cannot_redirect_off_site(self):
         r = self.post(self.coach, "plan_trash", self.draft, next="https://evil.example/")
         self.assertRedirects(r, reverse("coach_home"))
