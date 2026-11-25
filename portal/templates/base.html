@@ -3,10 +3,10 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>{% block title %}Kairos{% endblock %} · Kairos Performance Group</title>
-  <meta name="description" content="{% block description %}1:1 running coaching from Kairos Performance Group.{% endblock %}">
+  <title>{% block title %}Running Coaching{% endblock %} · Hard Left</title>
+  <meta name="description" content="{% block description %}1:1 running coaching from Hard Left.{% endblock %}">
   <meta name="theme-color" content="#efe9e0">
-  <link rel="icon" type="image/png" sizes="32x32" href="{% static 'kairos/img/favicon-32.png' %}">
+  <link rel="icon" type="image/svg+xml" href="{% static 'kairos/img/favicon.svg' %}">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Rethink+Sans:wght@400..700&display=swap" rel="stylesheet">
@@ -18,9 +18,8 @@
     <div class="wrap">
       <a class="skip-link" href="#main">Skip to Content</a>
       <a class="brand" href="{% url 'home' %}">
-        <img src="{% static 'kairos/img/kpg-logo-96.png' %}" srcset="{% static 'kairos/img/kpg-logo-96.png' %} 1x, {% static 'kairos/img/kpg-logo-192.png' %} 2x"
-             width="40" height="40" alt="">
-        <span translate="no">Kairos</span>
+        <svg class="mark" viewBox="0 0 24 24" width="28" height="28" aria-hidden="true" focusable="false"><circle cx="6.5" cy="6.5" r="4.5"/><circle cx="17.5" cy="6.5" r="4.5"/><circle cx="6.5" cy="17.5" r="4.5"/><rect x="13" y="13" width="9" height="9" rx="1.5"/></svg>
+        <span translate="no">Hard Left</span>
       </a>
       <nav class="nav__links" aria-label="Main">
         {% if user.is_authenticated %}
@@ -49,7 +48,7 @@
   </main>
 
   <footer class="site-footer">
-    <div class="wrap"><p>© {% now "Y" %} <span translate="no">Kairos Performance Group</span></p></div>
+    <div class="wrap"><p>© {% now "Y" %} <span translate="no">Hard Left</span></p></div>
   </footer>
 </body>
 </html>

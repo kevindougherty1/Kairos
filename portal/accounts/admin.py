@@ -8,8 +8,8 @@ from .models import ClientProfile, User
 class KairosUserAdmin(UserAdmin):
     list_display = ("username", "email", "first_name", "last_name", "role", "is_active", "is_staff")
     list_filter = ("role", "is_active", "is_staff")
-    fieldsets = UserAdmin.fieldsets + (("Kairos", {"fields": ("role",)}),)
-    add_fieldsets = UserAdmin.add_fieldsets + (("Kairos", {"fields": ("role",)}),)
+    fieldsets = UserAdmin.fieldsets + (("Coaching Role", {"fields": ("role",)}),)
+    add_fieldsets = UserAdmin.add_fieldsets + (("Coaching Role", {"fields": ("role",)}),)
 
 
 @admin.register(ClientProfile)

@@ -1,7 +1,7 @@
 ---
 version: 1.0
-name: Kairos Performance Group
-description: Calm, paper-and-pine design system for a 1:1 running coach. A warm cream ground and green-black ink taken from the KPG mountain logo, one pine-green action colour, Rethink Sans throughout, soft 8/12/20 radii and hairline rows. The public pages lead with photographs (Sunday); the logged-in portal is plain working screens (lists, schedules, forms) on the same tokens.
+name: Hard Left
+description: Calm, paper-and-pine design system for a 1:1 running coach. A warm cream ground and green-black ink (first matched to the old KPG logo), one pine-green action colour, Rethink Sans throughout, soft 8/12/20 radii and hairline rows. The public pages lead with photographs (Sunday); the logged-in portal is plain working screens (lists, schedules, forms) on the same tokens.
 
 colors:
   canvas: "#efe9e0"        # --p-bg: page ground (logo cream)
@@ -38,15 +38,18 @@ controls: { button: 44px, field: 48px, min-tap: 44px }
 motion: { ease: "cubic-bezier(.2,.8,.2,1)", duration: 180ms }
 ---
 
-# Kairos Design System
+# Hard Left Design System
+
+**Brand name (2026-11-25): Hard Left**, as in the hard left turn of running a track. It's the display name only;
+file and code names stay `kairos` (e.g. `kairos.css`).
 
 **Where it lives:** tokens and components in `portal/static/kairos/kairos.css`; the shared page frame in
-`portal/templates/base.html`; the logo in `portal/static/kairos/img/`. **Change a colour, size or radius in
+`portal/templates/base.html`; the mark/favicon in `portal/static/kairos/img/favicon.svg`. **Change a colour, size or radius in
 kairos.css (and here), never in a template.**
 
 ## Overview
 
-Kairos Performance Group is a 1:1 running coach, and the system should feel like a calm training log:
+Hard Left is a 1:1 running coach, and the system should feel like a calm training log:
 paper, pencil and one green pen. Colour comes from the logo, and later from photographs on the public pages.
 The interface itself stays 90–95% neutral.
 
@@ -120,7 +123,7 @@ Radius scale (soft): controls 8px, panels and notices 12px, cards 20px, buttons 
 | Notice | `.notice`, `.notice--warn` | Demo-data label; engine warnings on coach plan views. |
 | Field | `.field` (label above, input, `.field__help`, errors) | Visible label always; errors under the field in warn; first invalid field focused. |
 | Auth card | `.auth` | Centred 440px column for login and password reset. |
-| Header | `.nav`, `.brand`, `.nav__link` | Logo + "Kairos"; current page has a 2px underline (`aria-current`). |
+| Header | `.nav`, `.brand`, `.mark`, `.nav__link` | Dots mark + "Hard Left" (17px on phones, never wraps); current page has a 2px underline (`aria-current`). |
 
 ## Do's and Don'ts
 
@@ -138,7 +141,7 @@ Radius scale (soft): controls 8px, panels and notices 12px, cards 20px, buttons 
 
 ## Responsive Behavior
 
-- **Phone (<640):** header 56px; brand name and user name hidden (logo stays); rows wrap the date above the
+- **Phone (<640):** header 56px; user name hidden, brand name at 17px; rows wrap the date above the
   title; primary form buttons go full width; cards stack.
 - **Tablet (640–1023):** 48px gutters, single column.
 - **Desktop (1024+):** `.split` goes two-column, `.cards` two-up, h3 and lead sizes step up.
@@ -155,4 +158,5 @@ Radius scale (soft): controls 8px, panels and notices 12px, cards 20px, buttons 
 - Fonts load from Google Fonts. Self-host before launch for privacy and speed (Phase 3).
 - No dark mode (deliberate: the light-only paper look; taste-skill reserves dark for tech pages).
 - Public-page components (hero, photo sections, footer, inquiry form) come from taste-skill's kit on Sunday.
-- The logo is a raster PNG (96/192px copies). An SVG version would be sharper; Kevin to supply if one exists.
+- **No real logo yet.** The mark is taste-skill's dealt placeholder (`dots`, ink on canvas, also the favicon) until a
+  Hard Left logo exists. The old KPG logo is no longer used in the portal.

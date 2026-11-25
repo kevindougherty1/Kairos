@@ -59,5 +59,6 @@ block engines, and strength workflows.
 
 ## Housekeeping
 - Self-host the Rethink Sans font before launch (privacy/speed); it loads from Google Fonts now.
-- An SVG version of the KPG logo would be sharper than the PNG copies (Kevin, if one exists).
+- **Hard Left brand, before launch:** a proper trademark search (USPTO) and a domain; a real logo to replace the
+  placeholder `dots` mark. The name also reads as far-left politics to some people (flagged 2026-11-25, Kevin went ahead).
 - Optional: rotate the 21st API key (it was pasted in chat on day 1) at 21st.dev/mcp.

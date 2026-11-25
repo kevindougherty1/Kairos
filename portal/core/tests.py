@@ -10,6 +10,14 @@ class SkeletonTests(TestCase):
         self.assertContains(response, "Running Coaching")
         self.assertContains(response, reverse("login"))
 
+    def test_brand_name_is_hard_left(self):
+        """Display name is "Hard Left" (2026-11-25); "Kairos" stays a code name only."""
+        for url in (reverse("home"), reverse("login")):
+            response = self.client.get(url)
+            self.assertContains(response, "Hard Left")
+            self.assertNotContains(response, "Kairos")
+            self.assertNotContains(response, "KPG")
+
     def test_admin_login_page_renders(self):
         response = self.client.get(reverse("admin:login"))
         self.assertEqual(response.status_code, 200)

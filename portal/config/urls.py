@@ -4,6 +4,10 @@ from django.urls import include, path
 from core import views as core_views
 from training import views as training_views
 
+admin.site.site_header = "Hard Left Admin"
+admin.site.site_title = "Hard Left Admin"
+admin.site.index_title = "Coaching Data"
+
 urlpatterns = [
     path("admin/", admin.site.urls),
     # login, logout, password_change, password_reset (templates in portal/templates/registration/)

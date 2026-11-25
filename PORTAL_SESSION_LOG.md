@@ -26,6 +26,7 @@ design system (`portal/DESIGN.md`, `portal/static/kairos/kairos.css`). Every scr
 
 | Area | Decision |
 |---|---|
+| Brand name | **Hard Left** (the hard left turn of track running), **display only** (2026-11-25): site, titles, emails, admin. Code/file names stay `kairos`. Placeholder mark = taste-skill's dealt `dots` until a real logo exists. |
 | Framework | **Django** portal in `portal/`, importing the HM + marathon engines unchanged. Flask `app.py` stays as is. |
 | Public site | **No Wix.** Home/Offer, About, Inquiry, Client Login are Django too, and ship first. |
 | Plan types (v1) | HM + Marathon (existing engines); Speed, Base/Economy, Post-race recovery (2–4 wk), Maintenance (new: rules design session with Kevin before code). `plan_type` is a generic field. Deferred: 10K, return-from-injury. |
@@ -82,7 +83,7 @@ can't see each other's data (tests + playwright-cli walkthrough). (2) The design
 - [x] Engine I/O inspection → `portal/ENGINES.md` (baseline: HM 140/140, marathon audit clean except M-5)
 - [x] **Django skeleton** in `portal/`: pinned deps, env-var settings, `.env.example`, Postgres in
       `docker-compose.yml`, the project runs locally *(prompt 27)*
-- [ ] Any remaining repo imports (Kevin), if there are any
+- [x] Any remaining repo imports (Kevin): none came in; closed 2026-11-25 (reopen if more arrive)
 
 ### Saturday list
 - [x] **Models + migrations:** User (role), ClientProfile (incl. **target race: name, date, distance**), TrainingPlan
@@ -194,3 +195,26 @@ Nothing was lost. Start it on demand only; Docker reserves about 8 GB.
   long-title wrapping, autofocus off on mobile, curly apostrophes, `translate="no"` on the brand,
   `autocomplete="off"` on result fields, first invalid field focused, a Status error that says what to do).
 - `portal/DESIGN.md` written in design-md format (front-matter tokens + sections). Tests still **35/35**.
+
+### 32 — 2026-11-25 (Wed) — Catch-up plan: Sunday's list today, rename to "Hard Left"
+- Kevin: do Sunday's list now; **use licensed stand-in photos**; wants to try renaming the brand **"Hard Left"**
+  (the hard left turn of running a track).
+- Friday + Saturday lists confirmed all ticked (closed the repo-imports item: none came in).
+- Name check (web search): no running coach, club or brand called "Hard Left" turned up. Not a trademark search.
+  Flagged to Kevin: the phrase also means far-left politics.
+- Memory check: 3.1 GB free of 15.4. Top users: Windows services 1.8 GB, Edge 1.8 GB, PyCharm 1.3 GB, WSL/Docker ~1.4 GB.
+  Docker isn't the main hog; a WSL cap is cheap insurance, not a cure.
+- Waiting on Kevin: rename scope, offer/bio facts for the public pages, OK for the WSL memory cap.
+
+### 33 — 2026-11-25 — Docker memory cap + rename to "Hard Left" (display only)
+- **WSL/Docker cap:** `%USERPROFILE%\.wslconfig` → `memory=3GB`, `swap=2GB`, `autoMemoryReclaim=gradual`. Docker
+  stopped → `wsl --shutdown` → started. Verified: Docker VM 2.84 GB (was ~7.7), Postgres healthy, data intact.
+  Undo: delete the file and run `wsl --shutdown`. (Gotcha: `docker desktop stop|start` works from the CLI.)
+- **Rename (display only):** page titles, header, footer, login description, email sender ("Hard Left
+  <no-reply@localhost>"), admin header ("Hard Left Admin"); admin's "Kairos" fieldset → "Coaching Role".
+  Code identifiers untouched.
+- **Logo:** KPG logo copies removed from the portal. taste-skill dealt mark **dots** (random from its service list)
+  → inline SVG in the header + `favicon.svg`. Phone header fix: brand 17px, no wrap.
+- New test: home and login show "Hard Left" and never "Kairos"/"KPG". **36/36** pass; walkthrough 16/16 screens clean.
+- `DESIGN.md` updated (name, mark, known gaps). TBD: trademark search + a real logo before launch.
+

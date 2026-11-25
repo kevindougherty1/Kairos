@@ -132,7 +132,7 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 
 # Email: console backend in development (password reset, inquiry form). Real SMTP comes in Phase 3.
 
-DEFAULT_FROM_EMAIL = env("DJANGO_DEFAULT_FROM_EMAIL", default="Kairos <no-reply@localhost>")
+DEFAULT_FROM_EMAIL = env("DJANGO_DEFAULT_FROM_EMAIL", default="Hard Left <no-reply@localhost>")
 
 MAILERS = {
     "default": {
