@@ -90,6 +90,37 @@ def plan_restore(request, pk):
 
 
 @role_required("coach")
+def plan_publish(request, pk):
+    """Publish a draft: a confirmation page (GET) with what will change, then the publish (POST)."""
+    plan = get_object_or_404(access.plans_for(request.user).select_related("client__user"), pk=pk)
+    if plan.status != TrainingPlan.Status.DRAFT:
+        messages.error(request, "Only drafts can be published.")
+        return redirect("plan_detail", pk=plan.pk)
+    if request.method == "POST":
+        try:
+            previous = services.publish_plan(request.user, plan)
+        except services.PlanActionError as exc:
+            messages.error(request, str(exc))
+            return redirect("plan_detail", pk=plan.pk)
+        note = f" “{previous.title}” moved to their Past Plans." if previous else ""
+        messages.success(request, f"Published. {plan.client} can see this plan now.{note}")
+        return redirect("plan_detail", pk=plan.pk)
+
+    workouts = list(ScheduledWorkout.objects.filter(week__plan=plan).order_by("date"))
+    unwritten = [w for w in workouts if w.needs_prescription]
+    current = TrainingPlan.objects.filter(client=plan.client, status=TrainingPlan.Status.PUBLISHED).first()
+    return render(request, "training/plan_publish.html", {
+        "plan": plan,
+        "current": current,
+        "week_count": plan.weeks.count(),
+        "workout_count": len(workouts),
+        "unwritten": unwritten,
+        "warning_weeks": plan.weeks.exclude(warnings=[]).count(),
+        "started": plan.start_date < client_today(plan.client),
+    })
+
+
+@role_required("coach")
 def coach_trash(request):
     plans = access.trashed_plans_for(request.user).select_related("client__user").annotate(
         logged=Count("weeks__workouts__result")

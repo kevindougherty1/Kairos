@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}Publish Plan{% endblock %}
+{% block content %}
+<a class="back" href="{% url 'plan_detail' plan.pk %}">← {{ plan.title }}</a>
+<div class="page-head">
+  <h1>Publish This Plan?</h1>
+  <p>{{ plan.client }} will see it as soon as you publish.</p>
+</div>
+
+<div class="split">
+  <section class="card" aria-labelledby="what-changes">
+    <h2 id="what-changes">What Happens</h2>
+    <ul class="facts facts--stack">
+      <li><strong>{{ plan.title }}</strong> becomes {{ plan.client }}’s live plan.</li>
+      <li class="num">{{ plan.start_date|date:"M j" }}–{{ plan.end_date|date:"M j, Y" }} · {{ week_count }} week{{ week_count|pluralize }} · {{ workout_count }} run{{ workout_count|pluralize }}</li>
+      {% if current %}
+        <li><strong>{{ current.title }}</strong> (their current plan) moves to Past Plans. Their logged runs on it are kept.</li>
+      {% else %}
+        <li>They don’t have a live plan yet, so nothing is replaced.</li>
+      {% endif %}
+      {% if started %}<li>This plan started on {{ plan.start_date|date:"M j" }}, so its first weeks show as past.</li>{% endif %}
+    </ul>
+    <form method="post" class="btn-row">
+      {% csrf_token %}
+      <button class="btn btn--primary" type="submit">{% if unwritten %}Publish Anyway{% else %}Publish Plan{% endif %}</button>
+      <a class="btn btn--secondary" href="{% url 'plan_detail' plan.pk %}">Not Yet</a>
+    </form>
+  </section>
+
+  <div class="stack">
+    {% if unwritten %}
+      <section class="notice notice--warn" aria-labelledby="unwritten">
+        <strong id="unwritten">{{ unwritten|length }} speed session{{ unwritten|length|pluralize }} not written yet</strong>
+        <p>Until you write {{ unwritten|length|pluralize:"it,them" }}, {{ plan.client }} sees “Your coach will add the details for this session.” You can write them after publishing too.</p>
+        <ul>
+          {% for w in unwritten|slice:":5" %}<li><a href="{% url 'workout_detail' w.pk %}">{{ w.date|date:"D, M j" }}{% if w.engine_detail %} · {{ w.engine_detail }}{% endif %}</a></li>{% endfor %}
+          {% if unwritten|length > 5 %}<li>and {{ unwritten|length|add:"-5" }} more</li>{% endif %}
+        </ul>
+      </section>
+    {% else %}
+      <p class="notice"><strong>Every speed session is written.</strong></p>
+    {% endif %}
+    {% if warning_weeks %}
+      <p class="notice">{{ warning_weeks }} week{{ warning_weeks|pluralize }} {{ warning_weeks|pluralize:"has,have" }} engine notes for you on the plan page. Clients never see them.</p>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

@@ -156,3 +156,29 @@ def give_feedback(coach, result, text: str) -> None:
     result.coach_feedback_at = timezone.now() if text else None
     # Not updated_at: that is when the CLIENT last logged/changed the run ("Logged Nov 16").
     result.save(update_fields=["coach_feedback", "coach_feedback_at"])
+
+
+def publish_plan(coach, plan: TrainingPlan):
+    """Make a draft the client's live plan. Their current live plan (if any) is archived in the same transaction;
+    its workouts and logged runs are kept and stay readable under Past Plans. Returns the archived plan or None."""
+    if plan.client.coach_id != coach.id:
+        raise PermissionDenied
+    if plan.is_trashed:
+        raise PlanActionError("Restore this plan from the Trash before publishing it.")
+    if plan.status != TrainingPlan.Status.DRAFT:
+        raise PlanActionError("Only drafts can be published.")
+    if not ScheduledWorkout.objects.filter(week__plan=plan).exists():
+        raise PlanActionError("This draft has no workouts yet.")
+    now = timezone.now()
+    with transaction.atomic():
+        previous = (
+            TrainingPlan.objects.select_for_update()
+            .filter(client=plan.client, status=TrainingPlan.Status.PUBLISHED)
+            .first()
+        )
+        if previous:
+            previous.status = TrainingPlan.Status.ARCHIVED
+            previous.save(update_fields=["status", "updated_at"])
+        plan.status, plan.published_at = TrainingPlan.Status.PUBLISHED, now
+        plan.save(update_fields=["status", "published_at", "updated_at"])
+    return previous

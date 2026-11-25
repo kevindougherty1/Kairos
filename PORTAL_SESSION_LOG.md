@@ -324,3 +324,16 @@ Nothing was lost. Start it on demand only; Docker reserves about 8 GB.
   not committed; `.env.example` documents it). Stored times stay UTC; client "today" still uses each client's own time zone.
 - Test (+1, **92/92**): a UTC 20:45 draft shows "Made Nov 25, 12:45 PM"; clients never see it.
 
+### 43 — 2026-11-25 — Publish button for drafts (Phase 2 core loop)
+- `services.publish_plan`: own coach, drafts only, not trashed, must have workouts; in **one transaction** (with a row lock)
+  the client's current live plan → archived, then the draft → published + `published_at`. The DB rule "one published plan
+  per client" holds throughout. Logged runs on the old plan are kept (read-only under the client's Past Plans).
+- **Publish Plan** button (the primary action) on draft pages → `/plans/<id>/publish/` confirmation (GET changes
+  nothing): what becomes live, dates/weeks/runs, which plan it replaces, "started already" note, **unwritten Speed Sessions**
+  (count + first 5 linked; button reads "Publish Anyway"), engine-note weeks. POST publishes; "Not Yet" backs out.
+- Tests **100/100** (+8): swap + history kept, first plan, unwritten flagged but allowed, drafts only, trash refused,
+  **failure midway leaves both plans unchanged**, other coach 404, client 403, button only on drafts.
+- Browser: confirmation at 390/1280, 0 overflow/errors; backed out with Not Yet (demo data unchanged).
+- Phase 2 status: generate ✓, edit/prescribe ✓, publish ✓, client schedule ✓, result entry ✓, feedback ✓. Left: marathon
+  adapter; the brief's Phase 2 done-check walkthrough.
+

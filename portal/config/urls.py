@@ -17,6 +17,7 @@ urlpatterns = [
     path("coach/", training_views.coach_home, name="coach_home"),
     path("coach/clients/<int:client_id>/generate/", training_views.generate_plan, name="generate_plan"),
     path("coach/trash/", training_views.coach_trash, name="coach_trash"),
+    path("plans/<int:pk>/publish/", training_views.plan_publish, name="plan_publish"),
     path("plans/<int:pk>/trash/", training_views.plan_trash, name="plan_trash"),
     path("plans/<int:pk>/restore/", training_views.plan_restore, name="plan_restore"),
     path("plans/<int:pk>/delete/", training_views.plan_delete, name="plan_delete"),

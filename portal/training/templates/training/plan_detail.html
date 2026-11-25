@@ -20,6 +20,7 @@
 {% if user.is_coach %}
   {% if to_write %}<p class="notice"><strong>{{ to_write }} speed session{{ to_write|pluralize }} to write.</strong> Your client sees “Your coach will add the details” until you do. The engine’s pick is under each title as a suggestion.</p>{% endif %}
   <div class="actions">
+    {% if plan.status == "draft" %}<a class="btn btn--primary" href="{% url 'plan_publish' plan.pk %}">Publish Plan</a>{% endif %}
     {% if plan.can_trash %}
       <form method="post" action="{% url 'plan_trash' plan.pk %}">
         {% csrf_token %}<input type="hidden" name="next" value="{% url 'coach_home' %}">

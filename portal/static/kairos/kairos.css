@@ -293,6 +293,7 @@ body { font-feature-settings: "calt" 0; }
 .week__head h2 { margin: 0; }
 .facts { display: flex; flex-wrap: wrap; gap: var(--s-2) var(--s-5); margin: 0 0 var(--s-5); padding: 0; list-style: none; color: var(--muted); }
 .facts li { max-width: none; }
+.facts--stack { flex-direction: column; gap: var(--s-2); color: var(--ink); }
 .facts strong { color: var(--ink); font-weight: 500; }
 .prose { max-width: var(--measure); }
 
