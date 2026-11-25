@@ -150,6 +150,10 @@ main { padding-top: calc(var(--nav) + var(--s-7)); padding-bottom: var(--s-9); }
 .btn--secondary:hover { border-color: var(--ink); }
 .btn:hover { transform: translateY(-1px); }
 .btn:active { transform: translateY(1px) scale(.98); }
+.btn--quiet { background: transparent; color: var(--muted); border-color: transparent; padding: 0 var(--s-3); font-size: var(--t-small); }
+.btn--quiet:hover { color: var(--ink); border-color: var(--line-strong); }
+.btn--danger { background: var(--warn); color: #fff; }  /* destructive confirm only (white on warn 8.0:1) */
+.btn--danger:hover { background: color-mix(in oklab, var(--warn) 86%, #000); }
 .btn--small { height: 36px; padding: 0 var(--s-4); font-size: var(--t-small); }
 .btn-row { display: flex; flex-wrap: wrap; gap: var(--s-3); }
 @media (max-width: 639px) { .btn-row .btn, form .btn--primary { width: 100%; } }
@@ -195,7 +199,19 @@ a.card.next-up { display: grid; gap: var(--s-1); margin-bottom: var(--s-7); }
 
 .week-nav { display: flex; align-items: center; justify-content: space-between; gap: var(--s-3); margin-top: var(--s-5); flex-wrap: wrap; }
 .link-quiet { color: var(--ink); min-height: 44px; display: inline-flex; align-items: center; }
+.trash-link { gap: var(--s-2); }
+/* Rethink Sans turns "(1)" into a circled digit; keep numbers plain */
+body { font-feature-settings: "calt" 0; }
 @media (max-width: 639px) { .week-nav .btn { flex: 1 1 0; padding-inline: var(--s-3); } .week-nav .link-quiet { order: 3; flex-basis: 100%; justify-content: center; } }
+
+/* a plan row with its own action button beside the link (coach list, Trash) */
+.rows > li.row-with-action { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: var(--s-2); }
+.row-action-spacer { width: 0; }
+.row-actions { display: flex; flex-wrap: wrap; gap: var(--s-2); justify-content: flex-end; }
+.row-actions form { margin: 0; }
+.actions { display: flex; flex-wrap: wrap; gap: var(--s-3); align-items: center; margin-bottom: var(--s-5); }
+.actions form, .message form { margin: 0; }
+.page-head--split { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: var(--s-3); }
 
 /* ---------------------------------------------------------------- status marks */
 .badge {
@@ -218,7 +234,7 @@ a.card.next-up { display: grid; gap: var(--s-1); margin-bottom: var(--s-7); }
 .notice p:last-child { margin-bottom: 0; }
 
 .messages { margin-bottom: var(--s-5); }
-.message { background: var(--surface); border-left: 3px solid var(--accent); border-radius: var(--r-sm); padding: var(--s-3) var(--s-4); margin: 0 0 var(--s-2); max-width: none; }
+.message { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--s-2) var(--s-4); background: var(--surface); border-left: 3px solid var(--accent); border-radius: var(--r-sm); padding: var(--s-3) var(--s-4); margin: 0 0 var(--s-2); max-width: none; }
 .message--error { border-left-color: var(--warn); }
 
 /* ---------------------------------------------------------------- forms */

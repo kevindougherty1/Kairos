@@ -5,7 +5,9 @@ from zoneinfo import ZoneInfo
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
-from django.db.models import Prefetch
+from django.db.models import Count, Prefetch
+from django.utils.http import url_has_allowed_host_and_scheme
+from django.views.decorators.http import require_POST
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 
@@ -45,9 +47,63 @@ def dashboard(request):
 @role_required("coach")
 def coach_home(request):
     clients = access.clients_for(request.user).prefetch_related(
-        Prefetch("plans", queryset=TrainingPlan.objects.order_by("-start_date"))
+        Prefetch("plans", queryset=TrainingPlan.objects.filter(trashed_at__isnull=True).order_by("-start_date"))
     )
-    return render(request, "training/coach_home.html", {"clients": clients, "nav": "home"})
+    trash_count = access.trashed_plans_for(request.user).count()
+    return render(request, "training/coach_home.html", {"clients": clients, "trash_count": trash_count, "nav": "home"})
+
+
+def _back(request, fallback="coach_home"):
+    target = request.POST.get("next", "")
+    if target and url_has_allowed_host_and_scheme(target, allowed_hosts={request.get_host()}):
+        return redirect(target)
+    return redirect(fallback)
+
+
+@require_POST
+@role_required("coach")
+def plan_trash(request, pk):
+    plan = get_object_or_404(access.plans_for(request.user).select_related("client"), pk=pk)
+    try:
+        services.trash_plan(request.user, plan)
+    except services.PlanActionError as exc:
+        messages.error(request, str(exc))
+        return redirect("plan_detail", pk=plan.pk)
+    messages.success(request, f"Moved “{plan.title}” to the Trash.", extra_tags=f"undo plan-{plan.pk}")
+    return _back(request)
+
+
+@require_POST
+@role_required("coach")
+def plan_restore(request, pk):
+    plan = get_object_or_404(access.trashed_plans_for(request.user).select_related("client"), pk=pk)
+    services.restore_plan(request.user, plan)
+    messages.success(request, f"Restored “{plan.title}”.")
+    return _back(request)
+
+
+@role_required("coach")
+def coach_trash(request):
+    plans = access.trashed_plans_for(request.user).select_related("client__user").annotate(
+        logged=Count("weeks__workouts__result")
+    ).order_by("-trashed_at")
+    return render(request, "training/trash.html", {"plans": plans})
+
+
+@role_required("coach")
+def plan_delete(request, pk):
+    """Delete forever: a confirmation page (GET), then the delete (POST). Only from the Trash."""
+    plan = get_object_or_404(access.trashed_plans_for(request.user).select_related("client__user"), pk=pk)
+    logged = services.logged_result_count(plan)
+    if request.method == "POST":
+        try:
+            services.delete_plan_forever(request.user, plan)
+        except services.PlanActionError as exc:
+            messages.error(request, str(exc))
+        else:
+            messages.success(request, f"Deleted “{plan.title}” forever.")
+        return redirect("coach_trash")
+    return render(request, "training/plan_delete.html", {"plan": plan, "logged": logged})
 
 
 def client_today(profile):

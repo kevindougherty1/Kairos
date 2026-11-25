@@ -16,6 +16,19 @@
 
 {% if plan.is_fixture %}<p class="notice"><strong>Demo plan.</strong> This is sample data, not a real training plan.</p>{% endif %}
 
+{% if user.is_coach %}
+  <div class="actions">
+    {% if plan.can_trash %}
+      <form method="post" action="{% url 'plan_trash' plan.pk %}">
+        {% csrf_token %}<input type="hidden" name="next" value="{% url 'coach_home' %}">
+        <button class="btn btn--secondary" type="submit">Move to Trash</button>
+      </form>
+    {% else %}
+      <p class="muted">This is {{ plan.client }}’s live plan, so it can’t go in the Trash.</p>
+    {% endif %}
+  </div>
+{% endif %}
+
 {% for week in weeks %}
   <section class="week" aria-labelledby="week-{{ week.number }}">
     <div class="week__head">

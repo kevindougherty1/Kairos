@@ -65,3 +65,50 @@ def generate_draft(coach, client: ClientProfile, request: PlanRequest, today=Non
                     target_distance_m=w["distance_m"],
                 )
     return plan
+
+
+class PlanActionError(Exception):
+    """A plan action that isn't allowed, with a message the coach can act on."""
+
+
+def trash_plan(coach, plan: TrainingPlan) -> None:
+    if plan.client.coach_id != coach.id:
+        raise PermissionDenied
+    if plan.status == TrainingPlan.Status.PUBLISHED:
+        raise PlanActionError(
+            "The live plan can’t go in the Trash; your client is using it. Publish a new plan first (it archives this one)."
+        )
+    if plan.is_trashed:
+        return
+    plan.trashed_at, plan.trashed_by = timezone.now(), coach
+    plan.save(update_fields=["trashed_at", "trashed_by", "updated_at"])
+
+
+def restore_plan(coach, plan: TrainingPlan) -> None:
+    if plan.client.coach_id != coach.id:
+        raise PermissionDenied
+    plan.trashed_at, plan.trashed_by = None, None
+    plan.save(update_fields=["trashed_at", "trashed_by", "updated_at"])
+
+
+def logged_result_count(plan: TrainingPlan) -> int:
+    from .models import WorkoutResult
+
+    return WorkoutResult.objects.filter(workout__week__plan=plan).count()
+
+
+def delete_plan_forever(coach, plan: TrainingPlan) -> None:
+    """Only from the Trash, and never a plan with logged runs (client history is kept, brief §4.6)."""
+    if plan.client.coach_id != coach.id:
+        raise PermissionDenied
+    if not plan.is_trashed:
+        raise PlanActionError("Move the plan to the Trash first.")
+    runs = logged_result_count(plan)
+    if runs:
+        raise PlanActionError(
+            f"Your client logged {runs} run{'s' if runs != 1 else ''} on this plan, so it stays in the Trash to keep "
+            "their history. It’s hidden everywhere else."
+        )
+    with transaction.atomic():
+        plan.delete()  # weeks and workouts go with it
+

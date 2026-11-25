@@ -5,6 +5,7 @@ never as someone else's data.
 
 - Coach:  only their own clients, and all of those clients' plans (drafts included).
 - Client: only their own plans that have been published (current or archived), never drafts.
+- Nobody sees a plan in the Trash except its coach, on the Trash page (trashed_plans_for).
 """
 
 from accounts.models import ClientProfile
@@ -25,13 +26,20 @@ def plans_for(user):
     if not _active(user):
         return TrainingPlan.objects.none()
     if user.is_coach:
-        return TrainingPlan.objects.filter(client__coach=user)
+        return TrainingPlan.objects.filter(client__coach=user, trashed_at__isnull=True)
     if user.is_client:
         return TrainingPlan.objects.filter(
             client__user=user,
+            trashed_at__isnull=True,
             status__in=[TrainingPlan.Status.PUBLISHED, TrainingPlan.Status.ARCHIVED],
             published_at__isnull=False,
         )
+    return TrainingPlan.objects.none()
+
+
+def trashed_plans_for(user):
+    if _active(user) and user.is_coach:
+        return TrainingPlan.objects.filter(client__coach=user, trashed_at__isnull=False)
     return TrainingPlan.objects.none()
 
 

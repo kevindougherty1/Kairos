@@ -1,4 +1,4 @@
-{% load static %}<!doctype html>
+{% load static kairos %}<!doctype html>
 <html lang="en" data-radius="soft">
 <head>
   <meta charset="utf-8">
@@ -40,7 +40,17 @@
     <div class="wrap">
       {% if messages %}
         <div class="messages" role="status">
-          {% for message in messages %}<p class="message{% if message.tags == 'error' %} message--error{% endif %}">{{ message }}</p>{% endfor %}
+          {% for message in messages %}
+            <div class="message{% if 'error' in message.tags %} message--error{% endif %}">
+              <span>{{ message }}</span>
+              {% with plan_id=message.extra_tags|undo_plan_id %}{% if plan_id %}
+                <form method="post" action="{% url 'plan_restore' plan_id %}">
+                  {% csrf_token %}<input type="hidden" name="next" value="{{ request.get_full_path }}">
+                  <button class="btn btn--secondary" type="submit">Undo</button>
+                </form>
+              {% endif %}{% endwith %}
+            </div>
+          {% endfor %}
         </div>
       {% endif %}
       {% block content %}{% endblock %}

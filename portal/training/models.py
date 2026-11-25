@@ -53,6 +53,12 @@ class TrainingPlan(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    # Trash (soft delete): hidden everywhere until restored or deleted forever. Never the live plan.
+    trashed_at = models.DateTimeField(null=True, blank=True)
+    trashed_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True, related_name="+"
+    )
+
     class Meta:
         ordering = ["-start_date", "-created_at"]
         constraints = [
@@ -65,7 +71,20 @@ class TrainingPlan(models.Model):
                 condition=~Q(status="published") | Q(published_at__isnull=False),
                 name="plan_published_has_timestamp",
             ),
+            # The client's live plan can never sit in the Trash.
+            models.CheckConstraint(
+                condition=~Q(status="published") | Q(trashed_at__isnull=True),
+                name="plan_published_not_trashed",
+            ),
         ]
+
+    @property
+    def is_trashed(self):
+        return self.trashed_at is not None
+
+    @property
+    def can_trash(self):
+        return not self.is_trashed and self.status != self.Status.PUBLISHED
 
     def __str__(self):
         prefix = "[Fixture] " if self.is_fixture else ""

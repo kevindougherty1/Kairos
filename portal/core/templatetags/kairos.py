@@ -20,3 +20,13 @@ def add_days(day, n):
     from datetime import timedelta
 
     return day + timedelta(days=int(n)) if day else day
+
+
+@register.filter
+def undo_plan_id(tags):
+    """Messages tagged "undo plan-<id>" get an Undo button (base.html)."""
+    for tag in str(tags).split():
+        if tag.startswith("plan-") and tag[5:].isdigit():
+            return int(tag[5:])
+    return None
+

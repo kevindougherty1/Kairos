@@ -252,3 +252,21 @@ Nothing was lost. Start it on demand only; Docker reserves about 8 GB.
 - **Browser check:** generated a real 12-week draft for demo client Avery (plan #4 in the dev DB, real engine output, not
   a fixture): race Sun Feb 14 2027 (engine said Sat), race week 19.1 mi, 0 console errors, 0 overflow at 390/1280.
   The draft stays in the dev DB (`seed_demo` only rebuilds fixtures); delete it in admin if unwanted.
+
+### 36 — 2026-11-25 — Kevin tries the site himself
+- Started the dev server at http://127.0.0.1:8000/ (this PC only) and confirmed the demo logins still work. Gave Kevin the logins and a list of things to try.
+
+### 37 — 2026-11-25 — Workout names explained; Trash for plans
+- Explained Threshold Session (sustained "comfortably hard" quality day) and Economy Support (strides/short reps for form,
+  low fatigue). Both are names from Kevin's HM engine glossary; renaming = TBD #1 (one table in `training/engines.py`).
+- **Trash (soft delete):** `TrainingPlan.trashed_at/trashed_by` (migration 0002) + DB constraint
+  `plan_published_not_trashed`. `access.plans_for` hides trashed plans from everyone; `trashed_plans_for(coach)` feeds
+  `/coach/trash/`. Actions (POST only, own coach only): **Trash** (row button on Clients + "Move to Trash" on the plan
+  page; success notice with **Undo**), **Restore**, **Delete Forever** (`/plans/<id>/delete/`: confirm page with a danger
+  button; only from the Trash; refused if the plan has logged runs, per brief §4.6). The live plan can't be trashed
+  (explained on its page). `next` redirects are same-site only.
+- 8 new tests → **72/72**. Browser: trash → Undo notice → Trash page → confirm → Keep It → Restore, 0 errors, 0 overflow,
+  no small targets at 390/1280. Fixed after screenshots: Rethink Sans rendered "(1)" as ①, so the count is a badge and `calt` is off.
+- Noted: several identical draft titles ("Half Marathon: [Demo] City Half Marathon") are hard to tell apart.
+  Showing a created time on drafts is a small follow-up.
+

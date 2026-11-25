@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Delete Plan{% endblock %}
+{% block content %}
+<a class="back" href="{% url 'coach_trash' %}">← Trash</a>
+<div class="auth">
+  <div class="page-head"><h1>Delete Forever?</h1></div>
+  <div class="card">
+    <p><strong>{{ plan.title }}</strong> for {{ plan.client }}<br>
+      <span class="muted num">{{ plan.start_date|date:"M j" }}–{{ plan.end_date|date:"M j, Y" }}</span></p>
+    {% if logged %}
+      <p class="notice notice--warn"><strong>This plan has {{ logged }} logged run{{ logged|pluralize }}.</strong> It stays in the Trash so your client’s history is kept.</p>
+      <a class="btn btn--secondary" href="{% url 'coach_trash' %}">Back to Trash</a>
+    {% else %}
+      <p>All of its weeks and workouts are removed. This can’t be undone.</p>
+      <form method="post" class="btn-row">
+        {% csrf_token %}
+        <button class="btn btn--danger" type="submit">Delete Forever</button>
+        <a class="btn btn--secondary" href="{% url 'coach_trash' %}">Keep It</a>
+      </form>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

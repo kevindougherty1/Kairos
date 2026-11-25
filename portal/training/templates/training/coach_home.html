@@ -2,9 +2,12 @@
 {% load kairos %}
 {% block title %}Clients{% endblock %}
 {% block content %}
-<div class="page-head">
-  <h1>Clients</h1>
-  <p>{{ clients|length }} client{{ clients|length|pluralize }} assigned to you.</p>
+<div class="page-head page-head--split">
+  <div>
+    <h1>Clients</h1>
+    <p>{{ clients|length }} client{{ clients|length|pluralize }} assigned to you.</p>
+  </div>
+  <a class="link-quiet trash-link" href="{% url 'coach_trash' %}">Trash{% if trash_count %} <span class="badge num" aria-label="{{ trash_count }} plan{{ trash_count|pluralize }}">{{ trash_count }}</span>{% endif %}</a>
 </div>
 
 {% if clients %}
@@ -24,12 +27,18 @@
         {% if client.plans.all %}
           <ul class="rows">
             {% for plan in client.plans.all %}
-              <li>
+              <li class="row-with-action">
                 <a class="row" href="{% url 'plan_detail' plan.pk %}">
                   <span class="row__date">{{ plan.start_date|date:"M j" }}–{{ plan.end_date|date:"M j" }}</span>
                   <span class="row__title">{{ plan.title }}</span>
                   <span class="row__meta">{% include "training/_plan_badge.html" %}</span>
                 </a>
+                {% if plan.can_trash %}
+                  <form method="post" action="{% url 'plan_trash' plan.pk %}">
+                    {% csrf_token %}<input type="hidden" name="next" value="{% url 'coach_home' %}">
+                    <button class="btn btn--quiet" type="submit" aria-label="Move {{ plan.title }} to the Trash">Trash</button>
+                  </form>
+                {% else %}<span class="row-action-spacer" aria-hidden="true"></span>{% endif %}
               </li>
             {% endfor %}
           </ul>

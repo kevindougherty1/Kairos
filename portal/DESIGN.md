@@ -90,6 +90,7 @@ the second, **clay-pine**, was taken. It's effectively the logo's own colours. T
 - Text people read is 16px or larger. 14px is for help text and dates, 13px for labels and badges. Nothing smaller.
 - Numbers in lists (dates, miles, times) use `.num` / tabular figures so columns line up.
 - Curly apostrophes and quotes in copy (’ “ ”). Brand names carry `translate="no"`.
+- Contextual alternates are off (`font-feature-settings: "calt" 0`): Rethink Sans otherwise turns "(1)" into a circled ①.
 
 ## Layout
 
@@ -114,9 +115,12 @@ Radius scale (soft): controls 8px, panels and notices 12px, cards 20px, buttons 
 |---|---|---|
 | Primary button | `.btn.btn--primary` | Pine, white label, 44px. **One per view.** Lifts 1px on hover, presses on click. |
 | Secondary button | `.btn.btn--secondary` | Transparent, 22% ink border. Log Out, back actions. |
+| Quiet button | `.btn.btn--quiet` | Text-weight action inside rows (Trash, Delete Forever link). Still 44px tall. |
+| Danger button | `.btn.btn--danger` | Warn ground, white label (7.6:1). **Only** on a delete-forever confirmation page. |
 | Card | `.card` | Surface ground, 20px radius, 24/32px padding. Never a box in a box. |
 | Card grid | `.cards` | Columns at least 480px wide: one column on phones, two on desktop. |
 | Split | `.split` | 5/7 columns from 1024 (reading card + working card), stacked below. |
+| Row + action | `li.row-with-action` | A row link with its own button beside it (never a button inside the link). |
 | Rows | `.rows` > `li` > `.row` | Hairline-ruled list: date · title · meta. Used for workouts and plans. |
 | Facts | `.facts` | Inline muted meta line (date · type · distance); `strong` for the key figure. |
 | Badge | `.badge` (+ `--live`, `--done`, `--draft`, `--muted`, `--warn`) | Status only: Published, Completed, Draft (dashed), Archived, Demo. |

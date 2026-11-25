@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Trash{% endblock %}
+{% block content %}
+<a class="back" href="{% url 'coach_home' %}">← Clients</a>
+<div class="page-head">
+  <h1>Trash</h1>
+  <p>Plans here are hidden from you and your clients. Restore one, or delete it forever.</p>
+</div>
+
+{% if plans %}
+  <ul class="rows">
+    {% for plan in plans %}
+      <li class="row-with-action">
+        <div class="row">
+          <span class="row__date">Trashed {{ plan.trashed_at|date:"M j" }}</span>
+          <span class="row__title">{{ plan.title }} <span class="muted">· {{ plan.client }}</span></span>
+          <span class="row__meta">{% include "training/_plan_badge.html" %}{% if plan.logged %} <span class="badge badge--muted">{{ plan.logged }} logged run{{ plan.logged|pluralize }}</span>{% endif %}</span>
+        </div>
+        <div class="row-actions">
+          <form method="post" action="{% url 'plan_restore' plan.pk %}">
+            {% csrf_token %}<input type="hidden" name="next" value="{% url 'coach_trash' %}">
+            <button class="btn btn--secondary" type="submit" aria-label="Restore {{ plan.title }}">Restore</button>
+          </form>
+          {% if not plan.logged %}
+            <a class="btn btn--quiet" href="{% url 'plan_delete' plan.pk %}" aria-label="Delete {{ plan.title }} forever">Delete Forever</a>
+          {% endif %}
+        </div>
+      </li>
+    {% endfor %}
+  </ul>
+  <p class="form__note">Plans with logged runs can’t be deleted forever. Your client’s history is kept, but the plan stays hidden.</p>
+{% else %}
+  <div class="card">
+    <h2>Trash Is Empty</h2>
+    <p>Drafts and old plans you move to the Trash show up here.</p>
+  </div>
+{% endif %}
+{% endblock %}
